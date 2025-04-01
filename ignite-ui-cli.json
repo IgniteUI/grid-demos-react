@@ -1,0 +1,16 @@
+{
+  "version": "14.3.15",
+  "project": {
+    "defaultPort": 3003,
+    "framework": "react",
+    "projectType": "igr-ts",
+    "projectTemplate": "base",
+    "theme": "default",
+    "isBundle": false,
+    "components": [],
+    "sourceFiles": [],
+    "isShowcase": false,
+    "version": ""
+  },
+  "build": {}
+}
