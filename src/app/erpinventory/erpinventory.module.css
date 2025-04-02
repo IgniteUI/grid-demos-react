@@ -14,3 +14,7 @@
   flex-grow: 1;
   flex-basis: 0;
 }
+.rating {
+  width: max-content;
+  height: max-content;
+}

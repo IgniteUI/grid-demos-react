@@ -1,9 +1,11 @@
-import { IgrColumn, IgrGridToolbar, IgrGridToolbarActions, IgrGridToolbarExporter, IgrGridToolbarHiding, IgrGridToolbarPinning, IgrGridToolbarTitle, IgrTreeGrid, IgrTreeGridModule } from 'igniteui-react-grids';
+import { IgrAvatar, IgrAvatarModule } from 'igniteui-react';
+import { IgrCellTemplateContext, IgrColumn, IgrGridToolbar, IgrGridToolbarActions, IgrGridToolbarExporter, IgrGridToolbarHiding, IgrGridToolbarPinning, IgrGridToolbarTitle, IgrTreeGrid, IgrTreeGridModule } from 'igniteui-react-grids';
 import { useGetTable1List as hRDataUseGetTable1List } from '../hooks/hrdata-hooks';
 import 'igniteui-react-grids/grids/combined.js';
 import styles from './org-chart-hr-portal.module.css';
 import createClassTransformer from '../style-utils';
 
+IgrAvatarModule.register();
 IgrTreeGridModule.register();
 
 export default function OrgChartHRPortal() {
@@ -11,10 +13,21 @@ export default function OrgChartHRPortal() {
   const uuid = () => crypto.randomUUID();
   const { hRDataTable1 } = hRDataUseGetTable1List();
 
+  const columnBodyTemplate = (ctx: { dataContext: IgrCellTemplateContext }) => {
+    return (
+      <>
+        <IgrAvatar src={ctx.dataContext.cell.row.data.Picture} shape="circle" className={classes("avatar")}></IgrAvatar>
+        <p className={classes("typography__body-1 text")}>
+          <span>{ctx.dataContext.cell.value}</span>
+        </p>
+      </>
+    )
+  }
+
   return (
     <>
       <div className={classes("row-layout org-charthr-portal-container")}>
-        <IgrTreeGrid data={hRDataTable1} primaryKey="ID" childDataKey="Employees" rowSelection="multiple" allowFiltering="true" filterMode="excelStyleFilter" className={classes("ig-typography ig-scrollbar tree-grid")}>
+        <IgrTreeGrid data={hRDataTable1} primaryKey="ID" childDataKey="Employees" rowSelection="multiple" allowFiltering="true" filterMode="excelStyleFilter" className={classes("ig-typography ig-scrollbar tree-grid")} key={uuid()}>
           <IgrGridToolbar>
             <IgrGridToolbarActions>
               <IgrGridToolbarPinning></IgrGridToolbarPinning>
@@ -25,9 +38,9 @@ export default function OrgChartHRPortal() {
               <span key={uuid()}>HR Portal</span>
             </IgrGridToolbarTitle>
           </IgrGridToolbar>
-          <IgrColumn field="ID" dataType="number" header="ID" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Name" dataType="string" header="Name" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="JobTitle" dataType="string" header="JobTitle" sortable="true" selectable="false"></IgrColumn>
+          <IgrColumn field="ID" dataType="number" header="ID" hidden="true" sortable="true" selectable="false"></IgrColumn>
+          <IgrColumn field="Name" dataType="string" header="Name" width="300px" pinned="true" sortable="true" bodyTemplate={columnBodyTemplate} selectable="false"></IgrColumn>
+          <IgrColumn field="JobTitle" dataType="string" header="Job Title" sortable="true" selectable="false"></IgrColumn>
           <IgrColumn field="Department" dataType="string" header="Department" sortable="true" selectable="false"></IgrColumn>
           <IgrColumn field="Location" dataType="string" header="Location" sortable="true" selectable="false"></IgrColumn>
           <IgrColumn field="Country" dataType="string" header="Country" sortable="true" selectable="false"></IgrColumn>
