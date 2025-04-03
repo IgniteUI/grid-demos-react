@@ -224,3 +224,8 @@ igc-card-header h6[slot='subtitle'] {
 .ig-typography__body-1 {
     margin: 0 !important;
 }
+
+igc-button .imx-icon, igc-icon-button .imx-icon {
+  /* adjust icon size when projected in other components */
+  --size: 1.125rem;
+}

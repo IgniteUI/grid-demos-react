@@ -1,9 +1,13 @@
-import { IgrColumn, IgrGridToolbar, IgrGridToolbarActions, IgrGridToolbarExporter, IgrGridToolbarHiding, IgrGridToolbarPinning, IgrGridToolbarTitle, IgrTreeGrid, IgrTreeGridModule } from 'igniteui-react-grids';
+import { IgrAvatar, IgrAvatarModule, IgrIconButton, IgrIconButtonModule, IgrRipple, IgrRippleModule } from 'igniteui-react';
+import { IgrCellTemplateContext, IgrColumn, IgrGridToolbar, IgrGridToolbarActions, IgrGridToolbarExporter, IgrGridToolbarHiding, IgrGridToolbarPinning, IgrGridToolbarTitle, IgrTreeGrid, IgrTreeGridModule } from 'igniteui-react-grids';
 import { useGetTable1List as hRDataUseGetTable1List } from '../hooks/hrdata-hooks';
 import 'igniteui-react-grids/grids/combined.js';
 import styles from './org-chart-hr-portal.module.css';
 import createClassTransformer from '../style-utils';
 
+IgrAvatarModule.register();
+IgrIconButtonModule.register();
+IgrRippleModule.register();
 IgrTreeGridModule.register();
 
 export default function OrgChartHRPortal() {
@@ -11,10 +15,60 @@ export default function OrgChartHRPortal() {
   const uuid = () => crypto.randomUUID();
   const { hRDataTable1 } = hRDataUseGetTable1List();
 
+  const columnBodyTemplate = (ctx: { dataContext: IgrCellTemplateContext }) => {
+    return (
+      <>
+        <IgrAvatar src={ctx.dataContext.cell.row.data.Picture} shape="circle" className={classes("avatar")}></IgrAvatar>
+        <p className={classes("typography__body-1 text")}>
+          <span>{ctx.dataContext.cell.value}</span>
+        </p>
+      </>
+    )
+  }
+
+  const columnBodyTemplate1 = (ctx: { dataContext: IgrCellTemplateContext }) => {
+    return (
+      <>
+        <p className={classes("typography__body-1 text_1")}>
+          <span>{ctx.dataContext.cell.value}</span>
+        </p>
+        <p className={classes("typography__body-1 text_1")}>
+          <span>,</span>
+        </p>
+        <p className={classes("typography__body-1 text_1")}>
+          <span>{ctx.dataContext.cell.row.data.Country}</span>
+        </p>
+      </>
+    )
+  }
+
+  const columnBodyTemplate2 = () => {
+    return (
+      <>
+        <IgrIconButton variant="flat">
+          <span className={classes("material-icons")} key={uuid()}>
+            <span key={uuid()}>email</span>
+          </span>
+          <IgrRipple key={uuid()}></IgrRipple>
+        </IgrIconButton>
+        <IgrIconButton variant="flat">
+          <span className={classes("material-icons")} key={uuid()}>
+            <span key={uuid()}>phone</span>
+          </span>
+          <IgrRipple key={uuid()}></IgrRipple>
+        </IgrIconButton>
+        <IgrIconButton variant="flat">
+          <span className={classes("imx-icon imx-linkedin")} key={uuid()}></span>
+          <IgrRipple key={uuid()}></IgrRipple>
+        </IgrIconButton>
+      </>
+    )
+  }
+
   return (
     <>
       <div className={classes("row-layout org-charthr-portal-container")}>
-        <IgrTreeGrid data={hRDataTable1} primaryKey="ID" childDataKey="Employees" rowSelection="multiple" allowFiltering="true" filterMode="excelStyleFilter" className={classes("ig-typography ig-scrollbar tree-grid")}>
+        <IgrTreeGrid data={hRDataTable1} primaryKey="ID" childDataKey="Employees" rowSelection="multiple" allowFiltering="true" filterMode="excelStyleFilter" className={classes("ig-typography ig-scrollbar tree-grid")} key={uuid()}>
           <IgrGridToolbar>
             <IgrGridToolbarActions>
               <IgrGridToolbarPinning></IgrGridToolbarPinning>
@@ -25,57 +79,14 @@ export default function OrgChartHRPortal() {
               <span key={uuid()}>HR Portal</span>
             </IgrGridToolbarTitle>
           </IgrGridToolbar>
-          <IgrColumn field="ID" dataType="number" header="ID" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Name" dataType="string" header="Name" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="JobTitle" dataType="string" header="JobTitle" sortable="true" selectable="false"></IgrColumn>
+          <IgrColumn field="ID" dataType="number" header="ID" hidden="true" sortable="true" selectable="false"></IgrColumn>
+          <IgrColumn field="Name" dataType="string" header="Name" width="300px" pinned="true" sortable="true" bodyTemplate={columnBodyTemplate} selectable="false"></IgrColumn>
+          <IgrColumn field="JobTitle" dataType="string" header="Job Title" sortable="true" selectable="false"></IgrColumn>
           <IgrColumn field="Department" dataType="string" header="Department" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Location" dataType="string" header="Location" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Country" dataType="string" header="Country" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="GrossSalary" dataType="number" header="GrossSalary" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Phone" dataType="string" header="Phone" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Contacts" dataType="string" header="Contacts" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Picture" dataType="string" header="Picture" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Age" dataType="number" header="Age" sortable="true" selectable="false"></IgrColumn>
+          <IgrColumn field="Location" dataType="string" header="Location" sortable="true" bodyTemplate={columnBodyTemplate1} selectable="false"></IgrColumn>
+          <IgrColumn field="Contacts" dataType="string" header="Contacts" sortable="true" bodyTemplate={columnBodyTemplate2} selectable="false"></IgrColumn>
           <IgrColumn field="HireDate" dataType="date" header="HireDate" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Employees" dataType="array" header="Employees" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="ID" dataType="number" header="Employees ID" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Name" dataType="string" header="Employees Name" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="JobTitle" dataType="string" header="Employees JobTitle" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Department" dataType="string" header="Employees Department" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Location" dataType="string" header="Employees Location" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Country" dataType="string" header="Employees Country" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="GrossSalary" dataType="number" header="Employees GrossSalary" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Phone" dataType="string" header="Employees Phone" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Contacts" dataType="string" header="Employees Contacts" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Picture" dataType="string" header="Employees Picture" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Age" dataType="number" header="Employees Age" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="HireDate" dataType="date" header="Employees HireDate" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Employees" dataType="array" header="Employees Employees" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="ID" dataType="number" header="Employees Employees ID" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Name" dataType="string" header="Employees Employees Name" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="JobTitle" dataType="string" header="Employees Employees JobTitle" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Department" dataType="string" header="Employees Employees Department" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Location" dataType="string" header="Employees Employees Location" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Country" dataType="string" header="Employees Employees Country" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="GrossSalary" dataType="number" header="Employees Employees GrossSalary" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Phone" dataType="string" header="Employees Employees Phone" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Contacts" dataType="string" header="Employees Employees Contacts" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Picture" dataType="string" header="Employees Employees Picture" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Age" dataType="number" header="Employees Employees Age" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="HireDate" dataType="date" header="Employees Employees HireDate" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Employees" dataType="array" header="Employees Employees Employees" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="ID" dataType="number" header="Employees Employees Employees ID" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Name" dataType="string" header="Employees Employees Employees Name" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="JobTitle" dataType="string" header="Employees Employees Employees JobTitle" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Department" dataType="string" header="Employees Employees Employees Department" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Location" dataType="string" header="Employees Employees Employees Location" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Country" dataType="string" header="Employees Employees Employees Country" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="GrossSalary" dataType="number" header="Employees Employees Employees GrossSalary" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Phone" dataType="string" header="Employees Employees Employees Phone" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Contacts" dataType="string" header="Employees Employees Employees Contacts" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Picture" dataType="string" header="Employees Employees Employees Picture" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Age" dataType="number" header="Employees Employees Employees Age" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="HireDate" dataType="date" header="Employees Employees Employees HireDate" sortable="true" selectable="false"></IgrColumn>
+          <IgrColumn field="GrossSalary" dataType="number" header="GrossSalary" sortable="true" selectable="false"></IgrColumn>
         </IgrTreeGrid>
       </div>
     </>
