@@ -23,3 +23,7 @@
   min-width: min-content;
   max-width: 300px;
 }
+.text_1 {
+  height: max-content;
+  min-width: min-content;
+}

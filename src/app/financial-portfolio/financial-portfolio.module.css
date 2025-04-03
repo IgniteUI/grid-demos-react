@@ -14,3 +14,10 @@
   flex-grow: 1;
   flex-basis: 0;
 }
+.avatar::part(base) {
+  background-color: transparent;
+}
+.text {
+  height: max-content;
+  min-width: min-content;
+}
