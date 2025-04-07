@@ -28,11 +28,12 @@
     "eslint": "^9.20.0",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "igniteui-cli": "~14.3.16",
     "jsdom": "^22.1.0",
+    "sass": "^1.86.3",
     "typescript": "~5.5.4",
     "vite": "^4.4.9",
-    "vitest-canvas-mock": "^0.3.3",
-    "igniteui-cli": "~14.3.16"
+    "vitest-canvas-mock": "^0.3.3"
   },
   "scripts": {
     "start": "vite",
