@@ -1,8 +1,6 @@
-import { IgrAvatar, IgrAvatarModule } from 'igniteui-react';
-import { IgrCellTemplateContext, IgrColumn, IgrGrid, IgrGridModule, IgrGridToolbar, IgrGridToolbarActions, IgrGridToolbarExporter, IgrGridToolbarHiding, IgrGridToolbarPinning, IgrGridToolbarTitle } from 'igniteui-react-grids';
+import { IgrAvatar } from 'igniteui-react';
+import { IgrCellTemplateContext, IgrColumn, IgrGrid, IgrGridToolbar, IgrGridToolbarActions, IgrGridToolbarExporter, IgrGridToolbarHiding, IgrGridToolbarPinning, IgrGridToolbarTitle } from 'igniteui-react-grids';
 import { useGetTable1List as financeUseGetTable1List } from '../hooks/finance-hooks';
-import 'igniteui-react-grids/grids/combined.js';
-import styles from './financial-portfolio.module.css';
 import createClassTransformer from '../style-utils';
 
 IgrAvatarModule.register();
@@ -51,17 +49,17 @@ export default function FinancialPortfolio() {
               <span key={uuid()}>Financial Portfolio</span>
             </IgrGridToolbarTitle>
           </IgrGridToolbar>
-          <IgrColumn field="id" dataType="string" header="Symbol" sortable="true" filterable="false" selectable="false"></IgrColumn>
-          <IgrColumn field="holdingName" dataType="string" header="holdingName" sortable="true" bodyTemplate={columnBodyTemplate} filterable="false" selectable="false"></IgrColumn>
-          <IgrColumn field="positions" dataType="number" header="Positions" sortable="true" filterable="false" selectable="false"></IgrColumn>
-          <IgrColumn field="value.boughtPrice" dataType="currency" header="Average Cost/Share" sortable="true" filterable="false" selectable="false"></IgrColumn>
-          <IgrColumn field="value.currentPrice" dataType="currency" header="Last Price" sortable="true" filterable="false" selectable="false"></IgrColumn>
-          <IgrColumn header="Daily Change %" sortable="true" filterable="false" selectable="false" key="edd5fd57-f366-41a7-ab71-4f54f6ebd8a4"></IgrColumn>
-          <IgrColumn header="Market Value" sortable="true" filterable="false" selectable="false" key="20ffb91b-55c9-4294-8286-0de1c30febeb"></IgrColumn>
-          <IgrColumn header="NET Profit/Loss" sortable="true" filterable="false" selectable="false" key="7aaf09c0-8ee8-4f54-b0bf-6c124aed404e"></IgrColumn>
-          <IgrColumn header="NET Profit/Loss %" sortable="true" filterable="false" selectable="false" key="0305822a-4055-45f0-9319-31b73605aee8"></IgrColumn>
-          <IgrColumn header="Allocation" sortable="true" filterable="false" selectable="false" key="46776679-446b-41bd-8db3-dbe47a7e1e45"></IgrColumn>
-          <IgrColumn field="holdingPeriod" dataType="number" header="Holding Period" sortable="true" bodyTemplate={columnBodyTemplate1} filterable="false" selectable="false"></IgrColumn>
+          <IgrColumn field="id" dataType="string" header="Symbol" sortable={true} filterable={false} selectable={false}></IgrColumn>
+          <IgrColumn field="holdingName" dataType="string" header="holdingName" sortable={true} bodyTemplate={columnBodyTemplate} filterable={false} selectable={false}></IgrColumn>
+          <IgrColumn field="positions" dataType="number" header="Positions" sortable={true} filterable={false} selectable={false}></IgrColumn>
+          <IgrColumn field="value.boughtPrice" dataType="currency" header="Average Cost/Share" sortable={true} filterable={false} selectable={false}></IgrColumn>
+          <IgrColumn field="value.currentPrice" dataType="currency" header="Last Price" sortable={true} filterable={false} selectable={false}></IgrColumn>
+          <IgrColumn header="Daily Change %" sortable={true} filterable={false} selectable={false} key="edd5fd57-f366-41a7-ab71-4f54f6ebd8a4"></IgrColumn>
+          <IgrColumn header="Market Value" sortable={true} filterable={false} selectable={false} key="20ffb91b-55c9-4294-8286-0de1c30febeb"></IgrColumn>
+          <IgrColumn header="NET Profit/Loss" sortable={true} filterable={false} selectable={false} key="7aaf09c0-8ee8-4f54-b0bf-6c124aed404e"></IgrColumn>
+          <IgrColumn header="NET Profit/Loss %" sortable={true} filterable={false} selectable={false} key="0305822a-4055-45f0-9319-31b73605aee8"></IgrColumn>
+          <IgrColumn header="Allocation" sortable={true} filterable={false} selectable={false} key="46776679-446b-41bd-8db3-dbe47a7e1e45"></IgrColumn>
+          <IgrColumn field="holdingPeriod" dataType="number" header="Holding Period" sortable={true} bodyTemplate={columnBodyTemplate1} filterable={false} selectable={false}></IgrColumn>
         </IgrGrid>
       </div>
     </>

@@ -1,4 +1,4 @@
-import { IgrAvatar, IgrAvatarModule, IgrIconButton, IgrIconButtonModule, IgrRipple, IgrRippleModule } from 'igniteui-react';
+import { IgrAvatar, IgrIconButton, IgrRipple } from 'igniteui-react';
 import { IgrCellTemplateContext, IgrColumn, IgrGridToolbar, IgrGridToolbarActions, IgrGridToolbarExporter, IgrGridToolbarHiding, IgrGridToolbarPinning, IgrGridToolbarTitle, IgrTreeGrid, IgrTreeGridModule } from 'igniteui-react-grids';
 import { useGetTable1List as hRDataUseGetTable1List } from '../hooks/hrdata-hooks';
 import 'igniteui-react-grids/grids/combined.js';
@@ -79,14 +79,14 @@ export default function OrgChartHRPortal() {
               <span key={uuid()}>HR Portal</span>
             </IgrGridToolbarTitle>
           </IgrGridToolbar>
-          <IgrColumn field="ID" dataType="number" header="ID" hidden="true" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Name" dataType="string" header="Name" width="300px" pinned="true" sortable="true" bodyTemplate={columnBodyTemplate} selectable="false"></IgrColumn>
-          <IgrColumn field="JobTitle" dataType="string" header="Job Title" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Department" dataType="string" header="Department" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="Location" dataType="string" header="Location" sortable="true" bodyTemplate={columnBodyTemplate1} selectable="false"></IgrColumn>
-          <IgrColumn field="Contacts" dataType="string" header="Contacts" sortable="true" bodyTemplate={columnBodyTemplate2} selectable="false"></IgrColumn>
-          <IgrColumn field="HireDate" dataType="date" header="HireDate" sortable="true" selectable="false"></IgrColumn>
-          <IgrColumn field="GrossSalary" dataType="number" header="GrossSalary" sortable="true" selectable="false"></IgrColumn>
+          <IgrColumn field="ID" dataType="number" header="ID" hidden={true} sortable={true} selectable={false}></IgrColumn>
+          <IgrColumn field="Name" dataType="string" header="Name" width="300px" pinned={true} sortable={true} bodyTemplate={columnBodyTemplate} selectable={false}></IgrColumn>
+          <IgrColumn field="JobTitle" dataType="string" header="Job Title" sortable={true} selectable={false}></IgrColumn>
+          <IgrColumn field="Department" dataType="string" header="Department" sortable={true} selectable={false}></IgrColumn>
+          <IgrColumn field="Location" dataType="string" header="Location" sortable={true} bodyTemplate={columnBodyTemplate1} selectable={false}></IgrColumn>
+          <IgrColumn field="Contacts" dataType="string" header="Contacts" sortable={true} bodyTemplate={columnBodyTemplate2} selectable={false}></IgrColumn>
+          <IgrColumn field="HireDate" dataType="date" header="HireDate" sortable={true} selectable={false}></IgrColumn>
+          <IgrColumn field="GrossSalary" dataType="number" header="GrossSalary" sortable={true} selectable={false}></IgrColumn>
         </IgrTreeGrid>
       </div>
     </>
