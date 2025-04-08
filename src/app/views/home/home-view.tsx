@@ -19,11 +19,12 @@ interface TabItemProps {
   tabInfo?: TabInfo,
 }
 
+/* eslint-disable */
+
 export function TabItem({isActive, tabInfo}: TabItemProps) {
 
   function onLinkClick(event: any) {
-    const targetHTML = event.currentTarget as HTMLAnchorElement;
-    window.open(targetHTML.href, "_blank")?.focus();
+    window.open(tabInfo?.moreLink, "_blank")?.focus();
     event.preventDefault();
     event.stopPropagation();
   }
@@ -46,7 +47,7 @@ export function TabItem({isActive, tabInfo}: TabItemProps) {
           <span>{tabInfo?.content}</span>
         </div>
         <div className="tab-actions">
-          <a className={"learn-text" + (!isActive ? " link--disabled" : "" )} href={tabInfo?.moreLink} onClick={onLinkClick}>Learn more</a>
+          <span className={"learn-text" + (!isActive ? " link--disabled" : "" )} onClick={onLinkClick}>Learn more</span>
           <div className="tooltip">
             <IgrIconButton className={"button" + (isActive ? "--enabled" : "--disabled")} onClick={onDownloadClick}>
                 <IgrRipple key='downloadRipple'></IgrRipple>
@@ -128,9 +129,9 @@ export default function HomeView() {
     <div className="demo-container">
       <div className="tab-container ">
         {['inventory', 'hr-portal', 'finance', 'sales', 'fleet'].map(tabName =>
-          <NavLink to={`/home/${tabName}`}>
+          <NavLink key={tabName} to={`/home/${tabName}`}>
             {({ isActive }) => (
-              <TabItem key={tabName} isActive={isActive} tabInfo={tabInfo.get(tabName)}/>
+              <TabItem  isActive={isActive} tabInfo={tabInfo.get(tabName)}/>
             )}
           </NavLink>
         )}

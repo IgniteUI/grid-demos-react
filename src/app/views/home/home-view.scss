@@ -129,7 +129,14 @@
     }
   }
 
-  a {
+  .learn-text {
+    text-decoration: none;
+    color: var(--ig-primary-500);
+    font-size: 14px;
+    font-weight: 700;
+    font-family: "aktiv-grotesk", sans-serif;
+    line-height: 20px;
+
     width: unset;
     padding-bottom: 2px;
     transition: background-size 350ms;
@@ -152,15 +159,6 @@
       }
     }
   }
-}
-
-.learn-text {
-  text-decoration: none;
-  color: var(--ig-primary-500);
-  font-size: 14px;
-  font-weight: 700;
-  font-family: "aktiv-grotesk", sans-serif;
-  line-height: 20px;
 }
 
 .tooltip {
