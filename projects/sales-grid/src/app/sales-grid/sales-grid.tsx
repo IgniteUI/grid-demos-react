@@ -13,7 +13,6 @@ import {
 } from 'igniteui-react-grids';
 import { SalesDataService } from '../services/data.service';
 
-import 'igniteui-react-grids/grids/themes/light/indigo.css';
 import './sales-grid.scss';
 
 import ARROW_DOWN_SVG from "../data/icons/arrow_drop_down.svg";
@@ -28,7 +27,7 @@ enum PivotViews {
   Stores = 'stores'
 }
 
-export class IgrSaleProfitAggregate {
+class IgrSaleProfitAggregate {
   public static totalProfit = (_: any, data: any[] | undefined) =>
     data?.reduce((accumulator, value) => accumulator + (value.Sale - value.Cost), 0) || 0;
 
@@ -66,7 +65,7 @@ export class IgrSaleProfitAggregate {
   };
 }
 
-export default function MasterView() {
+export default function SalesGrid() {
   const [viewDropdown, setViewDropdown] = useState<IgrDropdown>();
   function viewDropdownRef(ref: IgrDropdown) {
     setViewDropdown(ref);

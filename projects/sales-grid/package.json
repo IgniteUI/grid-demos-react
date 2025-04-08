@@ -27,7 +27,8 @@
     "jsdom": "^22.1.0",
     "sass": "^1.86.3",
     "typescript": "~5.7.2",
-    "vite": "^6.2.5"
+    "vite": "^6.2.5",
+    "vitest-canvas-mock": "^0.3.3"
   },
   "scripts": {
     "start": "vite",

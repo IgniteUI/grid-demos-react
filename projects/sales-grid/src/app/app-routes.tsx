@@ -1,7 +1,7 @@
-import { redirect } from 'react-router-dom';
+import { redirect, RouteObject } from 'react-router-dom';
 import SalesGrid from './sales-grid/sales-grid';
 
-export const routes = [
+export const routes: RouteObject[] = [
   { index: true, loader: () => redirect('sales-grid') },
-  { path: 'sales-grid', element: <SalesGrid />, text: 'sales-grid' }
+  { path: 'sales-grid', element: <SalesGrid /> }
 ];

@@ -1,6 +1,4 @@
-# untitled-app (2)
-
-This project was generated with [App Builder Code Gen](https://www.appbuilder.dev/platform).
+# Sales Grid App
 
 ## Development server
 
