@@ -6,7 +6,7 @@ import createClassTransformer from '../../style-utils';
 import styles from './hr-portal-view.module.css';
 import lightFluent from 'igniteui-react-grids/grids/themes/light/fluent.css?inline';
 
-export default function HrPortalView() {
+function HRPortalGrid() {
   const classes = createClassTransformer(styles);
   const uuid = () => crypto.randomUUID();
   const { hRDataTable1 } = hRDataUseGetTable1List();
@@ -62,32 +62,40 @@ export default function HrPortalView() {
   }
 
   return (
+    <div className={classes("row-layout org-charthr-portal-container")}>
+      <IgrTreeGrid data={hRDataTable1} primaryKey="ID" childDataKey="Employees" rowSelection="multiple" allowFiltering={true} filterMode="excelStyleFilter" className={classes("ig-typography ig-scrollbar tree-grid")} key={uuid()}>
+        <IgrGridToolbar>
+          <IgrGridToolbarActions>
+            <IgrGridToolbarPinning></IgrGridToolbarPinning>
+            <IgrGridToolbarHiding></IgrGridToolbarHiding>
+            <IgrGridToolbarExporter></IgrGridToolbarExporter>
+          </IgrGridToolbarActions>
+          <IgrGridToolbarTitle>
+            <span key={uuid()}>HR Portal</span>
+          </IgrGridToolbarTitle>
+        </IgrGridToolbar>
+        <IgrColumn field="ID" dataType="number" header="ID" hidden={true} sortable={true} selectable={false}></IgrColumn>
+        <IgrColumn field="Name" dataType="string" header="Name" width="300px" pinned={true} sortable={true} bodyTemplate={columnBodyTemplate} selectable={false}></IgrColumn>
+        <IgrColumn field="JobTitle" dataType="string" header="Job Title" sortable={true} selectable={false}></IgrColumn>
+        <IgrColumn field="Department" dataType="string" header="Department" sortable={true} selectable={false}></IgrColumn>
+        <IgrColumn field="Location" dataType="string" header="Location" sortable={true} bodyTemplate={columnBodyTemplate1} selectable={false}></IgrColumn>
+        <IgrColumn field="Contacts" dataType="string" header="Contacts" sortable={true} bodyTemplate={columnBodyTemplate2} selectable={false}></IgrColumn>
+        <IgrColumn field="HireDate" dataType="date" header="HireDate" sortable={true} selectable={false}></IgrColumn>
+        <IgrColumn field="GrossSalary" dataType="number" header="GrossSalary" sortable={true} selectable={false}></IgrColumn>
+      </IgrTreeGrid>
+    </div>
+  );
+}
+
+export default function HRPortalView() {
+  const classes = createClassTransformer(styles);
+
+  return (
     <>
       <style>
         {lightFluent}
       </style>
-      <div className={classes("row-layout org-charthr-portal-container")}>
-        <IgrTreeGrid data={hRDataTable1} primaryKey="ID" childDataKey="Employees" rowSelection="multiple" allowFiltering={true} filterMode="excelStyleFilter" className={classes("ig-typography ig-scrollbar tree-grid")} key={uuid()}>
-          <IgrGridToolbar>
-            <IgrGridToolbarActions>
-              <IgrGridToolbarPinning></IgrGridToolbarPinning>
-              <IgrGridToolbarHiding></IgrGridToolbarHiding>
-              <IgrGridToolbarExporter></IgrGridToolbarExporter>
-            </IgrGridToolbarActions>
-            <IgrGridToolbarTitle>
-              <span key={uuid()}>HR Portal</span>
-            </IgrGridToolbarTitle>
-          </IgrGridToolbar>
-          <IgrColumn field="ID" dataType="number" header="ID" hidden={true} sortable={true} selectable={false}></IgrColumn>
-          <IgrColumn field="Name" dataType="string" header="Name" width="300px" pinned={true} sortable={true} bodyTemplate={columnBodyTemplate} selectable={false}></IgrColumn>
-          <IgrColumn field="JobTitle" dataType="string" header="Job Title" sortable={true} selectable={false}></IgrColumn>
-          <IgrColumn field="Department" dataType="string" header="Department" sortable={true} selectable={false}></IgrColumn>
-          <IgrColumn field="Location" dataType="string" header="Location" sortable={true} bodyTemplate={columnBodyTemplate1} selectable={false}></IgrColumn>
-          <IgrColumn field="Contacts" dataType="string" header="Contacts" sortable={true} bodyTemplate={columnBodyTemplate2} selectable={false}></IgrColumn>
-          <IgrColumn field="HireDate" dataType="date" header="HireDate" sortable={true} selectable={false}></IgrColumn>
-          <IgrColumn field="GrossSalary" dataType="number" header="GrossSalary" sortable={true} selectable={false}></IgrColumn>
-        </IgrTreeGrid>
-      </div>
+      <HRPortalGrid />
     </>
   );
 }
