@@ -1,16 +1,20 @@
 import { IgrColumn, IgrGrid, IgrGridToolbar, IgrGridToolbarActions, IgrGridToolbarExporter, IgrGridToolbarHiding, IgrGridToolbarPinning, IgrGridToolbarTitle } from 'igniteui-react-grids';
-import { useGetTable1List as vehiclesUseGetTable1List } from '../hooks/vehicles-hooks';
-import createClassTransformer from '../style-utils';
+import { useGetTable1List as vehiclesUseGetTable1List } from '../../hooks/vehicles-hooks';
+import createClassTransformer from '../../style-utils';
 
-IgrGridModule.register();
+import styles from './fleet-management-view.module.css';
+import darkMaterial from 'igniteui-react-grids/grids/themes/dark/material.css?inline';
 
-export default function FleetManagement() {
+export default function FleetManagementView() {
   const classes = createClassTransformer(styles);
   const uuid = () => crypto.randomUUID();
   const { vehiclesTable1 } = vehiclesUseGetTable1List();
 
   return (
     <>
+      <style>
+        {darkMaterial}
+      </style>
       <div className={classes("row-layout fleet-management-container")}>
         <IgrGrid data={vehiclesTable1} primaryKey="vehicleId" className={classes("ig-typography ig-scrollbar grid")}>
           <IgrGridToolbar>

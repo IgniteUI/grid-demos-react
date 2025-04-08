@@ -1,6 +1,6 @@
 import { expect, test, vi } from 'vitest';
 import { render } from '@testing-library/react';
-import FinancialPortfolio from './financial-portfolio';
+import FinancialPortfolio from './finance-view';
 import 'element-internals-polyfill';
 
 // Mock API response

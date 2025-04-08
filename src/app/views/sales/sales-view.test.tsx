@@ -1,6 +1,6 @@
 import { expect, test, vi } from 'vitest';
 import { render } from '@testing-library/react';
-import FleetManagement from './fleet-management';
+import SalesDashboard from './sales-view';
 import 'element-internals-polyfill';
 
 // Mock API response
@@ -9,7 +9,7 @@ const mockResponse = {
 };
 global.fetch = vi.fn().mockResolvedValue(mockResponse);
 
-test('renders FleetManagement component', () => {
-  const wrapper = render(<FleetManagement />);
+test('renders SalesDashboard component', () => {
+  const wrapper = render(<SalesDashboard />);
   expect(wrapper).toBeTruthy();
 });

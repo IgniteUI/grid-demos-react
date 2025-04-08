@@ -1,6 +1,6 @@
 import { expect, test, vi } from 'vitest';
 import { render } from '@testing-library/react';
-import OrgChartHRPortal from './org-chart-hr-portal';
+import ERPInventory from './erp-hgrid-view';
 import 'element-internals-polyfill';
 
 // Mock API response
@@ -9,7 +9,7 @@ const mockResponse = {
 };
 global.fetch = vi.fn().mockResolvedValue(mockResponse);
 
-test('renders OrgChartHRPortal component', () => {
-  const wrapper = render(<OrgChartHRPortal />);
+test('renders ERPInventory component', () => {
+  const wrapper = render(<ERPInventory />);
   expect(wrapper).toBeTruthy();
 });

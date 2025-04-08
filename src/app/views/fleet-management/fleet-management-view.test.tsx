@@ -1,6 +1,6 @@
 import { expect, test, vi } from 'vitest';
 import { render } from '@testing-library/react';
-import ERPInventory from './erpinventory';
+import FleetManagement from './fleet-management-view';
 import 'element-internals-polyfill';
 
 // Mock API response
@@ -9,7 +9,7 @@ const mockResponse = {
 };
 global.fetch = vi.fn().mockResolvedValue(mockResponse);
 
-test('renders ERPInventory component', () => {
-  const wrapper = render(<ERPInventory />);
+test('renders FleetManagement component', () => {
+  const wrapper = render(<FleetManagement />);
   expect(wrapper).toBeTruthy();
 });

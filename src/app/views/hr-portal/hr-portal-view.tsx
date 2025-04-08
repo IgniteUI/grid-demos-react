@@ -1,16 +1,12 @@
 import { IgrAvatar, IgrIconButton, IgrRipple } from 'igniteui-react';
-import { IgrCellTemplateContext, IgrColumn, IgrGridToolbar, IgrGridToolbarActions, IgrGridToolbarExporter, IgrGridToolbarHiding, IgrGridToolbarPinning, IgrGridToolbarTitle, IgrTreeGrid, IgrTreeGridModule } from 'igniteui-react-grids';
-import { useGetTable1List as hRDataUseGetTable1List } from '../hooks/hrdata-hooks';
-import 'igniteui-react-grids/grids/combined.js';
-import styles from './org-chart-hr-portal.module.css';
-import createClassTransformer from '../style-utils';
+import { IgrCellTemplateContext, IgrColumn, IgrGridToolbar, IgrGridToolbarActions, IgrGridToolbarExporter, IgrGridToolbarHiding, IgrGridToolbarPinning, IgrGridToolbarTitle, IgrTreeGrid } from 'igniteui-react-grids';
+import { useGetTable1List as hRDataUseGetTable1List } from '../../hooks/hrdata-hooks';
+import createClassTransformer from '../../style-utils';
 
-IgrAvatarModule.register();
-IgrIconButtonModule.register();
-IgrRippleModule.register();
-IgrTreeGridModule.register();
+import styles from './hr-portal-view.module.css';
+import lightFluent from 'igniteui-react-grids/grids/themes/light/fluent.css?inline';
 
-export default function OrgChartHRPortal() {
+export default function HrPortalView() {
   const classes = createClassTransformer(styles);
   const uuid = () => crypto.randomUUID();
   const { hRDataTable1 } = hRDataUseGetTable1List();
@@ -67,8 +63,11 @@ export default function OrgChartHRPortal() {
 
   return (
     <>
+      <style>
+        {lightFluent}
+      </style>
       <div className={classes("row-layout org-charthr-portal-container")}>
-        <IgrTreeGrid data={hRDataTable1} primaryKey="ID" childDataKey="Employees" rowSelection="multiple" allowFiltering="true" filterMode="excelStyleFilter" className={classes("ig-typography ig-scrollbar tree-grid")} key={uuid()}>
+        <IgrTreeGrid data={hRDataTable1} primaryKey="ID" childDataKey="Employees" rowSelection="multiple" allowFiltering={true} filterMode="excelStyleFilter" className={classes("ig-typography ig-scrollbar tree-grid")} key={uuid()}>
           <IgrGridToolbar>
             <IgrGridToolbarActions>
               <IgrGridToolbarPinning></IgrGridToolbarPinning>

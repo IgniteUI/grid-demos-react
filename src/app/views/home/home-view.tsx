@@ -1,10 +1,10 @@
-import { useEffect } from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
 import { IgrChip, IgrIcon, IgrIconButton, IgrRipple, registerIcon } from 'igniteui-react';
 import 'igniteui-react-grids/grids/themes/light/material.css';
 import './home-view.scss';
 
-import FILE_DOWNLOAD from '../data/icons/file_download.svg';
+import FILE_DOWNLOAD from '../../data/icons/file_download.svg';
 
 export interface TabInfo {
   title: string;
@@ -113,10 +113,16 @@ export default function HomeView() {
       },
     ],
   ]);
+  const location = useLocation();
+  const [gridView, setGridView] = useState("/inventory")
 
   useEffect(() => {
     registerIcon("file_download", FILE_DOWNLOAD, "custom");
   }, []);
+
+  useEffect(() => {
+    setGridView(location.pathname.replace("/home", ""));
+  }, [location]);
 
   return (
     <div className="demo-container">
@@ -130,7 +136,7 @@ export default function HomeView() {
         )}
       </div>
       <div className="router-container">
-        <Outlet></Outlet>
+        <iframe src={gridView} height='100%' width='100%' style={{ border: 0 }}/>
       </div>
     </div>
   );

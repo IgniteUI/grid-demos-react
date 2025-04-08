@@ -1,11 +1,11 @@
 import { IgrCellTemplateContext, IgrColumn, IgrGridToolbar, IgrGridToolbarActions, IgrGridToolbarExporter, IgrGridToolbarHiding, IgrGridToolbarPinning, IgrGridToolbarTitle, IgrHierarchicalGrid, IgrRowIsland } from 'igniteui-react-grids';
 import { IgrRating } from 'igniteui-react';
-import { useGetTable1List as eRPProductsUseGetTable1List } from '../hooks/erpproducts-hooks';
+import { useGetTable1List as eRPProductsUseGetTable1List } from '../../hooks/erpproducts-hooks';
 
-import styles from './erpinventory.module.css';
-import createClassTransformer from '../style-utils';
+import styles from './erp-hgrid-view.module.css';
+import createClassTransformer from '../../style-utils';
 
-export default function ERPInventory() {
+export default function ERPHGridView() {
   const classes = createClassTransformer(styles);
   const uuid = () => crypto.randomUUID();
   const { eRPProductsTable1 } = eRPProductsUseGetTable1List();

@@ -1,12 +1,12 @@
 import { IgrAvatar } from 'igniteui-react';
 import { IgrCellTemplateContext, IgrColumn, IgrGrid, IgrGridToolbar, IgrGridToolbarActions, IgrGridToolbarExporter, IgrGridToolbarHiding, IgrGridToolbarPinning, IgrGridToolbarTitle } from 'igniteui-react-grids';
-import { useGetTable1List as financeUseGetTable1List } from '../hooks/finance-hooks';
-import createClassTransformer from '../style-utils';
+import { useGetTable1List as financeUseGetTable1List } from '../../hooks/finance-hooks';
+import createClassTransformer from '../../style-utils';
 
-IgrAvatarModule.register();
-IgrGridModule.register();
+import styles from './finance-view.module.css';
+import lightBootstrap from 'igniteui-react-grids/grids/themes/light/bootstrap.css?inline';
 
-export default function FinancialPortfolio() {
+export default function FinanceView() {
   const classes = createClassTransformer(styles);
   const uuid = () => crypto.randomUUID();
   const { financeTable1 } = financeUseGetTable1List();
@@ -37,6 +37,9 @@ export default function FinancialPortfolio() {
 
   return (
     <>
+      <style>
+        {lightBootstrap}
+      </style>
       <div className={classes("row-layout financial-portfolio-container")}>
         <IgrGrid data={financeTable1} primaryKey="id" rowSelection="multiple" className={classes("ig-typography ig-scrollbar grid")} key={uuid()}>
           <IgrGridToolbar>

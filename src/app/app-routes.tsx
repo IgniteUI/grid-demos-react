@@ -1,26 +1,26 @@
 import { redirect, RouteObject } from 'react-router-dom';
-import ERPInventory from './erpinventory/erpinventory';
-import OrgChartHRPortal from './org-chart-hr-portal/org-chart-hr-portal';
-import FinancialPortfolio from './financial-portfolio/financial-portfolio';
-import SalesDashboard from './sales-dashboard/sales-dashboard';
-import FleetManagement from './fleet-management/fleet-management';
-import HomeView from './home-view/home-view';
+import ErpHGridView from './views/erp-hgrid/erp-hgrid-view';
+import HRPortalView from './views/hr-portal/hr-portal-view';
+import FinanceView from './views/finance/finance-view';
+import SalesView from './views/sales/sales-view';
+import FleetManagementView from './views/fleet-management/fleet-management-view';
+import HomeView from './views/home/home-view';
 
 export const routes: RouteObject[] = [
   { index: true, loader: () => redirect('home') },
   { path: 'home', element: <HomeView />,
     children: [
       { index: true, loader: () => redirect('inventory') },
-      { path: 'inventory', element: <ERPInventory /> },
-      { path: 'hr-portal', element: <OrgChartHRPortal /> },
-      { path: 'finance', element: <FinancialPortfolio />},
-      { path: 'sales', element: <SalesDashboard /> },
-      { path: 'fleet', element: <FleetManagement /> },
+      { path: 'inventory', element: <ErpHGridView /> },
+      { path: 'hr-portal', element: <HRPortalView /> },
+      { path: 'finance', element: <FinanceView />},
+      { path: 'sales', element: <SalesView /> },
+      { path: 'fleet', element: <FleetManagementView /> },
     ]
   },
-  { path: 'inventory', element: <ERPInventory /> },
-  { path: 'hr-portal', element: <OrgChartHRPortal /> },
-  { path: 'finance', element: <FinancialPortfolio />},
-  { path: 'sales', element: <SalesDashboard /> },
-  { path: 'fleet', element: <FleetManagement /> },
+  { path: 'inventory', element: <ErpHGridView /> },
+  { path: 'hr-portal', element: <HRPortalView /> },
+  { path: 'finance', element: <FinanceView />},
+  { path: 'sales', element: <SalesView /> },
+  { path: 'fleet', element: <FleetManagementView /> },
 ];
