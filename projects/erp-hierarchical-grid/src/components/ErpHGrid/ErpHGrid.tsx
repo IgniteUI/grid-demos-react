@@ -1,0 +1,367 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { useState, useEffect } from "react";
+import {
+  IgrHierarchicalGrid,
+  IgrColumn,
+  IgrRowIsland,
+  IgrGridToolbar,
+  IgrGridToolbarTitle,
+  IgrGridToolbarActions,
+  IgrGridToolbarHiding,
+  IgrGridToolbarPinning,
+  IgrGridToolbarExporter,
+  IgrGridToolbarAdvancedFiltering,
+  GridSelectionMode,
+  IgrCellTemplateContext,
+  IgrColumnGroup,
+} from "igniteui-react-grids";
+
+import { IgrBadge, IgrIcon, IgrRating, registerIcon } from "igniteui-react";
+import "igniteui-react-grids/grids/themes/light/material.css";
+import { erpDataService } from "../../services/ErpDataService";
+
+import BILL_PAID from "../../assets/icons/bill_paid.svg";
+import CHECK from "../../assets/icons/check.svg";
+import DELIVERY from "../../assets/icons/delivery.svg";
+import DROPBOX from "../../assets/icons/dropbox.svg";
+import './ErpHGrid.scss';
+import { BadgeVariant } from "../../models/BadgeVariant";
+import { OrderStatus } from "../../models/OrderStatus";
+import { DataPoint } from "../../models/DataPoint";
+import { MyChart } from "../SalesTrendChart/SalesTrendChart";
+
+
+const ErpHGrid = () => {
+  const [data, setData] = useState<any[]>([]);
+  const [selectionMode, setSelectionMode] = useState<GridSelectionMode>("multiple");
+
+  useEffect(() => {
+
+    erpDataService.getErpData().then(data => {
+      setData(data);
+    });
+
+    // Icons
+    registerIcon("dropbox", DROPBOX, "material");
+    registerIcon("delivery", DELIVERY, "material");
+    registerIcon("bill-paid", BILL_PAID, "material");
+    registerIcon("check", CHECK, "material");
+
+  }, []);
+
+  // TEMPLATES
+  const imageTemplate = (props: {dataContext: IgrCellTemplateContext}) => {
+    const imageUrl = props.dataContext.cell.value;
+    return (
+      <div id="image-container">
+        <img
+          id="imageElement"
+          src={imageUrl}
+          alt="Product"
+          style={{
+            height: '22px',
+            width: '22px'
+          }}/>
+      </div>
+      );
+  }
+
+  const ratingTemplate = (ctx: { dataContext: IgrCellTemplateContext }) => {
+    const rating: number = ctx.dataContext.cell.value;
+    // className={classes("rating")}
+    return (
+      <>
+        <IgrRating value={rating} ></IgrRating>
+        {/* <IgrRating></IgrRating> */}
+        {/* <div>Rating = {rating} </div> */}
+      </>
+    )
+  }
+
+  const salesTrendsChartTemplate = (ctx: IgrCellTemplateContext) => {
+    const trendData: DataPoint[] = ctx.cell.value;
+
+    if (!trendData || trendData.length === 0) {
+      return (<span>No data</span>);
+    }
+
+    return (
+      <MyChart trendData={trendData}></MyChart>
+    );
+  };
+
+  /* RowIsland */
+  const rowIslandToolbarTemplate = () => {
+    return (
+      <IgrGridToolbar>
+        <IgrGridToolbarTitle>Sales data for the last month</IgrGridToolbarTitle>
+      </IgrGridToolbar>
+    );
+  }
+
+  const getOrderStatusBadgeVariant = (status: string): BadgeVariant => {
+    switch (status) {
+        case OrderStatus.PACKED:
+            return "primary";
+        case OrderStatus.IN_TRANSIT:
+          return "warning";
+        case OrderStatus.CUSTOMS:
+          return "danger";
+        case OrderStatus.DELIVERED:
+          return "success";
+        default:
+            return "primary";
+    }
+  };
+
+  const getOrderStatusIconName = (status: string): string => {
+    switch (status) {
+        case OrderStatus.PACKED:
+            return "dropbox";
+        case OrderStatus.IN_TRANSIT:
+          return "delivery";
+        case OrderStatus.CUSTOMS:
+          return "bill-paid";
+        case OrderStatus.DELIVERED:
+          return "check";
+        default:
+            return "dropbox";
+    }
+  };
+
+  const statusTemplate = (ctx: IgrCellTemplateContext) => {
+    const cellValue: string = ctx.cell.value;
+    const badgeVariant: BadgeVariant = getOrderStatusBadgeVariant(cellValue);
+    const iconName: string = getOrderStatusIconName(cellValue);
+
+    return (
+      <div className="status-cell">
+          <span>
+          <IgrBadge
+            variant={badgeVariant}
+            shape="rounded">
+            <IgrIcon name={iconName} collection="material" className="custom-icon"></IgrIcon>
+          </IgrBadge>
+          </span>
+          <span>{cellValue}</span>
+      </div>
+    );
+  };
+
+  const countryTemplate = (ctx: IgrCellTemplateContext) => {
+    const cellValue: string = ctx.cell.value;
+    const flagPath: string = `country-flags/${cellValue}.svg`;
+
+    return (
+      <div className="country-cell">
+          <span className="cup">
+              <img src={flagPath}/>
+          </span>
+          <span>${cellValue}</span>
+      </div>
+    );
+  };
+
+  // FORMATTERS
+  const formatNumberAsIs = (value: number): number => {
+    // Bypassing the default formatting of larger numbers
+    // Example for 4-digit numbers: 1,234 => 1234
+    return value;
+  }
+
+  const formatDate = (value: string): string => {
+    return value || 'N/A';
+  }
+
+  const formatAddress = (value: any): string =>  {
+    return `${value.streetName} ${value.streetNumber}`;
+  }
+
+  const formatFullAddress = (value: any): string => {
+    return `${value.streetNumber} ${value.streetName}, ${value.zipCode} ${value.city}, ${value.country}`;
+  }
+
+  return (
+    <div className="wrapper">
+      <IgrHierarchicalGrid
+        id="hierarchicalGrid"
+        data={data}
+        autoGenerate={false}
+        allowFiltering={true}
+        allowAdvancedFiltering={true}
+        primaryKey="sku"
+        moving={true}
+        rowSelection={selectionMode}
+        width="100%"
+        height="100%"
+      >
+        {/* Grid Toolbar */}
+        <IgrGridToolbar>
+          <IgrGridToolbarTitle>Inventory</IgrGridToolbarTitle>
+          <IgrGridToolbarActions>
+            <IgrGridToolbarHiding />
+            <IgrGridToolbarPinning />
+            <IgrGridToolbarExporter exportExcel={true} exportCSV={true} />
+            <IgrGridToolbarAdvancedFiltering />
+          </IgrGridToolbarActions>
+        </IgrGridToolbar>
+
+        {/* Columns */}
+        <IgrColumn field="sku" header="SKU" sortable={true} dataType="string" />
+        <IgrColumn
+            field="imageUrl"
+            header="Image"
+            bodyTemplate={imageTemplate}
+            filterable={false}
+            dataType="image"
+            width="5%" >
+        </IgrColumn>
+        <IgrColumn field="productName" header="Product Name" dataType="string" sortable={true} width="12%" />
+        <IgrColumn field="category" header="Category" dataType="string" sortable={true} />
+        <IgrColumn
+          field="rating"
+          dataType="number"
+          header="Rating"
+          sortable={true}
+          bodyTemplate={ratingTemplate}
+          selectable={false}>
+        </IgrColumn>
+        <IgrColumn field="unitsSold" header="Sold Units Last Month" dataType="number" sortable={true} width="10%" />
+
+        <IgrColumn
+          field="salesTrendData"
+          header="Monthly Sales Trends"
+          width="15%"
+          filterable={false}
+          bodyTemplate={salesTrendsChartTemplate} />
+
+        <IgrColumn field="grossPrice" header="Net Price" dataType="currency" sortable={true} width="7%"/>
+        <IgrColumn field="netPrice" header="Gross Price" dataType="currency" sortable={true} width="7%"/>
+        <IgrColumn field="totalNetProfit" header="Net Profit" dataType="currency" sortable={true} width="7%"/>
+
+        {/* Row Island (Orders) */}
+        <IgrRowIsland childDataKey="orders" autoGenerate={false} allowFiltering={true} toolbarTemplate={rowIslandToolbarTemplate}>
+          <IgrGridToolbar>
+            <IgrGridToolbarTitle>Sales data for the last month</IgrGridToolbarTitle>
+          </IgrGridToolbar>
+
+          <IgrColumn
+            field="orderId"
+            header="Order ID"
+            dataType="number"
+            width="7%"
+            formatter={formatNumberAsIs}>
+          </IgrColumn>
+          <IgrColumn
+            field="status"
+            header="Status"
+            width="11%"
+            bodyTemplate={statusTemplate}>
+          </IgrColumn>
+
+          <IgrColumnGroup header="Delivery Info" collapsible={true}>
+
+          {/* Show this column when collapsed */}
+            <IgrColumn
+              field="delivery.dateOrdered"
+              header="Date Ordered"
+              dataType="date"
+              width="12%"
+              sortable={true}
+              resizable={true}
+              visibleWhenCollapsed={true}
+              formatter={formatDate} />
+
+            {/* Show next 3 columns when expanded */}
+            <IgrColumn
+              field="delivery.dateOrdered"
+              header="Date Ordered"
+              dataType="date"
+              width="12%"
+              sortable={true}
+              resizable={true}
+              visibleWhenCollapsed={false}
+              formatter={formatDate} />
+
+            <IgrColumn
+              field="delivery.dateShipped"
+              header="Date Shipped"
+              dataType="date"
+              width="12%"
+              sortable={true}
+              resizable={true}
+              visibleWhenCollapsed={false}
+              formatter={formatDate} />
+
+            <IgrColumn
+              field="delivery.dateDelivered"
+              header="Date Delivered"
+              dataType="date"
+              width="12%"
+              sortable={true}
+              resizable={true}
+              visibleWhenCollapsed={false}
+              formatter={formatDate} />
+
+          </IgrColumnGroup>
+
+          <IgrColumnGroup header="Order Information" collapsible={true}>
+
+          {/* Show next 4 columns when expanded */}
+          <IgrColumn
+            field="orderInformation.country"
+            header="Country"
+            width="12%"
+            sortable={true}
+            visibleWhenCollapsed={false}
+            bodyTemplate={countryTemplate} />
+
+          <IgrColumn
+            field="orderInformation.city"
+            header="City"
+            dataType="string"
+            width="13%"
+            sortable={true}
+            resizable={true}
+            visibleWhenCollapsed={false} />
+
+          <IgrColumn
+            field="orderInformation.zipCode"
+            header="Zip Code"
+            dataType="number"
+            width="9%"
+            sortable={true}
+            resizable={true}
+            formatter={formatNumberAsIs}
+            visibleWhenCollapsed={false} />
+
+          <IgrColumn
+            field="orderInformation"
+            header="Address"
+            dataType="string"
+            sortable={true}
+            resizable={true}
+            visibleWhenCollapsed={false}
+            formatter={formatAddress}/>
+            {/* filters={shortAddressFilteringOperand} /> */}
+
+          {/* Collapsed view column */}
+          <IgrColumn
+            field="orderInformation"
+            header="Address"
+            dataType="string"
+            sortable={true}
+            resizable={true}
+            visibleWhenCollapsed={true}
+            formatter={formatFullAddress}/>
+            {/* filters={fullAddressFilteringOperand} /> */}
+
+        </IgrColumnGroup>
+        </IgrRowIsland>
+      </IgrHierarchicalGrid>
+    </div>
+  );
+};
+
+export default ErpHGrid;
+
