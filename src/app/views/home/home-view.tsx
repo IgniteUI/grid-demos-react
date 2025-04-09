@@ -115,14 +115,14 @@ export default function HomeView() {
     ],
   ]);
   const location = useLocation();
-  const [gridView, setGridView] = useState("/inventory")
+  const [gridView, setGridView] = useState("inventory");
 
   useEffect(() => {
     registerIcon("file_download", FILE_DOWNLOAD, "custom");
   }, []);
 
   useEffect(() => {
-    setGridView(location.pathname.replace("/home", ""));
+    setGridView(location.pathname.replace("/home/", ""));
   }, [location]);
 
   return (
@@ -137,7 +137,7 @@ export default function HomeView() {
         )}
       </div>
       <div className="router-container">
-        <iframe src={gridView} height='100%' width='100%' style={{ border: 0 }}/>
+        <iframe src={import.meta.env.BASE_URL+ gridView} height='100%' width='100%' style={{ border: 0 }}/>
       </div>
     </div>
   );
