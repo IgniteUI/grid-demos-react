@@ -98,7 +98,6 @@ export default function HRPortal() {
   }, []);
 
   return (
-    <div className="rootDiv ig-typography">
     <IgrTreeGrid
       id="treeGrid"
       autoGenerate={false}
@@ -141,7 +140,6 @@ export default function HRPortal() {
       <IgrColumn field="HireDate" header="Hire Date" dataType="date" minWidth="100px" sortable={true} bodyTemplate={dateTemplate} />
       <IgrColumn field="GrossSalary" header="Gross Salary" dataType="currency" minWidth="100px" sortable={true} />
     </IgrTreeGrid>
-    </div>
   );
 };
 
