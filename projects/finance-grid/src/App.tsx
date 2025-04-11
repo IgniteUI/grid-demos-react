@@ -29,7 +29,7 @@ function FinanceGrid() {
   const updateTimerInMs = 3000;
   const [financeData, setFinanceData] = useState([]);
   const gridRef = useRef<IgrGrid>(null);
-  const intervalRef = useRef<ReturnType<typeof setInterval>>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   useEffect(() => {
     registerIconFromText("trending_up", TRENDING_UP, "material");
     registerIconFromText("trending_down", TRENDING_DOWN, "material");
