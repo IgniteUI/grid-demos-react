@@ -1,6 +1,6 @@
 /// <reference types="vitest" />
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 // https://vitejs.dev/config/
@@ -14,24 +14,12 @@ export default defineConfig({
     viteStaticCopy({
       targets: [
         {
-          src: './projects/finance-grid/public/*',
-          dest: '',
-        },
-      ],
-    }),
+          src: './projects/sales-grid/public/*',
+          dest: 'public',
+        }
+      ]
+    })
   ],
-  test: {
-    globals: true,
-    environment: 'jsdom',
-    setupFiles: ['./src/setupTests.ts'],
-    deps: {
-      optimizer: {
-        web: {
-          include: ['vitest-canvas-mock'],
-        },
-      },
-    },
-  },
   resolve: {
     mainFields: ['module'],
   },
