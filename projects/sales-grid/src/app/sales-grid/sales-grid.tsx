@@ -210,8 +210,7 @@ export default function SalesGrid() {
       {
         enabled: true,
         memberName: 'Brand',
-        displayName: 'Brand',
-        filter: brandFilter
+        displayName: 'Brand'
       },
       {
         enabled: false,
@@ -234,6 +233,14 @@ export default function SalesGrid() {
     values: [
       saleValue,
       profitValue
+    ],
+    filters: [
+      {
+        enabled: true,
+        memberName: 'Brand',
+        displayName: 'Brand',
+        filter: brandFilter
+      },
     ]
   };
   const pivotConfigBrandsCombined: IgrPivotConfiguration = {

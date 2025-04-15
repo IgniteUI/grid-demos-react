@@ -39,7 +39,8 @@
     "jsdom": "^22.1.0",
     "sass": "^1.86.3",
     "typescript": "~5.5.4",
-    "vite": "^4.4.9",
+    "vite": "^6.2.5",
+    "vite-plugin-static-copy": "^2.3.1",
     "vitest-canvas-mock": "^0.3.3"
   },
   "browserslist": [
