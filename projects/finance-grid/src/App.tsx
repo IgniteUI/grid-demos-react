@@ -126,21 +126,24 @@ function FinanceGrid() {
 
   const filter = (e: any) => {
     const value = e.target.value;
-    const expressionTree = new IgrFilteringExpressionsTree();
-    expressionTree.operator = FilteringLogic.Or;
-    const tickerExpression = {
-      condition: IgrStringFilteringOperand.instance().condition("contains"),
-      fieldName: "id",
-      searchVal: value,
-      ignoreCase: true,
+    const expressionTree: IgrFilteringExpressionsTree = {
+      operator: FilteringLogic.Or,
+      filteringOperands: [
+        {
+          condition: IgrStringFilteringOperand.instance().condition("contains"),
+          fieldName: "id",
+          searchVal: value,
+          ignoreCase: true,
+        },
+        {
+          condition: IgrStringFilteringOperand.instance().condition("contains"),
+          fieldName: "holdingName",
+          searchVal: value,
+          ignoreCase: true,
+        },
+      ],
     };
-    const assetExpression = {
-      condition: IgrStringFilteringOperand.instance().condition("contains"),
-      fieldName: "holdingName",
-      searchVal: value,
-      ignoreCase: true,
-    };
-    expressionTree.filteringOperands.push(tickerExpression, assetExpression);
+
     if (value) {
       gridRef.current!.filteringExpressionsTree = expressionTree;
     } else {
