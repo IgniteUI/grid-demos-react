@@ -162,8 +162,8 @@ function FinanceGrid() {
       >
         <IgrGridToolbar>
           <IgrGridToolbarActions>
-            <IgrGridToolbarPinning></IgrGridToolbarPinning>
             <IgrGridToolbarHiding></IgrGridToolbarHiding>
+            <IgrGridToolbarPinning></IgrGridToolbarPinning>
             <IgrGridToolbarExporter></IgrGridToolbarExporter>
           </IgrGridToolbarActions>
           <IgrGridToolbarTitle>
