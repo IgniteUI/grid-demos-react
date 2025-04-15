@@ -193,7 +193,7 @@ function FinanceGrid() {
         <IgrColumn
           field="positions"
           dataType="number"
-          header="Positions"
+          header="Position"
           sortable={true}
           width="6%"
         ></IgrColumn>
@@ -255,7 +255,6 @@ function FinanceGrid() {
         ></IgrColumn>
         <IgrColumn
           field="holdingPeriod"
-          dataType="number"
           header="Holding Period"
           sortable={true}
           bodyTemplate={holdingPeriodTemplate}
