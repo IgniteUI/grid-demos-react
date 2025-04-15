@@ -11,7 +11,6 @@ html, body, #root {
   height: 100%;
 }
 
-/* minor CSS reset */
 body, h1, h2, h3, h4, h5, h6, p {
   margin: 0;
 }
@@ -28,20 +27,4 @@ img, video {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
-}
-
-.badge-pirmary {
-  background-color: var(--ig-primary-50);
-}
-
-.badge-warning {
-  background-color: var(--ig-warn-100);
-}
-
-.badge-error {
-  background-color: var(--ig-error-50);
-}
-
-.badge-success {
-  background-color: var(--ig-success-100);
 }

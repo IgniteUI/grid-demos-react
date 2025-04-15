@@ -1,4 +1,3 @@
-import './App.scss'
 import ErpHGrid from './components/ErpHGrid/ErpHGrid'
 
 function App() {

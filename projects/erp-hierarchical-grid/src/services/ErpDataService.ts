@@ -12,7 +12,7 @@ class ErpDataService {
       }
       const currData = await response.json();
 
-      currData.forEach((record: any) => {
+      currData.forEach((record: TemplateDataItem) => {
         // Set unitsSold
         record["unitsSold"] = this.getLastMonthSoldUnits(record);
 
@@ -23,7 +23,7 @@ class ErpDataService {
       return currData;
 
     } catch (err) {
-      throw new Error("Failed to fetch data");
+      throw new Error(`Failed to fetch data! ${err}`);
     }
   };
 

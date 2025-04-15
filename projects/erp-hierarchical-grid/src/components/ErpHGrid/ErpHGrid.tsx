@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect } from "react";
+import { IgrBadge, IgrIcon, IgrRating, registerIcon } from "igniteui-react";
+import "igniteui-react-grids/grids/themes/light/material.css";
 import {
   IgrHierarchicalGrid,
   IgrColumn,
@@ -14,31 +16,35 @@ import {
   GridSelectionMode,
   IgrCellTemplateContext,
   IgrColumnGroup,
+  IgrSortingExpression,
+  SortingDirection,
+  IgrFilteringOperand
 } from "igniteui-react-grids";
-
-import { IgrBadge, IgrIcon, IgrRating, registerIcon } from "igniteui-react";
-import "igniteui-react-grids/grids/themes/light/material.css";
+import { MyChart } from "../SalesTrendChart/SalesTrendChart";
 import { erpDataService } from "../../services/ErpDataService";
-
+import { BadgeVariant } from "../../models/BadgeVariant";
+import { OrderStatus } from "../../models/OrderStatus";
+import { DataPoint } from "../../models/DataPoint";
+import { FullAddressFilteringOperand } from "../../CustomFilteringOperand";
 import BILL_PAID from "../../assets/icons/bill_paid.svg";
 import CHECK from "../../assets/icons/check.svg";
 import DELIVERY from "../../assets/icons/delivery.svg";
 import DROPBOX from "../../assets/icons/dropbox.svg";
-import './ErpHGrid.scss';
-import { BadgeVariant } from "../../models/BadgeVariant";
-import { OrderStatus } from "../../models/OrderStatus";
-import { DataPoint } from "../../models/DataPoint";
-import { MyChart } from "../SalesTrendChart/SalesTrendChart";
-
+import "./ErpHGrid.scss";
+import { TemplateDataItemExtended } from "../../models/TemplateDataItem";
+import { HoverTooltip } from "../ImageTooltip/ImageTooltip";
 
 const ErpHGrid = () => {
-  const [data, setData] = useState<any[]>([]);
-  const [selectionMode, setSelectionMode] = useState<GridSelectionMode>("multiple");
+  const selectionMode: GridSelectionMode = "multiple";
+  const [gridData, setGridData] = useState<TemplateDataItemExtended[]>([]);
+
+  // Custom filtering for templated Address column
+  const fullAddressFilteringOperand: IgrFilteringOperand = FullAddressFilteringOperand.instance();
+  const shortAddressFilteringOperand: FullAddressFilteringOperand = new FullAddressFilteringOperand(true);
 
   useEffect(() => {
-
-    erpDataService.getErpData().then(data => {
-      setData(data);
+    erpDataService.getErpData().then((data: TemplateDataItemExtended[]) => {
+      setGridData(data);
     });
 
     // Icons
@@ -46,48 +52,42 @@ const ErpHGrid = () => {
     registerIcon("delivery", DELIVERY, "material");
     registerIcon("bill-paid", BILL_PAID, "material");
     registerIcon("check", CHECK, "material");
-
   }, []);
 
+  const exportStarted = (args: any) => {
+    args.detail.exporter.columnExporting.subscribe((columnArgs: any) => {
+      // Don't export Performance column
+      columnArgs.cancel = columnArgs.field === "salesTrendData";
+    });
+  };
+
   // TEMPLATES
-  const imageTemplate = (props: {dataContext: IgrCellTemplateContext}) => {
+  const imageTemplate = (props: { dataContext: IgrCellTemplateContext }) => {
     const imageUrl = props.dataContext.cell.value;
+    const productName: string = props.dataContext.cell.row?.cells?.find((c: any) => c.column.field === 'productName')?.value;
+
     return (
-      <div id="image-container">
-        <img
-          id="imageElement"
-          src={imageUrl}
-          alt="Product"
-          style={{
-            height: '22px',
-            width: '22px'
-          }}/>
-      </div>
-      );
-  }
+      <HoverTooltip imageUrl={imageUrl} tooltipText={productName} />
+    );
+  };
 
   const ratingTemplate = (ctx: { dataContext: IgrCellTemplateContext }) => {
     const rating: number = ctx.dataContext.cell.value;
-    // className={classes("rating")}
     return (
       <>
-        <IgrRating value={rating} ></IgrRating>
-        {/* <IgrRating></IgrRating> */}
-        {/* <div>Rating = {rating} </div> */}
+        <IgrRating value={rating}></IgrRating>
       </>
-    )
-  }
+    );
+  };
 
   const salesTrendsChartTemplate = (ctx: IgrCellTemplateContext) => {
     const trendData: DataPoint[] = ctx.cell.value;
 
     if (!trendData || trendData.length === 0) {
-      return (<span>No data</span>);
+      return <span>No data</span>;
     }
 
-    return (
-      <MyChart trendData={trendData}></MyChart>
-    );
+    return <MyChart trendData={trendData}></MyChart>;
   };
 
   /* RowIsland */
@@ -97,35 +97,35 @@ const ErpHGrid = () => {
         <IgrGridToolbarTitle>Sales data for the last month</IgrGridToolbarTitle>
       </IgrGridToolbar>
     );
-  }
+  };
 
   const getOrderStatusBadgeVariant = (status: string): BadgeVariant => {
     switch (status) {
-        case OrderStatus.PACKED:
-            return "primary";
-        case OrderStatus.IN_TRANSIT:
-          return "warning";
-        case OrderStatus.CUSTOMS:
-          return "danger";
-        case OrderStatus.DELIVERED:
-          return "success";
-        default:
-            return "primary";
+      case OrderStatus.PACKED:
+        return "primary";
+      case OrderStatus.IN_TRANSIT:
+        return "warning";
+      case OrderStatus.CUSTOMS:
+        return "danger";
+      case OrderStatus.DELIVERED:
+        return "success";
+      default:
+        return "primary";
     }
   };
 
   const getOrderStatusIconName = (status: string): string => {
     switch (status) {
-        case OrderStatus.PACKED:
-            return "dropbox";
-        case OrderStatus.IN_TRANSIT:
-          return "delivery";
-        case OrderStatus.CUSTOMS:
-          return "bill-paid";
-        case OrderStatus.DELIVERED:
-          return "check";
-        default:
-            return "dropbox";
+      case OrderStatus.PACKED:
+        return "dropbox";
+      case OrderStatus.IN_TRANSIT:
+        return "delivery";
+      case OrderStatus.CUSTOMS:
+        return "bill-paid";
+      case OrderStatus.DELIVERED:
+        return "check";
+      default:
+        return "dropbox";
     }
   };
 
@@ -136,14 +136,16 @@ const ErpHGrid = () => {
 
     return (
       <div className="status-cell">
-          <span>
-          <IgrBadge
-            variant={badgeVariant}
-            shape="rounded">
-            <IgrIcon name={iconName} collection="material" className="custom-icon"></IgrIcon>
+        <span>
+          <IgrBadge variant={badgeVariant} shape="rounded">
+            <IgrIcon
+              name={iconName}
+              collection="material"
+              className="custom-icon"
+            ></IgrIcon>
           </IgrBadge>
-          </span>
-          <span>{cellValue}</span>
+        </span>
+        <span>{cellValue}</span>
       </div>
     );
   };
@@ -154,10 +156,10 @@ const ErpHGrid = () => {
 
     return (
       <div className="country-cell">
-          <span className="cup">
-              <img src={flagPath}/>
-          </span>
-          <span>${cellValue}</span>
+        <span>
+          <img src={flagPath} />
+        </span>
+        <span>{cellValue}</span>
       </div>
     );
   };
@@ -167,31 +169,49 @@ const ErpHGrid = () => {
     // Bypassing the default formatting of larger numbers
     // Example for 4-digit numbers: 1,234 => 1234
     return value;
-  }
+  };
 
   const formatDate = (value: string): string => {
-    return value || 'N/A';
-  }
+    return value || "N/A";
+  };
 
-  const formatAddress = (value: any): string =>  {
+  const formatAddress = (value: any): string => {
     return `${value.streetName} ${value.streetNumber}`;
-  }
+  };
 
   const formatFullAddress = (value: any): string => {
     return `${value.streetNumber} ${value.streetName}, ${value.zipCode} ${value.city}, ${value.country}`;
-  }
+  };
+
+  // SORTINGS
+  const parentGridSortingExpression: IgrSortingExpression[] = [
+    {
+      dir: SortingDirection.Asc,
+      fieldName: "sku",
+      ignoreCase: true,
+    },
+  ];
+
+  const childGridSortingExpression: IgrSortingExpression[] = [
+    {
+      dir: SortingDirection.Desc,
+      fieldName: "delivery.dateOrdered",
+      ignoreCase: true,
+    },
+  ];
 
   return (
     <div className="wrapper">
       <IgrHierarchicalGrid
         id="hierarchicalGrid"
-        data={data}
+        data={gridData}
         autoGenerate={false}
         allowFiltering={true}
         allowAdvancedFiltering={true}
         primaryKey="sku"
         moving={true}
         rowSelection={selectionMode}
+        sortingExpressions={parentGridSortingExpression}
         width="100%"
         height="100%"
       >
@@ -201,7 +221,11 @@ const ErpHGrid = () => {
           <IgrGridToolbarActions>
             <IgrGridToolbarHiding />
             <IgrGridToolbarPinning />
-            <IgrGridToolbarExporter exportExcel={true} exportCSV={true} />
+            <IgrGridToolbarExporter
+              exportExcel={true}
+              exportCSV={true}
+              onExportStarted={exportStarted}
+            />
             <IgrGridToolbarAdvancedFiltering />
           </IgrGridToolbarActions>
         </IgrGridToolbar>
@@ -209,40 +233,85 @@ const ErpHGrid = () => {
         {/* Columns */}
         <IgrColumn field="sku" header="SKU" sortable={true} dataType="string" />
         <IgrColumn
-            field="imageUrl"
-            header="Image"
-            bodyTemplate={imageTemplate}
-            filterable={false}
-            dataType="image"
-            width="5%" >
-        </IgrColumn>
-        <IgrColumn field="productName" header="Product Name" dataType="string" sortable={true} width="12%" />
-        <IgrColumn field="category" header="Category" dataType="string" sortable={true} />
+          field="imageUrl"
+          header="Image"
+          bodyTemplate={imageTemplate}
+          filterable={false}
+          dataType="image"
+          width="7%"
+          cellClasses={{ 'centered-image-cell': true }}
+        />
+        <IgrColumn
+          field="productName"
+          header="Product Name"
+          dataType="string"
+          sortable={true}
+          width="12%"
+        />
+        <IgrColumn
+          field="category"
+          header="Category"
+          dataType="string"
+          sortable={true}
+        />
         <IgrColumn
           field="rating"
           dataType="number"
           header="Rating"
           sortable={true}
           bodyTemplate={ratingTemplate}
-          selectable={false}>
-        </IgrColumn>
-        <IgrColumn field="unitsSold" header="Sold Units Last Month" dataType="number" sortable={true} width="10%" />
+          selectable={false}
+        />
+        <IgrColumn
+          field="unitsSold"
+          header="Sold Units Last Month"
+          dataType="number"
+          sortable={true}
+          width="10%"
+        />
 
         <IgrColumn
           field="salesTrendData"
           header="Monthly Sales Trends"
           width="15%"
           filterable={false}
-          bodyTemplate={salesTrendsChartTemplate} />
+          bodyTemplate={salesTrendsChartTemplate}
+        />
 
-        <IgrColumn field="grossPrice" header="Net Price" dataType="currency" sortable={true} width="7%"/>
-        <IgrColumn field="netPrice" header="Gross Price" dataType="currency" sortable={true} width="7%"/>
-        <IgrColumn field="totalNetProfit" header="Net Profit" dataType="currency" sortable={true} width="7%"/>
+        <IgrColumn
+          field="grossPrice"
+          header="Net Price"
+          dataType="currency"
+          sortable={true}
+          width="7%"
+        />
+        <IgrColumn
+          field="netPrice"
+          header="Gross Price"
+          dataType="currency"
+          sortable={true}
+          width="7%"
+        />
+        <IgrColumn
+          field="totalNetProfit"
+          header="Net Profit"
+          dataType="currency"
+          sortable={true}
+          width="7%"
+        />
 
         {/* Row Island (Orders) */}
-        <IgrRowIsland childDataKey="orders" autoGenerate={false} allowFiltering={true} toolbarTemplate={rowIslandToolbarTemplate}>
+        <IgrRowIsland
+          childDataKey="orders"
+          autoGenerate={false}
+          allowFiltering={true}
+          toolbarTemplate={rowIslandToolbarTemplate}
+          sortingExpressions={childGridSortingExpression}
+        >
           <IgrGridToolbar>
-            <IgrGridToolbarTitle>Sales data for the last month</IgrGridToolbarTitle>
+            <IgrGridToolbarTitle>
+              Sales data for the last month
+            </IgrGridToolbarTitle>
           </IgrGridToolbar>
 
           <IgrColumn
@@ -250,18 +319,17 @@ const ErpHGrid = () => {
             header="Order ID"
             dataType="number"
             width="7%"
-            formatter={formatNumberAsIs}>
-          </IgrColumn>
+            formatter={formatNumberAsIs}
+          />
           <IgrColumn
             field="status"
             header="Status"
             width="11%"
-            bodyTemplate={statusTemplate}>
-          </IgrColumn>
+            bodyTemplate={statusTemplate}
+          />
 
           <IgrColumnGroup header="Delivery Info" collapsible={true}>
-
-          {/* Show this column when collapsed */}
+            {/* Show this column when collapsed */}
             <IgrColumn
               field="delivery.dateOrdered"
               header="Date Ordered"
@@ -270,7 +338,8 @@ const ErpHGrid = () => {
               sortable={true}
               resizable={true}
               visibleWhenCollapsed={true}
-              formatter={formatDate} />
+              formatter={formatDate}
+            />
 
             {/* Show next 3 columns when expanded */}
             <IgrColumn
@@ -281,7 +350,8 @@ const ErpHGrid = () => {
               sortable={true}
               resizable={true}
               visibleWhenCollapsed={false}
-              formatter={formatDate} />
+              formatter={formatDate}
+            />
 
             <IgrColumn
               field="delivery.dateShipped"
@@ -291,7 +361,8 @@ const ErpHGrid = () => {
               sortable={true}
               resizable={true}
               visibleWhenCollapsed={false}
-              formatter={formatDate} />
+              formatter={formatDate}
+            />
 
             <IgrColumn
               field="delivery.dateDelivered"
@@ -301,62 +372,65 @@ const ErpHGrid = () => {
               sortable={true}
               resizable={true}
               visibleWhenCollapsed={false}
-              formatter={formatDate} />
-
+              formatter={formatDate}
+            />
           </IgrColumnGroup>
 
           <IgrColumnGroup header="Order Information" collapsible={true}>
+            {/* Show next 4 columns when expanded */}
+            <IgrColumn
+              field="orderInformation.country"
+              header="Country"
+              width="12%"
+              sortable={true}
+              visibleWhenCollapsed={false}
+              bodyTemplate={countryTemplate}
+            />
 
-          {/* Show next 4 columns when expanded */}
-          <IgrColumn
-            field="orderInformation.country"
-            header="Country"
-            width="12%"
-            sortable={true}
-            visibleWhenCollapsed={false}
-            bodyTemplate={countryTemplate} />
+            <IgrColumn
+              field="orderInformation.city"
+              header="City"
+              dataType="string"
+              width="13%"
+              sortable={true}
+              resizable={true}
+              visibleWhenCollapsed={false}
+            />
 
-          <IgrColumn
-            field="orderInformation.city"
-            header="City"
-            dataType="string"
-            width="13%"
-            sortable={true}
-            resizable={true}
-            visibleWhenCollapsed={false} />
+            <IgrColumn
+              field="orderInformation.zipCode"
+              header="Zip Code"
+              dataType="number"
+              width="9%"
+              sortable={true}
+              resizable={true}
+              formatter={formatNumberAsIs}
+              visibleWhenCollapsed={false}
+            />
 
-          <IgrColumn
-            field="orderInformation.zipCode"
-            header="Zip Code"
-            dataType="number"
-            width="9%"
-            sortable={true}
-            resizable={true}
-            formatter={formatNumberAsIs}
-            visibleWhenCollapsed={false} />
+            <IgrColumn
+              field="orderInformation"
+              header="Address"
+              dataType="string"
+              sortable={true}
+              resizable={true}
+              visibleWhenCollapsed={false}
+              formatter={formatAddress}
+              filters={shortAddressFilteringOperand}
+            />
 
-          <IgrColumn
-            field="orderInformation"
-            header="Address"
-            dataType="string"
-            sortable={true}
-            resizable={true}
-            visibleWhenCollapsed={false}
-            formatter={formatAddress}/>
-            {/* filters={shortAddressFilteringOperand} /> */}
-
-          {/* Collapsed view column */}
-          <IgrColumn
-            field="orderInformation"
-            header="Address"
-            dataType="string"
-            sortable={true}
-            resizable={true}
-            visibleWhenCollapsed={true}
-            formatter={formatFullAddress}/>
-            {/* filters={fullAddressFilteringOperand} /> */}
-
-        </IgrColumnGroup>
+            {/* Collapsed view column */}
+            <IgrColumn
+              field="orderInformation"
+              header="Address"
+              dataType="string"
+              sortable={true}
+              resizable={true}
+              visibleWhenCollapsed={true}
+              formatter={formatFullAddress}
+              filters={fullAddressFilteringOperand}
+            />
+          </IgrColumnGroup>
         </IgrRowIsland>
       </IgrHierarchicalGrid>
     </div>
@@ -364,4 +438,3 @@ const ErpHGrid = () => {
 };
 
 export default ErpHGrid;
-
