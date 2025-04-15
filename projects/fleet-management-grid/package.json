@@ -1,0 +1,48 @@
+{
+  "name": "sales-grid-app",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@igniteui/material-icons-extended": "^3.1.0",
+    "element-internals-polyfill": "^3.0.0",
+    "functions-have-names": "^1.2.3",
+    "igniteui-react": "19.0.0-alpha.5",
+    "igniteui-react-core": "19.0.0-alpha.0",
+    "igniteui-react-grids": "19.0.0-alpha.5",
+    "igniteui-react-maps": "19.0.0-alpha.0",
+    "igniteui-react-charts": "19.0.0-alpha.0",
+    "react": "^19.1.0",
+    "react-app-polyfill": "^3.0.0",
+    "react-dom": "^19.1.0",
+    "react-router": "^7.5.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.1",
+    "@typescript-eslint/eslint-plugin": "^8.29.0",
+    "@typescript-eslint/parser": "^8.29.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.23.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.3",
+    "jsdom": "^22.1.0",
+    "sass": "^1.86.3",
+    "typescript": "~5.7.2",
+    "typescript-eslint": "^8.24.1",
+    "vite": "^6.2.5"
+  },
+  "scripts": {
+    "start": "vite",
+    "build": "tsc && node --max-old-space-size=4096 node_modules/vite/bin/vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
+    "test": "vitest"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}
