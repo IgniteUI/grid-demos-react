@@ -10,9 +10,6 @@ Run `npm start` to build the application, start a web server and open the applic
 
 Run `npm run build` to build the application into an output directory.
 
-## Running unit tests
-
-Run `npm test` to execute the unit tests via [Vitest](https://vitest.dev/). Runs all `.test.tsx` files under `./src` folder.
 
 ## Running code style checks
 

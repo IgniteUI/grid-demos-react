@@ -51,8 +51,6 @@ function ERPHGrid () {
 }
 
 export default function ERPHGridView() {
-  const classes = createClassTransformer(styles);
-
   return (
     <>
       <ERPHGrid />
