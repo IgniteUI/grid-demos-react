@@ -31,10 +31,10 @@
   },
   "scripts": {
     "start": "vite",
+    "dev": "vite",
     "build": "tsc && node --max-old-space-size=4096 node_modules/vite/bin/vite build",
     "preview": "vite preview",
-    "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
-    "test": "vitest"
+    "lint": "eslint . --report-unused-disable-directives --max-warnings 0"
   },
   "browserslist": [
     ">0.2%",
