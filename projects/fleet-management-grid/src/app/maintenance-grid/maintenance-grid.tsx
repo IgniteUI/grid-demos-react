@@ -40,34 +40,34 @@ export default function MaintenanceGrid(vehicleId: any) {
     }
 
     const setIdColumn = (column: IgrColumn) => {
-        column.field = "ID";
+        column.header = "ID";
         column.width = "5%";
         column.headerStyles = rightAlignedHeaderStyles;
 		column.cellStyles = rightAlignedCellStyles;
     }
 
     const setEventColumn = (column: IgrColumn) => {
-        column.field = "Event";
+        column.header = "Event";
         column.width = "23%";
     }
 
     const setDateColumn = (column: IgrColumn) => {
-        column.field = "Date";
+        column.header = "Date";
         column.width = "10%";
     }
 
     const setLocationColumn = (column: IgrColumn) => {
-        column.field = "Location";
+        column.header = "Location";
         column.width = "10%";
     }
 
     const setTypeColumn = (column: IgrColumn) => {
-        column.field = "Type";
+        column.header = "Type";
         column.width = "12%";
     }
 
     const setRemarksColumn = (column: IgrColumn) => {
-        column.field = "Remarks";
+        column.header = "Remarks";
         column.width = "40%";
     }
 
