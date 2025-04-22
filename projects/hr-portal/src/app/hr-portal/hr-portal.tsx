@@ -17,14 +17,12 @@ import {
 import { IgrIcon, IgrAvatar, IgrIconButton, IgrButton, registerIcon } from 'igniteui-react';
 import 'igniteui-react-grids/grids/combined';
 import 'igniteui-react-grids/grids/themes/light/fluent.css';
-import { DataService } from './../services/data.service';
-import { icons } from '../data/icons/Icons'
+import { dataService } from './../services/data.service';
+import { icons } from '../data/icons/Icons';
 
 export default function HRPortal() {
   const [data, setData] = useState<any[]>([]);
   const [isSorted, setIsSorted] = useState(false);
-  const dataService = React.useMemo(() => new DataService(), []);
-
   const gridRef = useRef<IgrTreeGrid | null>(null);
 
   useEffect(() => {
@@ -35,10 +33,10 @@ export default function HRPortal() {
     icons.forEach((element: { name: string; path: string; category: string }) => {
       registerIcon(element.name, element.path, element.category);
     });
-  }, [dataService]);
+  }, []); // No dependency on dataService
 
-  const avatarTemplate = (props: { dataContext: IgrCellTemplateContext }) => {
-    const data = props.dataContext.cell.row.data;
+  const avatarTemplate = ({ cell }: IgrCellTemplateContext) => {
+    const data = cell.row.data;
     return (
       <div className="employeeDiv">
         <IgrAvatar shape="rounded" src={data.Picture} className="small" />
@@ -47,8 +45,8 @@ export default function HRPortal() {
     );
   };
 
-  const countryIconTemplate = (props: { dataContext: IgrCellTemplateContext }) => {
-    const data = props.dataContext.cell.row?.data;
+  const countryIconTemplate = ({ cell }: IgrCellTemplateContext) => {
+    const data = cell.row?.data;
     if (!data) {
       return <div>No Data</div>; // Fallback for missing data
     }
@@ -60,8 +58,8 @@ export default function HRPortal() {
     );
   };
 
-  const contactsTemplate = (props: { dataContext: IgrCellTemplateContext }) => {
-    const data = props.dataContext.cell.row.data;
+  const contactsTemplate = ({ cell }: IgrCellTemplateContext) => {
+    const data = cell.row.data;
     return (
       <div className="center-content small">
         <a href={`mailto:${data.Email}`}>
@@ -77,8 +75,8 @@ export default function HRPortal() {
     );
   };
 
-  const dateTemplate = (props: { dataContext: IgrCellTemplateContext }) => {
-    const data = props.dataContext.cell.row.data;
+  const dateTemplate = ({ cell }: IgrCellTemplateContext) => {
+    const data = cell.row.data;
     const formattedDate = new Date(data.HireDate).toISOString().split('T')[0];
     return <>{formattedDate}</>;
   };
@@ -91,9 +89,8 @@ export default function HRPortal() {
   }, []);
 
   const handleSortingChanged = useCallback(() => {
-    const grid = document.getElementById('treeGrid') as IgrTreeGrid;
-    if (grid) {
-      setIsSorted(grid.sortingExpressions.length > 0);
+    if (gridRef.current) {
+      setIsSorted(gridRef.current.sortingExpressions.length > 0);
     }
   }, []);
 
@@ -113,9 +110,9 @@ export default function HRPortal() {
     >
       <IgrPaginator perPage={20} />
       <IgrGridToolbar>
-      <IgrGridToolbarTitle key="toolbarTitle">
-        <span key="toolbarTitleText">HR Portal</span>
-      </IgrGridToolbarTitle>
+        <IgrGridToolbarTitle key="toolbarTitle">
+          <span key="toolbarTitleText">HR Portal</span>
+        </IgrGridToolbarTitle>
         <IgrGridToolbarActions>
           {isSorted && (
             <div className="icon-button-group">
@@ -141,5 +138,5 @@ export default function HRPortal() {
       <IgrColumn field="GrossSalary" header="Gross Salary" dataType="currency" minWidth="100px" sortable={true} />
     </IgrTreeGrid>
   );
-};
+}
 
