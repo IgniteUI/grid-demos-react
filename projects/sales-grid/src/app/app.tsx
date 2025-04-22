@@ -1,8 +1,7 @@
-import { Outlet } from "react-router-dom";
+import SalesGrid from "./sales-grid/sales-grid";
 
 export default function App() {
-
   return (
-    <Outlet />
+    <SalesGrid />
   )
 }
