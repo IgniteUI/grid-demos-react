@@ -92,6 +92,7 @@ export class FullAddressFilteringOperand extends IgrStringFilteringOperand {
             this.operations[9],
         ];
 
-        this.operations = customOperations.concat(emptyOperators);
+        // this.operations = customOperations.concat(emptyOperators);
+        this.operations = [...customOperations, ...emptyOperators];
     }
 }
