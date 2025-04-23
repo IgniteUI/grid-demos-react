@@ -15,15 +15,19 @@ export default defineConfig({
         {
           src: './projects/sales-grid/public/*',
           dest: 'public',
-        }
-      ]
-    })
+        },
+        {
+          src: './projects/finance-grid/public/**',
+          dest: '',
+        },
+      ],
+    }),
   ],
   resolve: {
     mainFields: ['module'],
   },
   server: {
     open: true,
-    port: 3003
-  }
-})
+    port: 3003,
+  },
+});
