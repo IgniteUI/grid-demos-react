@@ -72,11 +72,6 @@ export default function SalesGrid() {
     setViewDropdown(ref);
   }
 
-  const [exportDropdown, setExportDropdown] = useState<IgrDropdown>();
-  function exportDropdownRef(ref: IgrDropdown) {
-    setExportDropdown(ref);
-  }
-
   const [pivotGrid, setPivotGrid] = useState<IgrPivotGrid>();
   function pivotGridRef(ref: IgrPivotGrid) {
     setPivotGrid(ref);
@@ -346,7 +341,7 @@ export default function SalesGrid() {
   }
 
   function onExportDropdownButton(event: React.MouseEvent<IgrButton, MouseEvent>) {
-    console.log("Export to Excel temporary not available.");
+    console.log("Export to Excel temporary not available.", event);
     // TO DO
     // Once Excel and CSV exporter are available in React
     // let options!: IgrExporterOptionsBase;
