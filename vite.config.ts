@@ -1,6 +1,7 @@
 /// <reference types="vitest" />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -23,9 +24,15 @@ export default defineConfig({
   },
   resolve: {
     mainFields: ['module'],
+    alias: {
+      '@hr-assets': path.resolve(__dirname, 'projects/hr-portal/src/app/hr-portal/assets/images')
+    }
   },
   server: {
     open: true,
-    port: 3003
+    port: 3003,
+    fs: {
+      allow: ['.', 'projects']
+    }
   }
 })

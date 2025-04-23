@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from './app/app';
-import { routes } from "./app/app-routes";
 import 'react-app-polyfill/ie11';
 
 const basename = import.meta.env.VITE_BASENAME || '/';
@@ -14,8 +13,7 @@ Number.isNaN = Number.isNaN || function(value) {
 
 const router = createBrowserRouter([
   {
-    element: <App />,
-    children: [...routes]
+    element: <App />
   }
 ],
 {

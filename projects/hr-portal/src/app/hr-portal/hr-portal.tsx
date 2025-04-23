@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './hr-portal.scss';
 
 import {
@@ -29,17 +29,45 @@ export default function HRPortal() {
     dataService.fetchData().then((fetchedData: any) => {
       setData(fetchedData);
     });
+  }, []);
 
-    icons.forEach((element: { name: string; path: string; category: string }) => {
-      registerIcon(element.name, element.path, element.category);
-    });
-  }, []); // No dependency on dataService
+  const images = import.meta.glob('../assets/images/**/*.{png,jpg,jpeg,svg}', {
+    eager: true,
+    import: 'default'
+  });
+
+  const avatarMap: Record<string, string> = {};
+  const iconMap: Record<string, string> = {};
+
+  for (const fullPath in images) {
+    const relativePath = fullPath.split('assets/images/')[1]?.toLowerCase();
+
+    if (!relativePath) continue;
+
+    if (relativePath.startsWith('men/') || relativePath.startsWith('women/')) {
+      avatarMap[relativePath] = images[fullPath] as string;
+    } else if (relativePath.endsWith('.svg')) {
+      iconMap[relativePath] = images[fullPath] as string;
+    }
+  }
+
+  icons.forEach((element: { name: string; path: string; category: string }) => {
+    const normalizedPath = element.path.replace(/^\/?images\//, '').toLowerCase();
+    const resolvedIconPath = iconMap[normalizedPath];
+
+    if (resolvedIconPath) {
+      registerIcon(element.name, resolvedIconPath, element.category);
+    }
+  });
 
   const avatarTemplate = ({ cell }: IgrCellTemplateContext) => {
     const data = cell.row.data;
+    const normalizedPath = data.Picture.replace(/^\/?images\//, '');
+    const pictureSrc = avatarMap[normalizedPath];
+
     return (
       <div className="employeeDiv">
-        <IgrAvatar shape="rounded" src={data.Picture} className="small" />
+        <IgrAvatar shape="rounded" src={pictureSrc} className="small" />
         <span>{data.Name}</span>
       </div>
     );
@@ -81,18 +109,18 @@ export default function HRPortal() {
     return <>{formattedDate}</>;
   };
 
-  const clearSorting = useCallback(() => {
+  const clearSorting = () => {
     if (gridRef.current) {
       gridRef.current.sortingExpressions = [];
     }
     setIsSorted(false);
-  }, []);
+  };
 
-  const handleSortingChanged = useCallback(() => {
+  const handleSortingChanged = () => {
     if (gridRef.current) {
       setIsSorted(gridRef.current.sortingExpressions.length > 0);
     }
-  }, []);
+  };
 
   return (
     <IgrTreeGrid
