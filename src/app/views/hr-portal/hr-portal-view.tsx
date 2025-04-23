@@ -88,8 +88,6 @@ function HRPortalGrid() {
 }
 
 export default function HRPortalView() {
-  const classes = createClassTransformer(styles);
-
   return (
     <>
       <style>

@@ -65,8 +65,6 @@ function FinanceGrid() {
 }
 
 export default function FinanceView() {
-  const classes = createClassTransformer(styles);
-
   return (
     <>
       <style>

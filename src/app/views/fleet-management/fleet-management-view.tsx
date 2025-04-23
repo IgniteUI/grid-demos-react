@@ -38,8 +38,6 @@ function FleetManagementGrid() {
 }
 
 export default function FleetManagementView() {
-  const classes = createClassTransformer(styles);
-
   return (
     <>
       <style>

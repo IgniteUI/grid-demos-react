@@ -7,8 +7,6 @@ import sampleStyles from '../../../../projects/sales-grid/src/app/sales-grid/sal
 
 
 export default function ERPHGridView() {
-  const classes = createClassTransformer(styles);
-
   return (
     <>
      <style>
