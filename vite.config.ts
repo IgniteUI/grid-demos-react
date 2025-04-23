@@ -9,19 +9,17 @@ export default defineConfig({
   build: {
     chunkSizeWarningLimit: 10 * 1024 * 1024, // 10 MB
   },
-  plugins: [react()],
-  test: {
-    globals: true,
-    environment: 'jsdom',
-    setupFiles: ['./src/setupTests.ts'],
-    deps: {
-      optimizer: {
-        web: {
-          include: ['vitest-canvas-mock'],
-        },
-      },
-    },
-  },
+  plugins: [
+    react(),
+    viteStaticCopy({
+      targets: [
+        {
+          src: './projects/sales-grid/public/*',
+          dest: 'public',
+        }
+      ]
+    })
+  ],
   resolve: {
     mainFields: ['module'],
     alias: {
