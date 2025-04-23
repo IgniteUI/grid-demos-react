@@ -19,6 +19,10 @@ export default defineConfig({
         {
           src: './projects/erp-hierarchical-grid/public/*',
           dest: '',
+        },
+        {
+          src: './projects/finance-grid/public/**',
+          dest: '',
         }
       ]
     })
@@ -28,6 +32,6 @@ export default defineConfig({
   },
   server: {
     open: true,
-    port: 3000
-  }
-})
+    port: 3003,
+  },
+});
