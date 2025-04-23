@@ -345,7 +345,7 @@ export default function SalesGrid() {
     setViewDropdownOpen(!viewDropdownOpen);
   }
 
-  function onExportDropdownButton(event: React.MouseEvent<IgrButton, MouseEvent>) {
+  function onExportDropdownButton() {
     console.log("Export to Excel temporary not available.");
     // TO DO
     // Once Excel and CSV exporter are available in React

@@ -11,14 +11,14 @@ export default defineConfig({
   },
   plugins: [
     react(),
-    viteStaticCopy({
-      targets: [
-        {
-          src: './projects/sales-grid/public/*',
-          dest: 'public',
-        }
-      ]
-    })
+    // viteStaticCopy({
+    //   targets: [
+    //     {
+    //       src: './projects/sales-grid/public/*',
+    //       dest: 'public',
+    //     }
+    //   ]
+    // })
   ],
   resolve: {
     mainFields: ['module'],
