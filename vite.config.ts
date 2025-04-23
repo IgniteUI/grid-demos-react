@@ -16,6 +16,10 @@ export default defineConfig({
         {
           src: './projects/sales-grid/public/*',
           dest: 'public',
+        },
+        {
+          src: './projects/erp-hierarchical-grid/public/*',
+          dest: '',
         }
       ]
     })

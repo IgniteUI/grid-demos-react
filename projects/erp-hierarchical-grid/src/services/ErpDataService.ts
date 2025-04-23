@@ -1,6 +1,6 @@
 import { TemplateDataItem, TemplateDataItemExtended } from "../models/TemplateDataItem";
 
-const DATA_URL = "https://staging.infragistics.com/grid-examples-data/data/erp/products.json";
+const DATA_URL = "https://www.infragistics.com/grid-examples-data/data/erp/products.json";
 
 class ErpDataService {
   public async getErpData(): Promise<TemplateDataItemExtended[]> {

@@ -64,10 +64,12 @@ const ErpHGrid = () => {
   // TEMPLATES
   const imageTemplate = (props: { dataContext: IgrCellTemplateContext }) => {
     const imageUrl = props.dataContext.cell.value;
+    const imageUrlFull: string = `${import.meta.env.BASE_URL}${imageUrl}`;
+
     const productName: string = props.dataContext.cell.row?.cells?.find((c: any) => c.column.field === 'productName')?.value;
 
     return (
-      <HoverTooltip imageUrl={imageUrl} tooltipText={productName} />
+      <HoverTooltip imageUrl={imageUrlFull} tooltipText={productName} />
     );
   };
 
@@ -152,14 +154,12 @@ const ErpHGrid = () => {
 
   const countryTemplate = (ctx: IgrCellTemplateContext) => {
     const cellValue: string = ctx.cell.value;
-    const flagPath: string = `country-flags/${cellValue}.svg`;
+    const flagPath: string = `${import.meta.env.BASE_URL}country-flags/${cellValue}.svg`;
 
     return (
       <div className="country-cell">
-        <span>
-          <img src={flagPath} />
-        </span>
-        <span>{cellValue}</span>
+        <img src={flagPath}/>
+        <span className="country-name">{cellValue}</span>
       </div>
     );
   };
@@ -176,7 +176,7 @@ const ErpHGrid = () => {
   };
 
   const formatAddress = (value: any): string => {
-    return `${value.streetName} ${value.streetNumber}`;
+    return `${value.streetNumber} ${value.streetName}`;
   };
 
   const formatFullAddress = (value: any): string => {
@@ -184,14 +184,6 @@ const ErpHGrid = () => {
   };
 
   // SORTINGS
-  const parentGridSortingExpression: IgrSortingExpression[] = [
-    {
-      dir: SortingDirection.Asc,
-      fieldName: "sku",
-      ignoreCase: true,
-    },
-  ];
-
   const childGridSortingExpression: IgrSortingExpression[] = [
     {
       dir: SortingDirection.Desc,
@@ -211,7 +203,6 @@ const ErpHGrid = () => {
         primaryKey="sku"
         moving={true}
         rowSelection={selectionMode}
-        sortingExpressions={parentGridSortingExpression}
         width="100%"
         height="100%"
       >
@@ -306,6 +297,7 @@ const ErpHGrid = () => {
           autoGenerate={false}
           allowFiltering={true}
           toolbarTemplate={rowIslandToolbarTemplate}
+          rowSelection={selectionMode}
           sortingExpressions={childGridSortingExpression}
         >
           <IgrGridToolbar>

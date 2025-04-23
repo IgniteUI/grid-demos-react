@@ -26,6 +26,11 @@
   igc-badge[variant="success"]::part(base) {
     background-color: var(--ig-success-100);
   }
+
+  igc-grid-toolbar-actions .igx-button {
+    text-transform: uppercase;
+    font-weight: bold;
+  }
 }
 
 .product-img {
@@ -49,8 +54,13 @@
     font-size: 16px;
     width: 18px;
     height: 14px;
-    margin-top: 2px;
     box-shadow: var(--ig-elevation-1);
+  }
+
+  .country-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 
