@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import './hr-portal.scss';
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import "./hr-portal.scss";
 
 import {
   IgrTreeGrid,
@@ -13,12 +13,18 @@ import {
   IgrColumn,
   IgrPaginator,
   IgrCellTemplateContext,
-} from 'igniteui-react-grids';
-import { IgrIcon, IgrAvatar, IgrIconButton, IgrButton, registerIcon } from 'igniteui-react';
-import 'igniteui-react-grids/grids/combined';
-import 'igniteui-react-grids/grids/themes/light/fluent.css';
-import { dataService } from './../services/data.service';
-import { icons } from '../data/icons/Icons';
+} from "igniteui-react-grids";
+import {
+  IgrIcon,
+  IgrAvatar,
+  IgrIconButton,
+  IgrButton,
+  registerIcon,
+} from "igniteui-react";
+import "igniteui-react-grids/grids/combined";
+import "igniteui-react-grids/grids/themes/light/fluent.css";
+import { dataService } from "./../services/data.service";
+import { icons } from "../data/icons/Icons";
 
 export default function HRPortal() {
   const [data, setData] = useState<any[]>([]);
@@ -29,45 +35,23 @@ export default function HRPortal() {
     dataService.fetchData().then((fetchedData: any) => {
       setData(fetchedData);
     });
+
+    icons.forEach(
+      (element: { name: string; path: string; category: string }) => {
+        const normalizedPath = element.path.startsWith("/")
+          ? `${import.meta.env.BASE_URL}${element.path.slice(1)}`
+          : `${import.meta.env.BASE_URL}${element.path}`;
+
+        registerIcon(element.name, normalizedPath, element.category);
+      }
+    );
   }, []);
-
-  const images = import.meta.glob('../assets/images/**/*.{png,jpg,jpeg,svg}', {
-    eager: true,
-    import: 'default'
-  });
-
-  const avatarMap: Record<string, string> = {};
-  const iconMap: Record<string, string> = {};
-
-  for (const fullPath in images) {
-    const relativePath = fullPath.split('assets/images/')[1]?.toLowerCase();
-
-    if (!relativePath) continue;
-
-    if (relativePath.startsWith('men/') || relativePath.startsWith('women/')) {
-      avatarMap[relativePath] = images[fullPath] as string;
-    } else if (relativePath.endsWith('.svg')) {
-      iconMap[relativePath] = images[fullPath] as string;
-    }
-  }
-
-  icons.forEach((element: { name: string; path: string; category: string }) => {
-    const normalizedPath = element.path.replace(/^\/?images\//, '').toLowerCase();
-    const resolvedIconPath = iconMap[normalizedPath];
-
-    if (resolvedIconPath) {
-      registerIcon(element.name, resolvedIconPath, element.category);
-    }
-  });
 
   const avatarTemplate = ({ cell }: IgrCellTemplateContext) => {
     const data = cell.row.data;
-    const normalizedPath = data.Picture.replace(/^\/?images\//, '');
-    const pictureSrc = avatarMap[normalizedPath];
-
     return (
       <div className="employeeDiv">
-        <IgrAvatar shape="rounded" src={pictureSrc} className="small" />
+        <IgrAvatar shape="rounded" src={data.Picture} className="small" />
         <span>{data.Name}</span>
       </div>
     );
@@ -81,7 +65,9 @@ export default function HRPortal() {
     return (
       <div className="flagDiv">
         <IgrIcon collection="country-icons" name={data.Country} />
-        <span>{data.Location}, {data.Country}</span>
+        <span>
+          {data.Location}, {data.Country}
+        </span>
       </div>
     );
   };
@@ -105,22 +91,22 @@ export default function HRPortal() {
 
   const dateTemplate = ({ cell }: IgrCellTemplateContext) => {
     const data = cell.row.data;
-    const formattedDate = new Date(data.HireDate).toISOString().split('T')[0];
+    const formattedDate = new Date(data.HireDate).toISOString().split("T")[0];
     return <>{formattedDate}</>;
   };
 
-  const clearSorting = () => {
+  const clearSorting = useCallback(() => {
     if (gridRef.current) {
       gridRef.current.sortingExpressions = [];
     }
     setIsSorted(false);
-  };
+  }, []);
 
-  const handleSortingChanged = () => {
+  const handleSortingChanged = useCallback(() => {
     if (gridRef.current) {
       setIsSorted(gridRef.current.sortingExpressions.length > 0);
     }
-  };
+  }, []);
 
   return (
     <IgrTreeGrid
@@ -145,26 +131,72 @@ export default function HRPortal() {
           {isSorted && (
             <div className="icon-button-group">
               <IgrButton variant="flat" onClick={clearSorting}>
-                <IgrIcon name="close" collection="hr-icons" className="medium" />
+                <IgrIcon
+                  name="close"
+                  collection="hr-icons"
+                  className="medium"
+                />
                 Clear Sort
               </IgrButton>
             </div>
           )}
           <IgrGridToolbarHiding />
           <IgrGridToolbarPinning />
-          <IgrGridToolbarExporter><span slot="excelText">Export</span></IgrGridToolbarExporter>
+          <IgrGridToolbarExporter>
+            <span slot="excelText">Export</span>
+          </IgrGridToolbarExporter>
           <IgrGridToolbarAdvancedFiltering />
         </IgrGridToolbarActions>
       </IgrGridToolbar>
 
-      <IgrColumn field="Name" width="300px" sortable={true} pinned={true} bodyTemplate={avatarTemplate} />
-      <IgrColumn field="JobTitle" header="Job Title" dataType="string" minWidth="200px" sortable={true} />
-      <IgrColumn field="Department" dataType="string" minWidth="200px" sortable={true} />
-      <IgrColumn field="Location" dataType="string" sortable={true} bodyTemplate={countryIconTemplate} />
-      <IgrColumn field="Contacts" dataType="string" minWidth="200px" filterable={false} bodyTemplate={contactsTemplate} />
-      <IgrColumn field="HireDate" header="Hire Date" dataType="date" minWidth="100px" sortable={true} bodyTemplate={dateTemplate} />
-      <IgrColumn field="GrossSalary" header="Gross Salary" dataType="currency" minWidth="100px" sortable={true} />
+      <IgrColumn
+        field="Name"
+        width="300px"
+        sortable={true}
+        pinned={true}
+        bodyTemplate={avatarTemplate}
+      />
+      <IgrColumn
+        field="JobTitle"
+        header="Job Title"
+        dataType="string"
+        minWidth="200px"
+        sortable={true}
+      />
+      <IgrColumn
+        field="Department"
+        dataType="string"
+        minWidth="200px"
+        sortable={true}
+      />
+      <IgrColumn
+        field="Location"
+        dataType="string"
+        sortable={true}
+        bodyTemplate={countryIconTemplate}
+      />
+      <IgrColumn
+        field="Contacts"
+        dataType="string"
+        minWidth="200px"
+        filterable={false}
+        bodyTemplate={contactsTemplate}
+      />
+      <IgrColumn
+        field="HireDate"
+        header="Hire Date"
+        dataType="date"
+        minWidth="100px"
+        sortable={true}
+        bodyTemplate={dateTemplate}
+      />
+      <IgrColumn
+        field="GrossSalary"
+        header="Gross Salary"
+        dataType="currency"
+        minWidth="100px"
+        sortable={true}
+      />
     </IgrTreeGrid>
   );
 }
-

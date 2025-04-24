@@ -1,8 +1,7 @@
-import { Outlet } from "react-router-dom";
+import HRPortal from "./hr-portal/hr-portal";
 
 export default function App() {
-
   return (
-    <Outlet />
+    <HRPortal />
   )
 }

@@ -1,7 +1,6 @@
-/// <reference types="vitest" />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import path from 'path'
+import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -11,26 +10,24 @@ export default defineConfig({
   },
   plugins: [
     react(),
-    // viteStaticCopy({
-    //   targets: [
-    //     {
-    //       src: './projects/sales-grid/public/*',
-    //       dest: 'public',
-    //     }
-    //   ]
-    // })
+    viteStaticCopy({
+      targets: [
+        {
+          src: './projects/sales-grid/public/*',
+          dest: 'public',
+        },
+        {
+          src: './projects/hr-portal/public/**',
+          dest: '',
+        }
+      ]
+    })
   ],
   resolve: {
-    mainFields: ['module'],
-    alias: {
-      '@hr-assets': path.resolve(__dirname, 'projects/hr-portal/src/app/hr-portal/assets/images')
-    }
+    mainFields: ['module']
   },
   server: {
     open: true,
-    port: 3003,
-    fs: {
-      allow: ['.', 'projects']
-    }
+    port: 3003
   }
 })
