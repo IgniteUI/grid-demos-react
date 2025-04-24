@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./hr-portal.scss";
 
 import {
@@ -38,10 +38,7 @@ export default function HRPortal() {
 
     icons.forEach(
       (element: { name: string; path: string; category: string }) => {
-        const normalizedPath = element.path.startsWith("/")
-          ? `${import.meta.env.BASE_URL}${element.path.slice(1)}`
-          : `${import.meta.env.BASE_URL}${element.path}`;
-
+        const normalizedPath = `${import.meta.env.BASE_URL}${element.path.slice(1)}`;
         registerIcon(element.name, normalizedPath, element.category);
       }
     );
@@ -95,18 +92,18 @@ export default function HRPortal() {
     return <>{formattedDate}</>;
   };
 
-  const clearSorting = useCallback(() => {
+  const clearSorting = () => {
     if (gridRef.current) {
       gridRef.current.sortingExpressions = [];
     }
     setIsSorted(false);
-  }, []);
+  }
 
-  const handleSortingChanged = useCallback(() => {
+  const handleSortingChanged = () => {
     if (gridRef.current) {
       setIsSorted(gridRef.current.sortingExpressions.length > 0);
     }
-  }, []);
+  }
 
   return (
     <IgrTreeGrid
