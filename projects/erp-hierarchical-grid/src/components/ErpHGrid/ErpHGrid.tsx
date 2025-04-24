@@ -18,7 +18,7 @@ import {
   IgrColumnGroup,
   IgrSortingExpression,
   SortingDirection,
-  IgrFilteringOperand
+  IgrFilteringOperand,
 } from "igniteui-react-grids";
 import { MyChart } from "../SalesTrendChart/SalesTrendChart";
 import { erpDataService } from "../../services/ErpDataService";
@@ -38,15 +38,17 @@ import {
   shift,
   useFloating,
   useTransitionStyles,
-} from '@floating-ui/react';
+} from "@floating-ui/react";
 
 const ErpHGrid = () => {
   const selectionMode: GridSelectionMode = "multiple";
   const [gridData, setGridData] = useState<TemplateDataItemExtended[]>([]);
 
   // Custom filtering for templated Address column
-  const fullAddressFilteringOperand: IgrFilteringOperand = FullAddressFilteringOperand.instance();
-  const shortAddressFilteringOperand: FullAddressFilteringOperand = new FullAddressFilteringOperand(true);
+  const fullAddressFilteringOperand: IgrFilteringOperand =
+    FullAddressFilteringOperand.instance();
+  const shortAddressFilteringOperand: FullAddressFilteringOperand =
+    new FullAddressFilteringOperand(true);
 
   // Tooltip stuff
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
@@ -55,7 +57,7 @@ const ErpHGrid = () => {
     open: isTooltipOpen,
     onOpenChange: setIsTooltipOpen,
     middleware: [offset(8), flip(), shift()],
-    placement: 'right-start',
+    placement: "right-start",
   });
 
   const { styles: transitionStyles } = useTransitionStyles(context, {
@@ -65,8 +67,9 @@ const ErpHGrid = () => {
   });
 
   // Image tooltip for each product fields
-  const [ hoveredImageUrl, setHoveredImageUrl] = useState<string>('');
-  const [ hoveredImageProductName, setHoveredImageProductName] = useState<string>('');
+  const [hoveredImageUrl, setHoveredImageUrl] = useState<string>("");
+  const [hoveredImageProductName, setHoveredImageProductName] =
+    useState<string>("");
 
   useEffect(() => {
     erpDataService.getErpData().then((data: TemplateDataItemExtended[]) => {
@@ -88,20 +91,26 @@ const ErpHGrid = () => {
   };
 
   // TEMPLATES
-  const showTooltip = (event: React.MouseEvent<HTMLDivElement>,  imageUrl: string, productName: string) => {
+  const showTooltip = (
+    event: React.MouseEvent<HTMLDivElement>,
+    imageUrl: string,
+    productName: string
+  ) => {
     setIsTooltipOpen(true);
     setHoveredImageUrl(imageUrl);
     setHoveredImageProductName(productName);
 
     const currentTarget = event.currentTarget;
     refs.setReference(currentTarget);
-  }
+  };
 
-  const imageTemplate = (props: { dataContext: IgrCellTemplateContext }) => {
-    const imageUrl = props.dataContext.cell.value;
+  const imageTemplate = (props: IgrCellTemplateContext) => {
+    const imageUrl = props.cell.value;
     const imageUrlFull: string = `${import.meta.env.BASE_URL}${imageUrl}`;
 
-    const productName: string = props.dataContext.cell.row?.cells?.find((c: any) => c.column.field === 'productName')?.value;
+    const productName: string = props.cell.row?.cells?.find(
+      (c: any) => c.column.field === "productName"
+    )?.value;
 
     return (
       <img
@@ -111,16 +120,16 @@ const ErpHGrid = () => {
         style={{
           height: "22px",
           width: "fit-content",
-          borderRadius: "4px"
+          borderRadius: "4px",
         }}
         onMouseEnter={(event) => showTooltip(event, imageUrl, productName)}
         onMouseLeave={() => setIsTooltipOpen(false)}
-    />
+      />
     );
   };
 
-  const ratingTemplate = (ctx: { dataContext: IgrCellTemplateContext }) => {
-    const rating: number = ctx.dataContext.cell.value;
+  const ratingTemplate = (ctx: IgrCellTemplateContext) => {
+    const rating: number = ctx.cell.value;
     return (
       <>
         <IgrRating value={rating}></IgrRating>
@@ -200,11 +209,13 @@ const ErpHGrid = () => {
 
   const countryTemplate = (ctx: IgrCellTemplateContext) => {
     const cellValue: string = ctx.cell.value;
-    const flagPath: string = `${import.meta.env.BASE_URL}country-flags/${cellValue}.svg`;
+    const flagPath: string = `${
+      import.meta.env.BASE_URL
+    }country-flags/${cellValue}.svg`;
 
     return (
       <div className="country-cell">
-        <img src={flagPath}/>
+        <img src={flagPath} />
         <span className="country-name">{cellValue}</span>
       </div>
     );
@@ -276,7 +287,7 @@ const ErpHGrid = () => {
           filterable={false}
           dataType="image"
           width="7%"
-          cellClasses={{ 'centered-image-cell': true }}
+          cellClasses={{ "centered-image-cell": true }}
         />
         <IgrColumn
           field="productName"
@@ -472,15 +483,18 @@ const ErpHGrid = () => {
         </IgrRowIsland>
       </IgrHierarchicalGrid>
 
-      <div
-        className="imageTooltip"
-        ref={refs.setFloating}
-        style={{ ...floatingStyles, ...transitionStyles }}>
+      {isTooltipOpen && (
+        <div
+          className="imageTooltip"
+          ref={refs.setFloating}
+          style={{ ...floatingStyles, ...transitionStyles }}
+        >
           <div className="tooltip-header"> {hoveredImageProductName} </div>
           <div className="tooltip-body">
-            <img src={hoveredImageUrl} alt={hoveredImageProductName}/>
+            <img src={hoveredImageUrl} alt={hoveredImageProductName} />
           </div>
-      </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { DataPoint } from "../../models/DataPoint";
 import {
   IgrCategoryXAxis,
@@ -21,8 +20,6 @@ IgrDataChartVisualDataModule.register();
 IgrDataChartInteractivityModule.register();
 
 export const MyChart = ({ trendData }: { trendData: DataPoint[] }) => {
-  useEffect(() => {}, []);
-
   return (
     <IgrDataChart
       width="100%"

@@ -16,6 +16,6 @@ export interface TemplateDataItem {
 }
 
 export interface TemplateDataItemExtended extends TemplateDataItem {
-    unitsSold: number;
-    totalNetProfit: number;
+  unitsSold: number;
+  totalNetProfit: number;
 }
