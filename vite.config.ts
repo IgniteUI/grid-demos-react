@@ -17,17 +17,21 @@ export default defineConfig({
           dest: 'public',
         },
         {
+          src: './projects/finance-grid/public/**',
+          dest: '',
+        },
+        {
           src: './projects/hr-portal/public/**',
           dest: '',
         }
-      ]
-    })
+      ],
+    }),
   ],
   resolve: {
     mainFields: ['module']
   },
   server: {
     open: true,
-    port: 3003
-  }
-})
+    port: 3003,
+  },
+});
