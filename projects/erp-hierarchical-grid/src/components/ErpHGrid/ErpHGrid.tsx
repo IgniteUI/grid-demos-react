@@ -32,7 +32,13 @@ import DELIVERY from "../../assets/icons/delivery.svg";
 import DROPBOX from "../../assets/icons/dropbox.svg";
 import "./ErpHGrid.scss";
 import { TemplateDataItemExtended } from "../../models/TemplateDataItem";
-import { HoverTooltip } from "../ImageTooltip/ImageTooltip";
+import {
+  flip,
+  offset,
+  shift,
+  useFloating,
+  useTransitionStyles,
+} from '@floating-ui/react';
 
 const ErpHGrid = () => {
   const selectionMode: GridSelectionMode = "multiple";
@@ -41,6 +47,26 @@ const ErpHGrid = () => {
   // Custom filtering for templated Address column
   const fullAddressFilteringOperand: IgrFilteringOperand = FullAddressFilteringOperand.instance();
   const shortAddressFilteringOperand: FullAddressFilteringOperand = new FullAddressFilteringOperand(true);
+
+  // Tooltip stuff
+  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
+
+  const { refs, floatingStyles, context } = useFloating({
+    open: isTooltipOpen,
+    onOpenChange: setIsTooltipOpen,
+    middleware: [offset(8), flip(), shift()],
+    placement: 'right-start',
+  });
+
+  const { styles: transitionStyles } = useTransitionStyles(context, {
+    duration: {
+      open: 800,
+    },
+  });
+
+  // Image tooltip for each product fields
+  const [ hoveredImageUrl, setHoveredImageUrl] = useState<string>('');
+  const [ hoveredImageProductName, setHoveredImageProductName] = useState<string>('');
 
   useEffect(() => {
     erpDataService.getErpData().then((data: TemplateDataItemExtended[]) => {
@@ -62,6 +88,15 @@ const ErpHGrid = () => {
   };
 
   // TEMPLATES
+  const showTooltip = (event: React.MouseEvent<HTMLDivElement>,  imageUrl: string, productName: string) => {
+    setIsTooltipOpen(true);
+    setHoveredImageUrl(imageUrl);
+    setHoveredImageProductName(productName);
+
+    const currentTarget = event.currentTarget;
+    refs.setReference(currentTarget);
+  }
+
   const imageTemplate = (props: { dataContext: IgrCellTemplateContext }) => {
     const imageUrl = props.dataContext.cell.value;
     const imageUrlFull: string = `${import.meta.env.BASE_URL}${imageUrl}`;
@@ -69,7 +104,18 @@ const ErpHGrid = () => {
     const productName: string = props.dataContext.cell.row?.cells?.find((c: any) => c.column.field === 'productName')?.value;
 
     return (
-      <HoverTooltip imageUrl={imageUrlFull} tooltipText={productName} />
+      <img
+        src={imageUrlFull}
+        alt={productName}
+        ref={refs.setReference}
+        style={{
+          height: "22px",
+          width: "fit-content",
+          borderRadius: "4px"
+        }}
+        onMouseEnter={(event) => showTooltip(event, imageUrl, productName)}
+        onMouseLeave={() => setIsTooltipOpen(false)}
+    />
     );
   };
 
@@ -425,6 +471,16 @@ const ErpHGrid = () => {
           </IgrColumnGroup>
         </IgrRowIsland>
       </IgrHierarchicalGrid>
+
+      <div
+        className="imageTooltip"
+        ref={refs.setFloating}
+        style={{ ...floatingStyles, ...transitionStyles }}>
+          <div className="tooltip-header"> {hoveredImageProductName} </div>
+          <div className="tooltip-body">
+            <img src={hoveredImageUrl} alt={hoveredImageProductName}/>
+          </div>
+      </div>
     </div>
   );
 };
