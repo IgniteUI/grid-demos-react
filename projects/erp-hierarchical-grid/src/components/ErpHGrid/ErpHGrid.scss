@@ -97,14 +97,14 @@
 .imageTooltip {
   border-radius: 4px;
   background-color: white;
-  height: 400px;
-  width: 350px;
+  height: fit-content;
+  width: fit-content;
   padding: 5px;
   z-index: 9999;
   box-shadow: var(--ig-elevation-24);
 
   .tooltip-header {
-    padding: 16px;
+    padding: 8px;
     font-size: 18px;
     font-weight: bold;
     border-top-left-radius: 8px;
@@ -115,11 +115,9 @@
     padding: 16px;
     font-size: 14px;
     color: #555;
-    overflow-y: auto;
 
     img {
       width: 312px;
-      height: 312px;
     }
   }
 
