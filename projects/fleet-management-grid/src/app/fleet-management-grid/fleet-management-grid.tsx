@@ -1,7 +1,7 @@
 import { IgrCellTemplateContext, IgrColumn, IgrGrid, IgrGridMasterDetailContext, IgrGridToolbar, IgrGridToolbarActions, IgrGridToolbarAdvancedFiltering, IgrGridToolbarExporter, IgrGridToolbarHiding, IgrGridToolbarPinning, IgrGridToolbarTitle } from 'igniteui-react-grids';
 import 'igniteui-react-grids/grids/combined.js';
 import './fleet-management-grid.scss';
-import { IgrAvatar, IgrBadge, IgrCarousel, IgrCarouselSlide, IgrDivider, IgrIcon, IgrSelect, IgrSelectHeader, IgrSelectItem, IgrTab, IgrTabPanel, IgrTabs, registerIconFromText, StyleVariant } from 'igniteui-react';
+import { IgrAvatar, IgrBadge, IgrButton, IgrCard, IgrCardActions, IgrCardContent, IgrCardHeader, IgrCarousel, IgrCarouselSlide, IgrDivider, IgrIcon, IgrSelect, IgrSelectHeader, IgrSelectItem, IgrTab, IgrTabPanel, IgrTabs, registerIconFromText, StyleVariant } from 'igniteui-react';
 import { useEffect, useState } from 'react';
 import { check, delivery, wrench } from '@igniteui/material-icons-extended';
 import CAR_PHOTO_MANIFEST from '../assets/car_photo_manifest.json';
@@ -12,24 +12,67 @@ import { IgrCategoryChart, IgrCategoryChartModule, IgrLegend, IgrLegendModule, I
 import { ChartType, Period } from '../models/enums';
 import TripHistoryGrid from '../trip-history-grid/trip-history-grid';
 import MaintenanceGrid from '../maintenance-grid/maintenance-grid';
+import { flip, offset, shift, useFloating } from '@floating-ui/react-dom';
+import { VehicleDetails } from '../models/vehicle.model';
+import { IgrGeographicMap, IgrGeographicMapModule, IgrGeographicSymbolSeries } from 'igniteui-react-maps';
+import { DataTemplateMeasureInfo, DataTemplateRenderInfo, IgDataTemplate } from 'igniteui-react-core';
 
 IgrLegendModule.register();
 IgrCategoryChartModule.register();
+IgrGeographicMapModule.register();
+
+function useOverlayControl(ref: React.MutableRefObject<HTMLElement | null>, onClose: () => void) {
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      const path = event.composedPath?.() || (event as any).path || [];
+      if (!ref.current || !path.includes(ref.current)) {
+        onClose();
+      }
+    }
+  
+    window.addEventListener("mousedown", handleClickOutside);
+    window.addEventListener("wheel", handleClickOutside, { passive: true, capture: true });
+  
+    return () => {
+      window.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("wheel", handleClickOutside);
+    };
+  }, [ref, onClose]);  
+}
 
 export default function FleetManagement() {
+  let periods: { [vehicleId: string]: { costPerTypePeriod: Period, costPerMeterPeriod: Period, fuelCostPeriod: Period } | null } = {};
+  const vehiclesData = dataService.getVehiclesData();
+  
+  //const [isMounted, setIsMounted] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isLocationOverlayActive, setIsLocationOverlayActive] = useState(false);
+
+  const [vehicleDetails, setVehicleDetails] = useState<VehicleDetails>({
+    vehiclePhoto: '',
+    make: '',
+    model: '',
+    mileage: '',
+    markerLocations: []
+  });
+
   const [grid, setGrid] = useState<IgrGrid>();
   function gridRef(ref: IgrGrid) {
-    setGrid(ref)
+    setGrid(ref);
   }
 
-  const [legend, setLegend] = useState<IgrLegend>();
-  function legendRef(ref: IgrLegend) {
-    setLegend(ref)
+  const [map, setMap] = useState<IgrGeographicMap>();
+  function mapRef(ref: IgrGeographicMap) {
+    setMap(ref);
   }
 
-  const uuid = () => crypto.randomUUID();
-  const vehiclesData = dataService.getVehiclesData();
-  let periods: { [vehicleId: string]: { costPerTypePeriod: Period, costPerMeterPeriod: Period, fuelCostPeriod: Period } | null } = {};
+  const {refs, floatingStyles} = useFloating({
+    placement: 'left-start',
+    middleware: [offset(8), flip(), shift()],
+  }); 
+  
+  useOverlayControl(refs.floating, () => setIsLocationOverlayActive(false));
+  
 
   useEffect(() => {
     registerIconFromText(check.name, check.value, "imx-icons");
@@ -37,9 +80,34 @@ export default function FleetManagement() {
     registerIconFromText(delivery.name, delivery.value, "imx-icons");
   }, []);
 
-  function breakThisShit() {
-    console.log("breakpoint")
-  }
+  useEffect(() => {
+    if (!map || vehicleDetails.markerLocations.length === 0) return;
+
+    map.series.clear();
+    addSeriesWith(vehicleDetails.markerLocations, "Red");
+    const lon = vehicleDetails.markerLocations[0].longitude;
+    const lat = vehicleDetails.markerLocations[0].latitude;
+    const centerPoint = {
+      left: lon - 0.01,
+      top: lat - 0.01,
+      width: 0.01,
+      height: 0.01
+    };
+
+    map.zoomToGeographic(centerPoint);
+  }, [map, vehicleDetails.markerLocations]);
+
+  useEffect(() => {
+    if (isLocationOverlayActive) {
+      requestAnimationFrame(() => {
+        setIsVisible(true);
+      });
+    } else {
+      setIsVisible(false);
+      const timeout = setTimeout(() => 200);
+      return () => clearTimeout(timeout);
+    }
+  }, [isLocationOverlayActive]);
 
   /** Templates */
 
@@ -210,7 +278,7 @@ export default function FleetManagement() {
             <div className="chart-content utilization-chart-container">
               <h6>Utilization per Month</h6>
               
-              <IgrLegend orientation="Horizontal" ref={legendRef}></IgrLegend>
+              <IgrLegend orientation="Horizontal"></IgrLegend>
               <div className="column-chart-two-series">
                 
                 <IgrCategoryChart
@@ -218,7 +286,6 @@ export default function FleetManagement() {
                   chartType="Column"
                   dataSource={dataService.getUtilizationData(props.dataContext.implicit.vehicleId)}
                   yAxisTitle="Miles"
-                  legend={legendRef}
                   isHorizontalZoomEnabled="false"
                   isVerticalZoomEnabled="false"
                   xAxisLabelTextColor="#ededed"
@@ -262,9 +329,47 @@ export default function FleetManagement() {
 
   let locationCellTemplate = (props: {dataContext: IgrCellTemplateContext}) => {
     return (
-      <a className='link-style' href='#' onClick={() => console.log("CLICK")}>{props.dataContext.implicit}</a>
+      <a className='link-style' href='#' onClick={(event) => showLocationOverlay(event, props.dataContext.cell)}>{props.dataContext.implicit}</a>
     );
   }
+
+  /** Overlay Logic */
+
+  function showLocationOverlay(event: React.MouseEvent<HTMLElement>, cell: any) {
+    event.preventDefault();
+
+    const vehicleId = cell.row?.cells?.find((c: any) => c.column.field === 'vehicleId')?.value;
+
+    if (!vehicleId) {
+      console.error('Vehicle ID not found in data');
+      return;
+    }
+
+    const vehicle = dataService.getVehiclesData().find(v => v.vehicleId === vehicleId)
+
+    if (!vehicle) {
+      console.error(`No vehicle found for ID: ${vehicleId}`);
+      return;
+    }
+
+    setVehicleDetails({
+      vehiclePhoto: getPathToCarImage(vehicleId)[0],
+      make: vehicle.make,
+      model: vehicle.model,
+      mileage: vehicle.details.mileage,
+      markerLocations: [{
+        latitude: parseFloat(vehicle.locationGps.split(',')[0]), 
+        longitude: parseFloat(vehicle.locationGps.split(',')[1]),
+      }]
+    });
+
+    const target = event.currentTarget;
+    
+    refs.setReference(target);
+    
+    setIsLocationOverlayActive(true);
+  }
+
 
   /** Utility Functions */
 
@@ -327,6 +432,35 @@ export default function FleetManagement() {
     }
 
     grid?.markForCheck
+  }  
+
+  function addSeriesWith(locations: any[], brush: string) {
+    const symbolSeries = new IgrGeographicSymbolSeries({ name: "symbolSeries" });
+    symbolSeries.dataSource = locations;
+    symbolSeries.latitudeMemberPath = "latitude";
+    symbolSeries.longitudeMemberPath = "longitude";
+    symbolSeries.markerBrush  = "White";
+    symbolSeries.markerOutline = brush;
+    symbolSeries.markerTemplate = {
+      measure: (measureInfo: DataTemplateMeasureInfo) => {
+        measureInfo.width = 24;
+        measureInfo.height = 24;
+      },
+      render: (renderInfo: DataTemplateRenderInfo) => {
+        const ctx = renderInfo.context;
+        const x = renderInfo.xPosition;
+        const y = renderInfo.yPosition;
+
+        const img = new Image();
+        img.src = 'location_pin.svg';
+        img.onload = () => {
+          ctx.drawImage(img, x - 12, y - 12, 32, 32);
+        };
+      }
+    } as IgDataTemplate;
+    if (map instanceof IgrGeographicMap) {
+      map.series.add(symbolSeries);
+    }    
   }
 
   return (
@@ -347,7 +481,7 @@ export default function FleetManagement() {
               <IgrGridToolbarAdvancedFiltering></IgrGridToolbarAdvancedFiltering>
             </IgrGridToolbarActions>
             <IgrGridToolbarTitle>
-              <span key={uuid()}>Fleet Management</span>
+              <span key="grid">Fleet Management</span>
             </IgrGridToolbarTitle>
           </IgrGridToolbar>
           <IgrColumn field="vehicleId" dataType="string" header="Vehicle ID" sortable={true}></IgrColumn>
@@ -361,6 +495,35 @@ export default function FleetManagement() {
           <IgrColumn field="locationGps" dataType="string" header="Location (GPS)" sortable={true} bodyTemplate={locationCellTemplate}></IgrColumn>
         </IgrGrid>
       </div>
+
+      { isLocationOverlayActive && (
+        <>
+          <div className="overlay-backdrop"></div>
+          <div className={`overlay-wrapper ${isVisible ? 'visible' : ''}`} ref={refs.setFloating} style={floatingStyles}>
+            <div>
+              <IgrCard elevated className="overlay overlay-location">
+                <IgrCardHeader className="overlay-location-header">
+                  <div className="overlay-header-content">
+                    <IgrAvatar className="overlay-avatar" shape="circle" src={vehicleDetails.vehiclePhoto}></IgrAvatar>
+                    <h6 className="overlay-title" slot="title">{vehicleDetails.make} {vehicleDetails.model}</h6>
+                    <span className="overlay-text" slot="subtitle">Mileage: {vehicleDetails.mileage}</span>
+                  </div>            
+                </IgrCardHeader>
+                <IgrCardContent className="overlay-location-content">
+                  <IgrGeographicMap width="360px" height="190px"
+                  ref={mapRef}
+                  zoomable="false"
+                  dataSource={vehicleDetails.markerLocations}></IgrGeographicMap>
+                </IgrCardContent>
+                <IgrCardActions className="overlay-location-actions">
+                  <IgrButton variant="flat" onClick={() => setIsLocationOverlayActive(false)}>Close</IgrButton>
+                </IgrCardActions>
+              </IgrCard>
+            </div>        
+          </div>
+        </>
+      )}
+      
     </>
   );
 }

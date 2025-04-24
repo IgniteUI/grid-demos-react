@@ -39,23 +39,6 @@ igc-divider {
   opacity: 24%;
 }
 
-.overlay-backdrop {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.4);
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 200ms ease;
-  z-index: 9998;
-  pointer-events: none;
-}
-
-.overlay-backdrop.visible {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-}
-
 /* Global Grid Styles */
 .main-grid {
   --ig-size: var(--ig-size-small)
@@ -228,7 +211,6 @@ igc-divider {
 
 .overlay-wrapper {
   position: absolute;
-  display: none;
   opacity: 0;
   transition: opacity 500ms ease;
   width: max-content;
@@ -237,6 +219,21 @@ igc-divider {
 }
 
 .overlay-wrapper.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.overlay-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  opacity: 1;
+  transition: opacity 200ms ease;
+  z-index: 9998;
+  pointer-events: auto;
+}
+
+.overlay-backdrop.visible {
   opacity: 1;
   pointer-events: auto;
 }
