@@ -17,6 +17,10 @@ export default defineConfig({
           dest: 'public',
         },
         {
+          src: './projects/erp-hierarchical-grid/public/*',
+          dest: '',
+        },
+        {
           src: './projects/finance-grid/public/**',
           dest: '',
         },
@@ -24,8 +28,8 @@ export default defineConfig({
           src: './projects/hr-portal/public/**',
           dest: '',
         }
-      ],
-    }),
+      ]
+    })
   ],
   resolve: {
     mainFields: ['module']
