@@ -77,10 +77,10 @@ class DataService {
         fuelCostsPerMonthPeriod = fuelCostsPerMonth;
         break;
       case '6months':
-        fuelCostsPerMonthPeriod = fuelCostsPerMonth.splice(-6);
+        fuelCostsPerMonthPeriod = fuelCostsPerMonth.slice(-6);
         break;
       case '3months':
-        fuelCostsPerMonthPeriod = fuelCostsPerMonth.splice(-3);
+        fuelCostsPerMonthPeriod = fuelCostsPerMonth.slice(-3);
         break;
       default:
         console.warn("Invalid period:", period);

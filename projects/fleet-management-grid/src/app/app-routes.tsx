@@ -1,5 +1,5 @@
 import { redirect, RouteObject } from 'react-router-dom';
-import FleetManagement from './fleet-management-grid/fleet-management-grid';
+import FleetManagement from './components/fleet-management-grid/fleet-management-grid';
 
 export const routes: RouteObject[] = [
   { index: true, loader: () => redirect('fleet-management') },

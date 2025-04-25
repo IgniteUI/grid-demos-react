@@ -1,5 +1,5 @@
 import { IgrColumn, IgrGrid } from "igniteui-react-grids";
-import { dataService } from "../services/data.service";
+import { dataService } from "../../services/data.service";
 
 export default function MaintenanceGrid(vehicleId: any) {
 

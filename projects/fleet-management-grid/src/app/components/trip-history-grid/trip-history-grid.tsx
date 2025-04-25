@@ -1,7 +1,7 @@
 import { IgrCellTemplateContext, IgrColumn, IgrGrid } from "igniteui-react-grids";
 import "./trip-history-grid.scss"
 import { IgrAvatar, IgrBadge } from "igniteui-react";
-import { dataService } from "../services/data.service";
+import { dataService } from "../../services/data.service";
 
 export default function TripHistoryGrid(vehicleId: any) {
 
