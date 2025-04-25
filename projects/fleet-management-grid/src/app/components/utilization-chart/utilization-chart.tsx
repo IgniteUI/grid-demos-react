@@ -29,7 +29,7 @@ export default function UtilizationChartComponent({ vehicleId }: { vehicleId: st
             key={`chart-${vehicleId}`}
             ref={chartRef}
             chartType="Column"
-            dataSource={dataService.getUtilizationData(vehicleId)}
+            dataSource={dataService.findUtilizationDataById(vehicleId)}
             yAxisTitle="Miles"
             isHorizontalZoomEnabled="false"
             isVerticalZoomEnabled="false"

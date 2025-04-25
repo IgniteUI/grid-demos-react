@@ -9,11 +9,10 @@ import CAR_IMAGES from '../../assets/car_images.json';
 import VEHICLE_DETAILS from '../../assets/vehicle_details.json';
 import { dataService } from '../../services/data.service';
 import { IgrCategoryChartModule, IgrLegendModule } from 'igniteui-react-charts';
-import { ChartType, Period } from '../../models/enums';
 import TripHistoryGrid from '../trip-history-grid/trip-history-grid';
 import MaintenanceGrid from '../maintenance-grid/maintenance-grid';
 import { flip, offset, shift, useFloating } from '@floating-ui/react-dom';
-import { VehicleDetails } from '../../models/vehicle.model';
+import { OverlayVehicle, Vehicle } from '../../models/vehicle.model';
 import { IgrGeographicMap, IgrGeographicMapModule, IgrGeographicSymbolSeries } from 'igniteui-react-maps';
 import { DataTemplateMeasureInfo, DataTemplateRenderInfo, IgDataTemplate } from 'igniteui-react-core';
 import CostPerTypeChartComponent from '../cost-per-type-chart/cost-per-type-chart';
@@ -45,15 +44,12 @@ function useOverlayControl(ref: React.MutableRefObject<HTMLElement | null>, onCl
 }
 
 export default function FleetManagement() {
-  //let periods: { [vehicleId: string]: { costPerTypePeriod: Period, costPerMeterPeriod: Period, fuelCostPeriod: Period } | null } = {};
-  const vehiclesData = dataService.getVehiclesData();
+  const [vehiclesData, setVehiclesData] = useState<Vehicle[]>([]);
 
-  //const [isMounted, setIsMounted] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isLocationOverlayActive, setIsLocationOverlayActive] = useState(false);
-  const [periods, setPeriods] = useState<{ [vehicleId: string]: { costPerTypePeriod: Period, costPerMeterPeriod: Period, fuelCostPeriod: Period } | null }>({});
 
-  const [vehicleDetails, setVehicleDetails] = useState<VehicleDetails>({
+  const [vehicleDetails, setVehicleDetails] = useState<OverlayVehicle>({
     vehiclePhoto: '',
     make: '',
     model: '',
@@ -62,14 +58,7 @@ export default function FleetManagement() {
   });
 
   const gridRef = useRef<IgrGrid>(null);
-  // function gridRef(ref: IgrGrid) {
-  //   setGrid(ref);
-  // }
-
-  const [map, setMap] = useState<IgrGeographicMap>();
-  function mapRef(ref: IgrGeographicMap) {
-    setMap(ref);
-  }
+  const mapRef = useRef<IgrGeographicMap>(null);
 
   const { refs, floatingStyles } = useFloating({
     placement: 'left-start',
@@ -83,12 +72,18 @@ export default function FleetManagement() {
     registerIconFromText(check.name, check.value, "imx-icons");
     registerIconFromText(wrench.name, wrench.value, "imx-icons");
     registerIconFromText(delivery.name, delivery.value, "imx-icons");
+
+    dataService.getVehiclesData().then(() => {
+      setVehiclesData(dataService.vehicleList);
+    });
+
+    dataService.loadOptionalData();
   }, []);
 
   useEffect(() => {
-    if (!map || vehicleDetails.markerLocations.length === 0) return;
+    if (!mapRef.current || vehicleDetails.markerLocations.length === 0) return;
 
-    map.series.clear();
+    mapRef.current.series.clear();
     addSeriesWith(vehicleDetails.markerLocations, "Red");
     const lon = vehicleDetails.markerLocations[0].longitude;
     const lat = vehicleDetails.markerLocations[0].latitude;
@@ -99,8 +94,8 @@ export default function FleetManagement() {
       height: 0.01
     };
 
-    map.zoomToGeographic(centerPoint);
-  }, [map, vehicleDetails.markerLocations]);
+    mapRef.current.zoomToGeographic(centerPoint);
+  }, [mapRef, vehicleDetails.markerLocations]);
 
   useEffect(() => {
     if (isLocationOverlayActive) {
@@ -115,12 +110,11 @@ export default function FleetManagement() {
   }, [isLocationOverlayActive]);
 
 
-
   /** Templates */
 
   let masterDetailTemplate = (props: { dataContext: IgrGridMasterDetailContext }) => {
-    const images: string[] = getPathToCarImage(props.dataContext.implicit.vehicleId);
     const vehicleId = props.dataContext.implicit.vehicleId;
+    const images: string[] = getPathToCarImage(vehicleId);
 
     return (
       <IgrTabs key="tabs">
@@ -230,7 +224,7 @@ export default function FleetManagement() {
       return;
     }
 
-    const vehicle = dataService.getVehiclesData().find(v => v.vehicleId === vehicleId)
+    const vehicle = vehiclesData.find(v => v.vehicleId === vehicleId)
 
     if (!vehicle) {
       console.error(`No vehicle found for ID: ${vehicleId}`);
@@ -299,35 +293,6 @@ export default function FleetManagement() {
     return path.split('.').reduce((o, key) => (o && o[key] !== undefined) ? o[key] : 'N/A', obj);
   }
 
-  function onPeriodChange(event: any, chart: string, vehicleId: string): void {
-    setPeriods(prev => {
-      const current = prev[vehicleId] || {
-        costPerTypePeriod: Period.YTD,
-        costPerMeterPeriod: Period.YTD,
-        fuelCostPeriod: Period.YTD,
-      };
-
-      const updated = { ...current };
-
-      if (chart === ChartType.CostPerType) {
-        updated.costPerTypePeriod = event.detail.value;
-      } else if (chart === ChartType.CostPerMeter) {
-        updated.costPerMeterPeriod = event.detail.value;
-      } else if (chart === ChartType.FuelCosts) {
-        updated.fuelCostPeriod = event.detail.value;
-      }
-
-
-
-      gridRef.current?.markForCheck();
-
-      return {
-        ...prev,
-        [vehicleId]: updated
-      };
-    });
-  }
-
   function addSeriesWith(locations: any[], brush: string) {
     const symbolSeries = new IgrGeographicSymbolSeries({ name: "symbolSeries" });
     symbolSeries.dataSource = locations;
@@ -352,8 +317,8 @@ export default function FleetManagement() {
         };
       }
     } as IgDataTemplate;
-    if (map instanceof IgrGeographicMap) {
-      map.series.add(symbolSeries);
+    if (mapRef.current instanceof IgrGeographicMap) {
+      mapRef.current.series.add(symbolSeries);
     }
   }
 

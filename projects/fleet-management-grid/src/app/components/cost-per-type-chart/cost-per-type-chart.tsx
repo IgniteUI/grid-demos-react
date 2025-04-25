@@ -9,7 +9,7 @@ export default function CostPerTypeChartComponent({ vehicleId }: { vehicleId: st
   const [selectValue, setSelectValue] = useState(Period.YTD);
 
   useEffect(() => {
-    const data = dataService.getCostsPerTypeData(vehicleId, selectValue);
+    const data = dataService.findCostsPerTypeData(vehicleId, selectValue);
     setChartData(data);
   }, [selectValue])
 

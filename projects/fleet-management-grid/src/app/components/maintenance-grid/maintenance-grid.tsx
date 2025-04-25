@@ -4,36 +4,36 @@ import { dataService } from "../../services/data.service";
 export default function MaintenanceGrid(vehicleId: any) {
 
     const rightAlignedCellStyles = {
-		'justify-content': 'flex-end',
-		'display': 'flex'
-	};
-	const rightAlignedHeaderStyles = {
-		'text-align': 'right'
-	};
+        'justify-content': 'flex-end',
+        'display': 'flex'
+    };
+    const rightAlignedHeaderStyles = {
+        'text-align': 'right'
+    };
 
     const handleColumnInit = (event: CustomEvent) => {
         const column = event.detail
-		const field = column.field;
+        const field = column.field;
 
         switch (field) {
             case "id":
-				setIdColumn(column);
-				break;
-			case "event":
-				setEventColumn(column);
-				break;
-			case "date":
-				setDateColumn(column);
-				break;
-			case "location":
-				setLocationColumn(column);
-				break;
-			case "type":
-				setTypeColumn(column);
-				break;
-			case "remarks":
-				setRemarksColumn(column);
-				break;
+                setIdColumn(column);
+                break;
+            case "event":
+                setEventColumn(column);
+                break;
+            case "date":
+                setDateColumn(column);
+                break;
+            case "location":
+                setLocationColumn(column);
+                break;
+            case "type":
+                setTypeColumn(column);
+                break;
+            case "remarks":
+                setRemarksColumn(column);
+                break;
             default:
                 console.warn("No setter defined for field:", field);
         }
@@ -43,7 +43,7 @@ export default function MaintenanceGrid(vehicleId: any) {
         column.header = "ID";
         column.width = "5%";
         column.headerStyles = rightAlignedHeaderStyles;
-		column.cellStyles = rightAlignedCellStyles;
+        column.cellStyles = rightAlignedCellStyles;
     }
 
     const setEventColumn = (column: IgrColumn) => {
@@ -71,9 +71,9 @@ export default function MaintenanceGrid(vehicleId: any) {
         column.width = "40%";
     }
 
-    return(
+    return (
         <>
-        <IgrGrid autoGenerate={true} onColumnInit={handleColumnInit} data={dataService.getMaintenanceData(vehicleId.vehicleId)} className="child-grid" height="100%" width="100%"></IgrGrid>
+            <IgrGrid autoGenerate={true} onColumnInit={handleColumnInit} data={dataService.findMaintenanceDataById(vehicleId.vehicleId)} className="child-grid" height="100%" width="100%"></IgrGrid>
         </>
     )
 }

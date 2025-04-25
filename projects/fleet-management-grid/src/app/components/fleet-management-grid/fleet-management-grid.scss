@@ -1,12 +1,14 @@
 .row-layout {
   display: flex;
 }
+
 .fleet-management-container {
   justify-content: flex-start;
   align-items: stretch;
   align-content: flex-start;
   height: 100%;
 }
+
 .grid {
   --ig-size: var(--ig-size-small);
   min-width: 600px;
@@ -265,7 +267,7 @@ igc-divider {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  
+
 }
 
 .overlay-location-header,

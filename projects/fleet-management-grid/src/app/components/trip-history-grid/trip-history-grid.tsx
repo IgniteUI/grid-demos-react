@@ -14,19 +14,19 @@ export default function TripHistoryGrid(vehicleId: any) {
 	};
 
 	const driverCellTemplate = (ctx: IgrCellTemplateContext) => {
-			const isVisible = ctx.cell.row.index === 0 && ctx.cell.row.data.end === "N/A";
-			return (
-				<>
-					<IgrAvatar className="driver-avatar" shape="circle" src={getPathToDriverPhoto(ctx.cell)}></IgrAvatar>
-					<a className="status-value" href="#" onClick={(e: any) => handleDriverClick(e, ctx)}>{ctx.implicit}</a>
-					{isVisible ? (
+		const isVisible = ctx.cell.row.index === 0 && ctx.cell.row.data.end === "N/A";
+		return (
+			<>
+				<IgrAvatar className="driver-avatar" shape="circle" src={getPathToDriverPhoto(ctx.cell)}></IgrAvatar>
+				<a className="status-value" href="#" onClick={(e: any) => handleDriverClick(e, ctx)}>{ctx.implicit}</a>
+				{isVisible ? (
 					<IgrBadge className="driver-badge" variant="success">
 						<span className="driver-badge">Current</span>
 					</IgrBadge>
-					)
+				)
 					: ""}
-				</>
-			);
+			</>
+		);
 	}
 
 	function handleDriverClick(event: any, ctx: IgrCellTemplateContext) {
@@ -35,15 +35,15 @@ export default function TripHistoryGrid(vehicleId: any) {
 		const driverName = ctx.cell.row?.cells?.find((c: any) => c.column.field === 'driverName')?.value;
 
 		if (!driverName) {
-				console.error('Driver not found in data');
-				return;
+			console.error('Driver not found in data');
+			return;
 		}
 
-		const driverDetails = dataService.getDriverData(driverName);
+		const driverDetails = dataService.findDriverByName(driverName);
 
 		if (!driverDetails) {
-				console.error(`No data found for driver: ${driverName}`);
-				return;
+			console.error(`No data found for driver: ${driverName}`);
+			return;
 		}
 
 		const detail = {
@@ -101,7 +101,7 @@ export default function TripHistoryGrid(vehicleId: any) {
 			default:
 				console.warn("No setter defined for field:", field);
 		}
-		
+
 	}
 
 	const setIdColumn = (column: IgrColumn) => {
@@ -158,14 +158,14 @@ export default function TripHistoryGrid(vehicleId: any) {
 
 	return (
 		<>
-		<IgrGrid autoGenerate={true} onColumnInit={handleColumnInit} data={dataService.getTripHistoryData(vehicleId.vehicleId)} className="child-data" height="null" width="100%">
-			{/* 			
+			<IgrGrid autoGenerate={true} onColumnInit={handleColumnInit} data={dataService.findTripHistoryById(vehicleId.vehicleId)} className="child-data" height="null" width="100%">
+				{/* 			
 			
 			<IgrColumn field="startMeter" header="Start Meter" width="9.5%"></IgrColumn>
 			<IgrColumn field="endMeter" header="End Meter" width="9.5%"></IgrColumn>
 			<IgrColumn field="distance" header="Distance" width="9%"></IgrColumn>
 			<IgrColumn field="totalTime" header="Total Time" width="9%"></IgrColumn> */}
-		</IgrGrid>
+			</IgrGrid>
 		</>
 	);
 }

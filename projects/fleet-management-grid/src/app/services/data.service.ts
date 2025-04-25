@@ -1,99 +1,148 @@
-import VEHICLES_DATA from '../assets/data/vehicles.json';
-import DRIVERS_DATA from '../assets/data/drivers.json';
-import TRIP_HISTORY_DATA from '../assets/data/trip_history.json';
-import MAINTENANCE_DATA from '../assets/data/maintenance.json';
-import COST_DATA from '../assets/data/cost.json';
-import UTILIZATION_DATA from '../assets/data/utilization.json';
+import { CostRecord } from "../models/cost.model.ts";
+import { Driver } from "../models/driver.model.ts";
+import { MaintenanceHistory } from "../models/maintenance-history.model.ts";
+import { TripHistory } from "../models/trip-history.model.ts";
+import { UtilizationRecord } from "../models/utilization.model.ts";
+import { Vehicle } from "../models/vehicle.model.ts";
+
+const VEHICLE_DATA_URL =
+  'https://www.infragistics.com/grid-examples-data/data/fleet/vehicles.json';
+const DRIVERS_DATA_URL =
+  'https://www.infragistics.com/grid-examples-data/data/fleet/drivers.json';
+const COST_DATA_URL =
+  'https://www.infragistics.com/grid-examples-data/data/fleet/cost.json';
+const MAINTENANCE_DATA_URL =
+  'https://www.infragistics.com/grid-examples-data/data/fleet/maintenance.json';
+const UTILIZATION_DATA_URL =
+  'https://www.infragistics.com/grid-examples-data/data/fleet/utilization.json';
+const TRIP_HISTORY_DATA_URL =
+  'https://www.infragistics.com/grid-examples-data/data/fleet/trip_history.json';
 
 class DataService {
-  private vehiclesData = VEHICLES_DATA;
-  private driversData = DRIVERS_DATA;
-  private tripHistoryData = TRIP_HISTORY_DATA;
-  private maintenanceData = MAINTENANCE_DATA;
-  private costData = COST_DATA;
-  private utilizationData = UTILIZATION_DATA;
+  private vehiclesRecords: Vehicle[] = [];
+  private driverRecords: Driver[] = [];
+  private tripHistoryRecords: TripHistory[] = [];
+  private maintenanceRecords: MaintenanceHistory[] = [];
+  private costRecords: CostRecord[] = [];
+  private utilizationRecords: UtilizationRecord[] = [];
 
   private fuelCostsCache: { [key: string]: any[] } = {};
 
-  constructor() {
-    this.utilizationData.forEach(vehicle => {
-      (vehicle.utilization as any).__dataIntents = {
-        "'2023'": ["SeriesTitle/2023"],
-        "'2024'": ["SeriesTitle/2024"]
+  async getVehiclesData() {
+    const response = await fetch(VEHICLE_DATA_URL);
+      this.vehiclesRecords = await response.json();
+  }
+
+  async getDriverData() {
+    const response = await fetch(DRIVERS_DATA_URL);
+    this.driverRecords = await response.json();
+  }
+
+  async getTripHistoryData() {
+    const response = await fetch(TRIP_HISTORY_DATA_URL);
+    this.tripHistoryRecords = await response.json();
+  }
+
+  async getMaintenanceData() {
+    const response = await fetch(MAINTENANCE_DATA_URL);
+    this.maintenanceRecords = await response.json();
+  }
+
+  async getCostData() {
+    const response = await fetch(COST_DATA_URL);
+    this.costRecords = await response.json();
+  }
+
+  async getUtilizationData() {
+    const response = await fetch(UTILIZATION_DATA_URL);
+    const data = await response.json();
+
+    data.forEach((vehicle: any) => {
+      vehicle.utilization.__dataIntents = {
+        "'2023'": ['SeriesTitle/2023'],
+        "'2024'": ['SeriesTitle/2024']
       };
     });
+
+    this.utilizationRecords = data;
   }
 
-  getVehiclesData() {
-    return this.vehiclesData;
+  async loadOptionalData() {
+    await Promise.all([
+      this.getDriverData(),
+      this.getTripHistoryData(),
+      this.getMaintenanceData(),
+      this.getCostData(),
+      this.getUtilizationData()
+    ]);
   }
 
-  getDriverData(driverName: string) {
-    return this.driversData.find(data => data.name === driverName);
+  findDriverByName(driverName: string) {
+    return this.driverRecords.find((d: Driver) => d.name === driverName)
   }
 
   getDriverPhoto(driverName: string) {
-    return this.getDriverData(driverName)?.photo;
+    return this.findDriverByName(driverName)?.photo;
   }
 
-  getTripHistoryData(vehicleId: string) {
-    const temp = this.tripHistoryData.find(data => data.vehicleId === vehicleId)?.tripHistory;
-    //console.log(temp)
-    return temp;
+  findTripHistoryById(vehicleId: string) {
+    return this.tripHistoryRecords.find((d: TripHistory) => d.vehicleId === vehicleId)?.tripHistory;
   }
 
-  getMaintenanceData(vehicleId: string) {
-    const temp = this.maintenanceData.find(data => data.vehicleId === vehicleId)?.maintenance;
-    return temp;
+  findMaintenanceDataById(vehicleId: string) {
+    return this.maintenanceRecords.find((d: MaintenanceHistory) => d.vehicleId === vehicleId)?.maintenance;
   }
 
-  getCostsPerTypeData(vehicleId: string, period: string) {
-    const dataItem = this.costData.find(data => data.vehicleId === vehicleId);
-    if (!dataItem || !(period in dataItem.costPerType)) return [];
-    return dataItem.costPerType[period as keyof typeof dataItem.costPerType];
+  findCostsPerTypeData(vehicleId: string, period: any) {
+    const item = this.costRecords.find((d: CostRecord) => d.vehicleId === vehicleId);
+    return item?.costPerType?.[period] || [];
   }
 
-  getCostsPerMeterData(vehicleId: string, period: string) {
-    const dataItem = this.costData.find(data => data.vehicleId === vehicleId);
-    if (!dataItem || !(period in dataItem.costsPerMeterPerQuarter)) return [];
-    return dataItem.costsPerMeterPerQuarter[period as keyof typeof dataItem.costsPerMeterPerQuarter];
+  findCostsPerMeterData(vehicleId: string, period: any) {
+    const item = this.costRecords.find((d: CostRecord) => d.vehicleId === vehicleId);
+    return item?.costsPerMeterPerQuarter?.[period] || [];
   }
 
-  getFuelCostsData(vehicleId: string, period: string) {
+  getFuelCostsData(vehicleId: string, period: any) {
     const cacheKey = vehicleId + period;
-
     if (this.fuelCostsCache[cacheKey]) {
       return this.fuelCostsCache[cacheKey];
     }
 
-    const dataItem = this.costData.find(data => data.vehicleId === vehicleId);
-    const fuelCostsPerMonth = dataItem?.fuelCostsPerMonth || [];
+    const item = this.costRecords.find((d: CostRecord) => d.vehicleId === vehicleId);
+    const fuelCosts = item?.fuelCostsPerMonth || [];
 
-    let fuelCostsPerMonthPeriod: any[];
-
+    let result: any[] = [];
     switch (period) {
       case 'ytd':
       case '12months':
-        fuelCostsPerMonthPeriod = fuelCostsPerMonth;
+        result = fuelCosts;
         break;
       case '6months':
-        fuelCostsPerMonthPeriod = fuelCostsPerMonth.slice(-6);
+        result = fuelCosts.slice(-6);
         break;
       case '3months':
-        fuelCostsPerMonthPeriod = fuelCostsPerMonth.slice(-3);
+        result = fuelCosts.slice(-3);
         break;
       default:
-        console.warn("Invalid period:", period);
+        console.warn('Invalid period:', period);
         return [];
     }
 
-    this.fuelCostsCache[cacheKey] = fuelCostsPerMonthPeriod;
-    return fuelCostsPerMonthPeriod;
+    this.fuelCostsCache[cacheKey] = result;
+    return result;
   }
 
-  getUtilizationData(vehicleId: string) {
-    const temp = this.utilizationData.find(data => data.vehicleId === vehicleId)?.utilization ?? [];
-    return temp;
+  public findUtilizationDataById(vehicleId: string) {
+    const item = this.utilizationRecords.find((d: UtilizationRecord) => d.vehicleId === vehicleId);
+    return item ? item.utilization : [];
+  }
+
+  public get vehicleList() {
+    return this.vehiclesRecords;
+  }
+  public get driverList() {
+    return this.driverRecords;
   }
 }
 
