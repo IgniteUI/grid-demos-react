@@ -24,7 +24,6 @@ import {
 } from "igniteui-react";
 import { dataService } from "./services/data.service";
 import { TRENDING_DOWN, TRENDING_UP } from "./assets/icons/icons";
-import 'igniteui-react-grids/grids/themes/light/bootstrap.css'
 
 function FinanceGrid() {
   const updateTimerInMs = 3000;
