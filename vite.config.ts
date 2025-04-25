@@ -23,12 +23,16 @@ export default defineConfig({
         {
           src: './projects/finance-grid/public/**',
           dest: '',
+        },
+        {
+          src: './projects/hr-portal/public/**',
+          dest: '',
         }
       ]
     })
   ],
   resolve: {
-    mainFields: ['module'],
+    mainFields: ['module']
   },
   server: {
     open: true,

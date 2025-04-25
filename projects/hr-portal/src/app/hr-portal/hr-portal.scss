@@ -1,0 +1,51 @@
+.gridStyle {
+  --ig-size: var(--ig-size-medium);
+  --row-even-background: #ffffff;
+}
+
+.small {
+  --ig-size: var(--ig-size-small);
+}
+
+.medium {
+  --ig-size: var(--ig-size-medium);
+}
+
+igc-avatar::part(base) {
+  --size: 28px;
+}
+
+.center-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100%;
+  width: 100%;
+  gap: 8px;
+}
+
+.employeeDiv {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.flagDiv {
+  gap: 8px;
+  display: flex;
+  align-items: center;
+
+  igc-icon {
+    height: 14px;
+    width: 18px;
+    border-radius: 1px;
+    box-shadow: var(--ig-elevation-1);
+  }
+}
+
+.toolbar-title {
+  display: flex;
+  justify-content: flex-start;
+  margin-left: 0;
+}
