@@ -1,25 +1,33 @@
 import { IgrCategoryChart, IgrLegend, LegendOrientation } from "igniteui-react-charts";
 import { dataService } from "../../services/data.service";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 
 export default function UtilizationChartComponent({ vehicleId }: { vehicleId: string }) {
   const chartRef = useRef<IgrCategoryChart>(null);
   const legendRef = useRef<IgrLegend>(null);
 
+  useEffect(() => {
+    if (chartRef.current && legendRef.current) {
+      chartRef.current.legend = legendRef.current;
+    }
+  }, [chartRef, legendRef]);
+
   return (
-    <div className="content-wrapper">
+    <div className="content-wrapper ig-typography">
       <div className="chart-content utilization-chart-container">
         <h6>Utilization per Month</h6>
-        <div style={{ width: '350px', height: '350px' }}>
-          <IgrLegend key={`legend-${vehicleId}`} ref={legendRef} orientation={LegendOrientation.Horizontal}></IgrLegend>
-        </div>
+
+        <IgrLegend key={`legend-${vehicleId}`}
+          ref={legendRef}
+          orientation={LegendOrientation.Horizontal}
+          textColor="#edededed">
+        </IgrLegend>
 
         <div className="column-chart-two-series">
           <IgrCategoryChart
             key={`chart-${vehicleId}`}
             ref={chartRef}
-            legend={legendRef}
             chartType="Column"
             dataSource={dataService.getUtilizationData(vehicleId)}
             yAxisTitle="Miles"

@@ -16,12 +16,12 @@ class DataService {
   private fuelCostsCache: { [key: string]: any[] } = {};
 
   constructor() {
-    /* this.utilizationData.forEach(vehicle => {
+    this.utilizationData.forEach(vehicle => {
       (vehicle.utilization as any).__dataIntents = {
         "'2023'": ["SeriesTitle/2023"],
         "'2024'": ["SeriesTitle/2024"]
       };
-    }); */
+    });
   }
 
   getVehiclesData() {
