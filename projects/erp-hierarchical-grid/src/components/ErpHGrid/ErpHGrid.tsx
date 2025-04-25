@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { IgrBadge, IgrIcon, IgrRating, registerIcon } from "igniteui-react";
-import "igniteui-react-grids/grids/themes/light/material.css";
 import {
   IgrHierarchicalGrid,
   IgrColumn,
