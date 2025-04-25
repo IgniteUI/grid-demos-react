@@ -71,11 +71,6 @@ export default function SalesGrid() {
     setViewDropdown(ref);
   }
 
-  const [exportDropdown, setExportDropdown] = useState<IgrDropdown>();
-  function exportDropdownRef(ref: IgrDropdown) {
-    setExportDropdown(ref);
-  }
-
   const [pivotGrid, setPivotGrid] = useState<IgrPivotGrid>();
   function pivotGridRef(ref: IgrPivotGrid) {
     setPivotGrid(ref);
@@ -83,7 +78,6 @@ export default function SalesGrid() {
 
   const [salesData, setSalesData] = useState<any[]>([]);
   const [viewDropdownOpen, setViewDropdownOpen] = useState(false);
-  const [exportDropdownOpen, setExportDropdownOpen] = useState(false);
 
   const flagsData = FLAGS;
   const brandFilter: IgrFilteringExpressionsTree = {
@@ -346,40 +340,33 @@ export default function SalesGrid() {
   }
 
   function onExportDropdownButton(event: React.MouseEvent<IgrButton, MouseEvent>) {
-    exportDropdown?.toggle(event.currentTarget as HTMLElement);
-    setExportDropdownOpen(!exportDropdownOpen);
+    console.log("Export to Excel temporary not available.", event);
+    // TO DO
+    // Once Excel and CSV exporter are available in React
+    // let options!: IgrExporterOptionsBase;
+    // const newId = event.detail.id;
+    // if (newId === 'csv') {
+    //     options = new IgrCsvExporterOptions(this.fileName, CsvFileTypes.CSV);
+    //     this.csvExporter.export(this.pivotGrid, options);
+    // } else if (newId === 'excel') {
+    //     options = new IgrExcelExporterOptions(this.fileName);
+    //     this.excelExporter.export(this.pivotGrid, options);
+    // }
   }
 
   function onViewDropdownVisibility(_: CustomEvent<void>) {
     setViewDropdownOpen(!viewDropdownOpen);
   }
 
-  function onExportDropdownVisibility(_: CustomEvent<void>) {
-    setExportDropdownOpen(!exportDropdownOpen);
-  }
-
   function onViewSelection(event: CustomEvent<IgrDropdownItem>) {
     setSelectedConfigRef(availableConfigs.get(event.detail.id as PivotViews));
-  }
-
-  function onExportSelection(/*event: CustomEvent<IgcDropdownItemComponent>*/) {
-    // To uncomment once Excel and CSV exporter are available in WC
-    // let options!: IgcExporterOptionsBase;
-    // const newId = event.detail.id;
-    // if (newId === 'csv') {
-    //     options = new IgcCsvExporterOptions(this.fileName, CsvFileTypes.CSV);
-    //     this.csvExporter.export(this.pivotGrid, options);
-    // } else if (newId === 'excel') {
-    //     options = new IgcExcelExporterOptions(this.fileName);
-    //     this.excelExporter.export(this.pivotGrid, options);
-    // }
-    exportDropdown?.clearSelection();
   }
 
   function onColumnInit(event: CustomEvent<IgrColumn>) {
     const col = event.detail;
     const countryKeys = Object.keys(flagsData);
     if (countryKeys.includes(col.field)) {
+      // TO DO
       // col.headerTemplate = (_: IgcColumnTemplateContext) => html`
       //     <div class="countryHeader">
       //         <img class="countryImage" src="${(<any>this.flagsData)[col.field]}" /><span>${col.field}</span>
@@ -389,6 +376,9 @@ export default function SalesGrid() {
   }
 
   function currencyFormatter(value: any, field: string) {
+    if (value === undefined || value === null){
+      return "";
+    }
     const valueConfig = selectedConfigRef?.config.values.find(value => value.member === field);
     if (!valueConfig || valueConfig.aggregate.key === "COUNT") {
       return value;
@@ -413,17 +403,12 @@ export default function SalesGrid() {
           </IgrButton>
           <IgrButton variant="outlined" onClick={onExportDropdownButton}>
             <IgrIcon name="file_download" collection="custom"></IgrIcon>
-            Export
-            <IgrIcon name={exportDropdownOpen ? "arrow_up" : "arrow_down"} collection="material"></IgrIcon>
+            Export to Excel
           </IgrButton>
           <IgrDropdown id="viewDropdown" ref={viewDropdownRef} onChange={onViewSelection} onClosed={onViewDropdownVisibility}>
             {Array.from(availableConfigs.entries()).map(([key, value]) =>
               <IgrDropdownItem id={key} key={key} selected={selectedConfigRef?.title === value.title}><span>{value.title}</span></IgrDropdownItem>
             )}
-          </IgrDropdown>
-          <IgrDropdown id="exportDropdown" ref={exportDropdownRef} onChange={onExportSelection} onClosed={onExportDropdownVisibility}>
-            <IgrDropdownItem id="excel"><span>Export to Excel</span></IgrDropdownItem>
-            <IgrDropdownItem id="csv"><span>Export to CSV</span></IgrDropdownItem>
           </IgrDropdown>
         </div>
       </div>

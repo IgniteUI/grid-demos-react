@@ -19,8 +19,6 @@ interface TabItemProps {
   tabInfo?: TabInfo,
 }
 
-/* eslint-disable */
-
 export function TabItem({isActive, tabInfo}: TabItemProps) {
 
   function onLinkClick(event: any) {
