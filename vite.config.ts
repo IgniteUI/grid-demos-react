@@ -17,11 +17,15 @@ export default defineConfig({
           dest: 'public',
         },
         {
-          src: './projects/finance-grid/public/**',
+          src: './projects/erp-hierarchical-grid/public/*',
           dest: '',
         },
-      ],
-    }),
+        {
+          src: './projects/finance-grid/public/**',
+          dest: '',
+        }
+      ]
+    })
   ],
   resolve: {
     mainFields: ['module'],
