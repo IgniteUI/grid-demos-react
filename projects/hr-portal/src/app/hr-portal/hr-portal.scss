@@ -34,21 +34,18 @@ igc-avatar::part(base) {
 .flagDiv {
   gap: 8px;
   display: flex;
+  align-items: center;
+
+  igc-icon {
+    height: 14px;
+    width: 18px;
+    border-radius: 1px;
+    box-shadow: var(--ig-elevation-1);
+  }
 }
 
 .toolbar-title {
   display: flex;
   justify-content: flex-start;
   margin-left: 0;
-}
-
-.flagDiv igc-icon {
-  height: 14px;
-  width: 18px;
-  display: flex;
-  align-items: center;
-  border-radius: 1px;
-  box-shadow: var(--ig-elevation-1);
-  justify-content: center;
-  overflow: hidden;
 }

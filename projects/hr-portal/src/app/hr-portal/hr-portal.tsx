@@ -25,10 +25,10 @@ import "igniteui-react-grids/grids/combined";
 import "igniteui-react-grids/grids/themes/light/fluent.css";
 import { dataService } from "./../services/data.service";
 import { icons } from "../data/icons/Icons";
-import { Employee } from "../services/data.service";
+import { Employee } from "../data/Models/Employee";
 
 export default function HRPortal() {
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<Employee[]>([]);
   const [isSorted, setIsSorted] = useState(false);
   const gridRef = useRef<IgrTreeGrid | null>(null);
 
