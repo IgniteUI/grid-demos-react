@@ -14,3 +14,18 @@ export class DataService {
   }
 
   export const dataService = new DataService();
+  export interface Employee {
+    ID: number;
+    Name: string;
+    JobTitle: string;
+    Department: string;
+    Location: string;
+    Country: string;
+    GrossSalary: number;
+    Phone: string;
+    Contacts: string;
+    Picture: string;
+    Age: number;
+    HireDate: string;
+    Employees: Employee[];
+  }

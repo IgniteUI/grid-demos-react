@@ -25,6 +25,7 @@ import "igniteui-react-grids/grids/combined";
 import "igniteui-react-grids/grids/themes/light/fluent.css";
 import { dataService } from "./../services/data.service";
 import { icons } from "../data/icons/Icons";
+import { Employee } from "../services/data.service";
 
 export default function HRPortal() {
   const [data, setData] = useState<any[]>([]);
@@ -32,7 +33,7 @@ export default function HRPortal() {
   const gridRef = useRef<IgrTreeGrid | null>(null);
 
   useEffect(() => {
-    dataService.fetchData().then((fetchedData: any) => {
+    dataService.fetchData().then((fetchedData: Employee[]) => {
       setData(fetchedData);
     });
 
@@ -87,8 +88,7 @@ export default function HRPortal() {
   };
 
   const dateTemplate = ({ cell }: IgrCellTemplateContext) => {
-    const data = cell.row.data;
-    const formattedDate = new Date(data.HireDate).toISOString().split("T")[0];
+    const formattedDate = new Date(cell.value).toISOString().split("T")[0];
     return <>{formattedDate}</>;
   };
 
