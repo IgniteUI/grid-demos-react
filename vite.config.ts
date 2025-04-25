@@ -27,6 +27,10 @@ export default defineConfig({
         {
           src: './projects/hr-portal/public/**',
           dest: '',
+        },
+        {
+          src: './projects/fleet-management-grid/public/**',
+          dest: '',
         }
       ]
     })
