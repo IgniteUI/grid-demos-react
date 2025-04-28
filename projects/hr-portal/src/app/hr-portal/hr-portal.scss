@@ -11,7 +11,7 @@
   --ig-size: var(--ig-size-medium);
 }
 
-igc-avatar::part(base) {
+.employeeDiv igc-avatar::part(base) {
   --size: 28px;
 }
 
