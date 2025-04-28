@@ -13,7 +13,6 @@ import {
 } from 'igniteui-react-grids';
 import { SalesDataService } from '../services/data.service';
 
-import 'igniteui-react-grids/grids/themes/light/indigo.css';
 import './sales-grid.scss';
 
 import ARROW_DOWN_SVG from "../data/icons/arrow_drop_down.svg";
