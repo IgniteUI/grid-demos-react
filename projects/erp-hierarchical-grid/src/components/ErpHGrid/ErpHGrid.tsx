@@ -23,7 +23,7 @@ import { erpDataService } from "../../services/ErpDataService";
 import { BadgeVariant } from "../../models/BadgeVariant";
 import { OrderStatus } from "../../models/OrderStatus";
 import { DataPoint } from "../../models/DataPoint";
-import { FullAddressFilteringOperand } from "../../CustomFilteringOperand";
+import { FullAddressFilteringOperand } from "../../services/custom-operations/CustomFilteringOperand";
 import BILL_PAID from "../../assets/icons/bill_paid.svg";
 import CHECK from "../../assets/icons/check.svg";
 import DELIVERY from "../../assets/icons/delivery.svg";
@@ -37,6 +37,7 @@ import {
   useFloating,
   useTransitionStyles,
 } from "@floating-ui/react";
+import { AddressSortStrategy } from "../../services/custom-operations/CustomSortingStrategy";
 
 const ErpHGrid = () => {
   const selectionMode: GridSelectionMode = "multiple";
@@ -130,7 +131,7 @@ const ErpHGrid = () => {
     const rating: number = ctx.cell.value;
     return (
       <>
-        <IgrRating value={rating}></IgrRating>
+        <IgrRating value={rating} readOnly={true} min={2} max={4}></IgrRating>
       </>
     );
   };
@@ -237,6 +238,10 @@ const ErpHGrid = () => {
   const formatFullAddress = (value: any): string => {
     return `${value.streetNumber} ${value.streetName}, ${value.zipCode} ${value.city}, ${value.country}`;
   };
+
+  // Custom sorting strategy
+  const shortAddressSortStrategy = new AddressSortStrategy(formatAddress);
+  const fullAddressSortStrategy = new AddressSortStrategy(formatFullAddress);
 
   // SORTINGS
   const childGridSortingExpression: IgrSortingExpression[] = [
@@ -460,6 +465,7 @@ const ErpHGrid = () => {
               header="Address"
               dataType="string"
               sortable={true}
+              sortStrategy={shortAddressSortStrategy}
               resizable={true}
               visibleWhenCollapsed={false}
               formatter={formatAddress}
@@ -472,6 +478,7 @@ const ErpHGrid = () => {
               header="Address"
               dataType="string"
               sortable={true}
+              sortStrategy={fullAddressSortStrategy}
               resizable={true}
               visibleWhenCollapsed={true}
               formatter={formatFullAddress}
