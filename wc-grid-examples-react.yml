@@ -12,10 +12,6 @@ parameters:
   displayName: 'Get verbose output from steps - where configurable'
   type: boolean
   default: false
-- name: shouldCleanPostExecution
-  displayName: 'Clean all pipeline dirs after the pipeline finishes?'
-  type: boolean
-  default: true
 
 
 name: $(Year:yyyy).$(Month).$(DayOfMonth)-r$(Rev:.r)
@@ -111,6 +107,8 @@ stages:
           customCommand: 'install --legacy-peer-deps'
           customEndpoint: 'public proget'
 
+    # TODO: igniteui-cli to be used after project corrections
+    #       to be able to use licensed packages
     #   - task: Npm@1
     #     displayName: 'Install Ignite UI CLI globally'
     #     inputs:
@@ -157,7 +155,3 @@ stages:
           targetPath: '$(Build.SourcesDirectory)/dist'
           artifact: 'dist.grid-demos-react'
           publishLocation: 'pipeline'
-
-      - ${{ if eq(parameters.shouldCleanPostExecution, true) }}:
-        - task: PostBuildCleanup@4
-
