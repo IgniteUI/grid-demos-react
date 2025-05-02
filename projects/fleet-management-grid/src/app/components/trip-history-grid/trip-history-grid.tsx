@@ -1,9 +1,15 @@
 import { IgrCellTemplateContext, IgrColumn, IgrGrid } from "igniteui-react-grids";
 import "./trip-history-grid.scss"
-import { IgrAvatar, IgrBadge } from "igniteui-react";
 import { dataService } from "../../services/data.service";
+import { html, unsafeCSS } from "lit";
+import { Driver } from "../../models/driver.model";
+import styles from "./trip-history-grid.scss?inline";
+interface TripHistoryGridProps {
+	vehicleId: string;
+	onDriverClick?: (driverDetails: Driver, event: MouseEvent) => void;
+}
 
-export default function TripHistoryGrid(vehicleId: any) {
+export default function TripHistoryGrid({ vehicleId, onDriverClick }: TripHistoryGridProps) {
 
 	const rightAlignedCellStyles = {
 		'justify-content': 'flex-end',
@@ -15,21 +21,22 @@ export default function TripHistoryGrid(vehicleId: any) {
 
 	const driverCellTemplate = (ctx: IgrCellTemplateContext) => {
 		const isVisible = ctx.cell.row.index === 0 && ctx.cell.row.data.end === "N/A";
-		return (
-			<>
-				<IgrAvatar className="driver-avatar" shape="circle" src={getPathToDriverPhoto(ctx.cell)}></IgrAvatar>
-				<a className="status-value" href="#" onClick={(e: any) => handleDriverClick(e, ctx)}>{ctx.implicit}</a>
-				{isVisible ? (
-					<IgrBadge className="driver-badge" variant="success">
-						<span className="driver-badge">Current</span>
-					</IgrBadge>
-				)
-					: ""}
-			</>
-		);
+		return html`
+			<style>
+				${unsafeCSS(styles)}
+			</style>
+			<igc-avatar class="driver-avatar" shape="circle" src="${getPathToDriverPhoto(ctx.cell)}"></igc-avatar>
+            <a class="status-value" #coordinates href="#" @click="${(e: MouseEvent) => handleDriverClick(e, ctx)}">${ctx.implicit}</a>
+            ${isVisible
+				? html`<igc-badge class="driver-badge" variant="success">
+                    <span class="current-badge-text">Current</span>
+                </igc-badge>`
+				: ""
+			}          
+		`;
 	}
 
-	function handleDriverClick(event: any, ctx: IgrCellTemplateContext) {
+	const handleDriverClick = (event: MouseEvent, ctx: IgrCellTemplateContext) => {
 		event.preventDefault();
 
 		const driverName = ctx.cell.row?.cells?.find((c: any) => c.column.field === 'driverName')?.value;
@@ -46,20 +53,10 @@ export default function TripHistoryGrid(vehicleId: any) {
 			return;
 		}
 
-		const detail = {
-			driverDetails: driverDetails,
-			ctx: ctx,
-			originalEvent: event
-		};
+		onDriverClick?.(driverDetails, event);
+	};
 
-		dispatchEvent(new CustomEvent("driverCellClick", {
-			detail,
-			bubbles: true,
-			composed: true
-		}));
-	}
-
-	function getPathToDriverPhoto(cell: any) {
+	const getPathToDriverPhoto = (cell: any) => {
 		return `people/${dataService.getDriverPhoto(cell.row.data.driverName)}.jpg`
 	}
 
@@ -113,7 +110,7 @@ export default function TripHistoryGrid(vehicleId: any) {
 	const setDriverNameColumn = (column: IgrColumn) => {
 		column.header = "Driver";
 		column.width = "18%";
-		//column.bodyTemplate = driverCellTemplate
+		column.bodyTemplate = driverCellTemplate
 	}
 	const setStartColumn = (column: IgrColumn) => {
 		column.header = "Start";
@@ -158,14 +155,7 @@ export default function TripHistoryGrid(vehicleId: any) {
 
 	return (
 		<>
-			<IgrGrid autoGenerate={true} onColumnInit={handleColumnInit} data={dataService.findTripHistoryById(vehicleId.vehicleId)} className="child-data" height="null" width="100%">
-				{/* 			
-			
-			<IgrColumn field="startMeter" header="Start Meter" width="9.5%"></IgrColumn>
-			<IgrColumn field="endMeter" header="End Meter" width="9.5%"></IgrColumn>
-			<IgrColumn field="distance" header="Distance" width="9%"></IgrColumn>
-			<IgrColumn field="totalTime" header="Total Time" width="9%"></IgrColumn> */}
-			</IgrGrid>
+			<IgrGrid autoGenerate={true} onColumnInit={handleColumnInit} data={dataService.findTripHistoryById(vehicleId)} className="child-data" height="100%" width="100%"></IgrGrid>
 		</>
 	);
 }

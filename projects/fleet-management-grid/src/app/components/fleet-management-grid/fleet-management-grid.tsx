@@ -1,11 +1,12 @@
 import { IgrCellTemplateContext, IgrColumn, IgrGrid, IgrGridMasterDetailContext, IgrGridToolbar, IgrGridToolbarActions, IgrGridToolbarAdvancedFiltering, IgrGridToolbarExporter, IgrGridToolbarHiding, IgrGridToolbarPinning, IgrGridToolbarTitle } from 'igniteui-react-grids';
 import 'igniteui-react-grids/grids/combined.js';
 import './fleet-management-grid.scss';
-import { IgrAvatar, IgrBadge, IgrButton, IgrCard, IgrCardActions, IgrCardContent, IgrCardHeader, IgrCarousel, IgrCarouselSlide, IgrDivider, IgrIcon, IgrTab, IgrTabPanel, IgrTabs, registerIconFromText, StyleVariant } from 'igniteui-react';
+import { IgrAvatar, IgrBadge, IgrButton, IgrCard, IgrCardActions, IgrCardContent, IgrCardHeader, IgrCarousel, IgrCarouselSlide, IgrDivider, IgrIcon, IgrTab, IgrTabs, registerIconFromText, StyleVariant } from 'igniteui-react';
 import { useEffect, useRef, useState } from 'react';
 import { check, delivery, wrench } from '@igniteui/material-icons-extended';
 import CAR_PHOTO_MANIFEST from '../../assets/car_photo_manifest.json';
 import CAR_IMAGES from '../../assets/car_images.json';
+import DRIVER_CATEGORIES from '../../assets/driver_categories.json';
 import VEHICLE_DETAILS from '../../assets/vehicle_details.json';
 import { dataService } from '../../services/data.service';
 import { IgrCategoryChartModule, IgrLegendModule } from 'igniteui-react-charts';
@@ -19,14 +20,15 @@ import CostPerTypeChartComponent from '../cost-per-type-chart/cost-per-type-char
 import CostPerMeterChartComponent from '../cost-per-meter-chart/cost-per-meter-chart';
 import FuelCostChartComponent from '../fuel-cost-chart/fuel-cost-chart';
 import UtilizationChartComponent from '../utilization-chart/utilization-chart';
+import { Driver } from '../../models/driver.model';
 
 IgrLegendModule.register();
 IgrCategoryChartModule.register();
 IgrGeographicMapModule.register();
 
-function useOverlayControl(ref: React.MutableRefObject<HTMLElement | null>, onClose: () => void) {
+const useOverlayControl = (ref: React.MutableRefObject<HTMLElement | null>, onClose: () => void) => {
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    const handleClickOutside = (event: MouseEvent) => {
       const path = event.composedPath?.() || (event as any).path || [];
       if (!ref.current || !path.includes(ref.current)) {
         onClose();
@@ -48,6 +50,7 @@ export default function FleetManagement() {
 
   const [isVisible, setIsVisible] = useState(false);
   const [isLocationOverlayActive, setIsLocationOverlayActive] = useState(false);
+  const [isDriverOverlayActive, setIsDriverOverlayActive] = useState(false);
 
   const [vehicleDetails, setVehicleDetails] = useState<OverlayVehicle>({
     vehiclePhoto: '',
@@ -57,16 +60,31 @@ export default function FleetManagement() {
     markerLocations: []
   });
 
+  const [driverDetails, setDriverDetails] = useState<Driver>({
+    name: "",
+    license: "",
+    address: "",
+    city: "",
+    phone: "",
+    email: "",
+    photo: ""
+  });
+
   const gridRef = useRef<IgrGrid>(null);
   const mapRef = useRef<IgrGeographicMap>(null);
 
-  const { refs, floatingStyles } = useFloating({
+  const { refs: locationRefs, floatingStyles: locationFloatingStyles } = useFloating({
     placement: 'left-start',
     middleware: [offset(8), flip(), shift()],
   });
 
-  useOverlayControl(refs.floating, () => setIsLocationOverlayActive(false));
+  const { refs: driverRefs, floatingStyles: driverFloatingStyles } = useFloating({
+    placement: 'left-start',
+    middleware: [offset(8), flip(), shift()],
+  });
 
+  useOverlayControl(locationRefs.floating, () => setIsLocationOverlayActive(false));
+  useOverlayControl(driverRefs.floating, () => setIsDriverOverlayActive(false));
 
   useEffect(() => {
     registerIconFromText(check.name, check.value, "imx-icons");
@@ -109,22 +127,29 @@ export default function FleetManagement() {
     }
   }, [isLocationOverlayActive]);
 
+  useEffect(() => {
+    if (isDriverOverlayActive) {
+      requestAnimationFrame(() => {
+        setIsVisible(true);
+      });
+    } else {
+      setIsVisible(false);
+      const timeout = setTimeout(() => 200);
+      return () => clearTimeout(timeout);
+    }
+  }, [isDriverOverlayActive]);
 
   /** Templates */
 
-  let masterDetailTemplate = (props: { dataContext: IgrGridMasterDetailContext }) => {
+  const masterDetailTemplate = (props: { dataContext: IgrGridMasterDetailContext }) => {
     const vehicleId = props.dataContext.implicit.vehicleId;
     const images: string[] = getPathToCarImage(vehicleId);
 
     return (
       <IgrTabs key="tabs">
-        <IgrTab panel="details" key="details-tab"><span>Details</span></IgrTab>
-        <IgrTab panel="trip-history" key="trip-history-tab"><span>Trip History</span></IgrTab>
-        <IgrTab panel="maintenance" key="maintenance-tab"><span>Maintenance</span></IgrTab>
-        <IgrTab panel="cost" key="cost-tab"><span>Cost</span></IgrTab>
-        <IgrTab panel="utilization" key="utilization-tab"><span>Utilization</span></IgrTab>
+        <IgrTab key="details-tab">
+          <span slot="label">Details</span>
 
-        <IgrTabPanel id="details" key="details-panel">
           <div className='details-container'>
             <div className="carousel-container">
               <IgrCarousel>
@@ -161,41 +186,45 @@ export default function FleetManagement() {
               ))}
             </div>
           </div>
-        </IgrTabPanel>
+        </IgrTab>
+        <IgrTab key="trip-history-tab">
+          <span slot="label">Trip History</span>
 
-        <IgrTabPanel id="trip-history" key="trip-history-panel">
-          <TripHistoryGrid vehicleId={vehicleId}></TripHistoryGrid>
-        </IgrTabPanel>
+          <TripHistoryGrid vehicleId={vehicleId} onDriverClick={showDriverOverlay}></TripHistoryGrid>
+        </IgrTab>
+        <IgrTab key="maintenance-tab">
+          <span slot="label">Maintenance</span>
 
-        <IgrTabPanel id="maintenance" key="maintenance-panel">
           <MaintenanceGrid vehicleId={vehicleId}></MaintenanceGrid>
-        </IgrTabPanel>
+        </IgrTab>
+        <IgrTab key="cost-tab">
+          <span slot="label">Cost</span>
 
-        <IgrTabPanel id="cost" key="cost-panel">
           <div className="dashboard">
             <CostPerTypeChartComponent vehicleId={vehicleId} />
             <CostPerMeterChartComponent vehicleId={vehicleId} />
             <FuelCostChartComponent vehicleId={vehicleId} />
           </div>
-        </IgrTabPanel>
+        </IgrTab>
+        <IgrTab key="utilization-tab">
+          <span slot="label">Utilization</span>
 
-        <IgrTabPanel id="utilization" key="utilization-panel">
           <UtilizationChartComponent vehicleId={vehicleId} />
-        </IgrTabPanel>
+        </IgrTab>
       </IgrTabs>
     )
   }
 
-  let makeCellTemplate = (props: { dataContext: IgrCellTemplateContext }) => {
+  const makeCellTemplate = (ctx: IgrCellTemplateContext) => {
     return (
       <>
-        <IgrAvatar className='logo-avatar' shape='rounded' src={getPathToLogoImage(props.dataContext.implicit)}></IgrAvatar>
-        <span className='status-value'>{props.dataContext.implicit}</span>
+        <IgrAvatar className='logo-avatar' shape='rounded' src={getPathToLogoImage(ctx.implicit)}></IgrAvatar>
+        <span className='status-value'>{ctx.implicit}</span>
       </>
     );
   }
 
-  let statusCellTemplate = (props: { dataContext: IgrCellTemplateContext }) => {
+  const statusCellTemplate = (props: { dataContext: IgrCellTemplateContext }) => {
     return (
       <>
         <IgrBadge variant={getStatusType(props.dataContext.implicit)}>
@@ -206,7 +235,7 @@ export default function FleetManagement() {
     );
   }
 
-  let locationCellTemplate = (props: { dataContext: IgrCellTemplateContext }) => {
+  const locationCellTemplate = (props: { dataContext: IgrCellTemplateContext }) => {
     return (
       <a className='link-style' href='#' onClick={(event) => showLocationOverlay(event, props.dataContext.cell)}>{props.dataContext.implicit}</a>
     );
@@ -214,7 +243,7 @@ export default function FleetManagement() {
 
   /** Overlay Logic */
 
-  function showLocationOverlay(event: React.MouseEvent<HTMLElement>, cell: any) {
+  const showLocationOverlay = (event: React.MouseEvent<HTMLElement>, cell: any) => {
     event.preventDefault();
 
     const vehicleId = cell.row?.cells?.find((c: any) => c.column.field === 'vehicleId')?.value;
@@ -244,19 +273,38 @@ export default function FleetManagement() {
 
     const target = event.currentTarget;
 
-    refs.setReference(target);
+    locationRefs.setReference(target);
 
     setIsLocationOverlayActive(true);
   }
 
+  const showDriverOverlay = (details: Driver, event: MouseEvent) => {
+    event.preventDefault();
+
+    setDriverDetails({
+      name: details.name,
+      license: details.license,
+      address: details.address,
+      city: details.city,
+      phone: details.phone,
+      email: details.email,
+      photo: `people/${details.photo}.jpg`
+    });
+
+    const target = event.currentTarget as Element;
+
+    driverRefs.setReference(target);
+
+    setIsDriverOverlayActive(true);
+  }
 
   /** Utility Functions */
 
-  function getPathToLogoImage(value: string): string {
+  const getPathToLogoImage = (value: string): string => {
     return `cars/logos/${value}.png`
   }
 
-  function getStatusType(status: string): StyleVariant {
+  const getStatusType = (status: string): StyleVariant => {
     const types: Record<string, StyleVariant> = {
       "Available": "success",
       "In Maintenance": "danger",
@@ -265,7 +313,7 @@ export default function FleetManagement() {
     return types[status] || "primary";
   }
 
-  function getStatusIcon(status: string): string {
+  const getStatusIcon = (status: string): string => {
     const icons: Record<string, string> = {
       "Available": "check",
       "In Maintenance": "wrench",
@@ -274,7 +322,7 @@ export default function FleetManagement() {
     return icons[status] || "info";
   }
 
-  function getPathToCarImage(vehicleId: string): string[] {
+  const getPathToCarImage = (vehicleId: string): string[] => {
     const carEntry = CAR_PHOTO_MANIFEST.find(car => car.id === vehicleId);
 
     if (!carEntry) {
@@ -289,11 +337,11 @@ export default function FleetManagement() {
     return carPathsToPhotos;
   }
 
-  function getValueByPath(obj: any, path: string) {
+  const getValueByPath = (obj: any, path: string) => {
     return path.split('.').reduce((o, key) => (o && o[key] !== undefined) ? o[key] : 'N/A', obj);
   }
 
-  function addSeriesWith(locations: any[], brush: string) {
+  const addSeriesWith = (locations: any[], brush: string) => {
     const symbolSeries = new IgrGeographicSymbolSeries({ name: "symbolSeries" });
     symbolSeries.dataSource = locations;
     symbolSeries.latitudeMemberPath = "latitude";
@@ -358,7 +406,7 @@ export default function FleetManagement() {
       {isLocationOverlayActive && (
         <>
           <div className="overlay-backdrop"></div>
-          <div className={`overlay-wrapper ${isVisible ? 'visible' : ''}`} ref={refs.setFloating} style={floatingStyles}>
+          <div className={`overlay-wrapper ${isVisible ? 'visible' : ''}`} ref={locationRefs.setFloating} style={locationFloatingStyles}>
             <div>
               <IgrCard elevated className="overlay overlay-location">
                 <IgrCardHeader className="overlay-location-header">
@@ -376,6 +424,47 @@ export default function FleetManagement() {
                 </IgrCardContent>
                 <IgrCardActions className="overlay-location-actions">
                   <IgrButton variant="flat" onClick={() => setIsLocationOverlayActive(false)}>Close</IgrButton>
+                </IgrCardActions>
+              </IgrCard>
+            </div>
+          </div>
+        </>
+      )}
+
+      {isDriverOverlayActive && (
+        <>
+          <div className="overlay-backdrop"></div>
+          <div className={`overlay-wrapper ${isVisible ? 'visible' : ''}`} ref={driverRefs.setFloating} style={driverFloatingStyles}>
+            <div>
+              <IgrCard elevated className="overlay overlay-driver">
+                <IgrCardHeader className="overlay-driver-header">
+                  <div className="overlay-header-content">
+                    <IgrAvatar className="overlay-avatar" shape="circle" src={driverDetails.photo}></IgrAvatar>
+                    <h6 className="overlay-title" slot="title">{driverDetails.name}</h6>
+                  </div>
+                </IgrCardHeader>
+                <IgrCardContent className="overlay-driver-content">
+                  <div className="driver-block-container">
+                    <div className="driver-category-container">
+                      {DRIVER_CATEGORIES.driverCategories.map((category, index) => (
+                        <div className="detail-item" key={index}>
+                          <span className="detail-category">{category.label}:</span>
+                          <IgrDivider></IgrDivider>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="driver-content-container">
+                      {DRIVER_CATEGORIES.driverCategories.map((category, index) => (
+                        <div className="detail-item" key={index}>
+                          <span className="detail-value">{driverDetails[category.key]}</span>
+                          <IgrDivider></IgrDivider>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </IgrCardContent>
+                <IgrCardActions className="overlay-location-actions">
+                  <IgrButton variant="flat" onClick={() => setIsDriverOverlayActive(false)}>Close</IgrButton>
                 </IgrCardActions>
               </IgrCard>
             </div>
