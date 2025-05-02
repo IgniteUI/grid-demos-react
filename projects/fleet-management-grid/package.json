@@ -13,6 +13,7 @@
     "igniteui-react-core": "19.0.0-alpha.0",
     "igniteui-react-grids": "19.0.0-rc.1",
     "igniteui-react-maps": "19.0.0-alpha.0",
+    "lit": "^3.3.0",
     "react": "^19.1.0",
     "react-app-polyfill": "^3.0.0",
     "react-dom": "^19.1.0",
