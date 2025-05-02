@@ -37,7 +37,6 @@ import {
   useFloating,
   useTransitionStyles,
 } from "@floating-ui/react";
-import { AddressSortStrategy } from "../../services/custom-operations/CustomSortingStrategy";
 
 const ErpHGrid = () => {
   const selectionMode: GridSelectionMode = "multiple";
@@ -238,10 +237,6 @@ const ErpHGrid = () => {
   const formatFullAddress = (value: any): string => {
     return `${value.streetNumber} ${value.streetName}, ${value.zipCode} ${value.city}, ${value.country}`;
   };
-
-  // Custom sorting strategy
-  const shortAddressSortStrategy = new AddressSortStrategy(formatAddress);
-  const fullAddressSortStrategy = new AddressSortStrategy(formatFullAddress);
 
   // SORTINGS
   const childGridSortingExpression: IgrSortingExpression[] = [
@@ -464,8 +459,7 @@ const ErpHGrid = () => {
               field="orderInformation"
               header="Address"
               dataType="string"
-              sortable={true}
-              sortStrategy={shortAddressSortStrategy}
+              sortable={false}
               resizable={true}
               visibleWhenCollapsed={false}
               formatter={formatAddress}
@@ -477,8 +471,7 @@ const ErpHGrid = () => {
               field="orderInformation"
               header="Address"
               dataType="string"
-              sortable={true}
-              sortStrategy={fullAddressSortStrategy}
+              sortable={false}
               resizable={true}
               visibleWhenCollapsed={true}
               formatter={formatFullAddress}
