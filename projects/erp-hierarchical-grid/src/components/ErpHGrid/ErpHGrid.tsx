@@ -130,7 +130,7 @@ const ErpHGrid = () => {
     const rating: number = ctx.cell.value;
     return (
       <>
-        <IgrRating value={rating} readOnly={true} min={2} max={4}></IgrRating>
+        <IgrRating value={rating} readOnly={true} max={5}></IgrRating>
       </>
     );
   };
