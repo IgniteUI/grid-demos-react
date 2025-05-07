@@ -11,12 +11,13 @@ const router = createBrowserRouter([
     children: [...routes]
   }
 ],
-{
-  basename: basename
-});
+  {
+    basename: basename
+  });
 
 createRoot(document.getElementById('root')!).render(
-
+  <StrictMode>
     <RouterProvider router={router} />
+  </StrictMode>
 
 )
