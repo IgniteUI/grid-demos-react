@@ -11,7 +11,7 @@ export default function FuelCostChartComponent({ vehicleId }: { vehicleId: strin
     useEffect(() => {
         const data = dataService.getFuelCostsData(vehicleId, selectValue);
         setChartData(data);
-    }, [selectValue])
+    }, [selectValue, vehicleId])
 
     const onPeriodChange = (event: any) => {
         setSelectValue(event.target.value)

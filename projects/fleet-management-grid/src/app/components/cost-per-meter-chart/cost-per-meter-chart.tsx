@@ -11,7 +11,7 @@ export default function CostPerMeterChartComponent({ vehicleId }: { vehicleId: s
   useEffect(() => {
     const data = dataService.findCostsPerMeterData(vehicleId, selectValue);
     setChartData(data);
-  }, [selectValue])
+  }, [selectValue, vehicleId])
 
   const onPeriodChange = (event: any) => {
     setSelectValue(event.target.value)
