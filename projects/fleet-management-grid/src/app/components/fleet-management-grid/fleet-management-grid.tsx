@@ -141,8 +141,8 @@ export default function FleetManagement() {
 
   /** Templates */
 
-  const masterDetailTemplate = (props: { dataContext: IgrGridMasterDetailContext }) => {
-    const vehicleId = props.dataContext.implicit.vehicleId;
+  const masterDetailTemplate = (ctx: IgrGridMasterDetailContext) => {
+    const vehicleId = ctx.implicit.vehicleId;
     const images: string[] = getPathToCarImage(vehicleId);
 
     return (
@@ -177,7 +177,7 @@ export default function FleetManagement() {
                   <div className="detail-content-container">
                     {categorySet.map((category, index) => (
                       <div className="detail-item" key={index}>
-                        <span className="detail-value">{getValueByPath(props.dataContext.implicit, category.key)}</span>
+                        <span className="detail-value">{getValueByPath(ctx.implicit, category.key)}</span>
                         <IgrDivider></IgrDivider>
                       </div>
                     ))}
@@ -224,20 +224,20 @@ export default function FleetManagement() {
     );
   }
 
-  const statusCellTemplate = (props: { dataContext: IgrCellTemplateContext }) => {
+  const statusCellTemplate = (ctx: IgrCellTemplateContext) => {
     return (
       <>
-        <IgrBadge variant={getStatusType(props.dataContext.implicit)}>
-          <IgrIcon className='icon-style' collection='imx-icons' name={getStatusIcon(props.dataContext.implicit)}></IgrIcon>
+        <IgrBadge variant={getStatusType(ctx.implicit)}>
+          <IgrIcon className='icon-style' collection='imx-icons' name={getStatusIcon(ctx.implicit)}></IgrIcon>
         </IgrBadge>
-        <span className="status-value">{props.dataContext.implicit}</span>
+        <span className="status-value">{ctx.implicit}</span>
       </>
     );
   }
 
-  const locationCellTemplate = (props: { dataContext: IgrCellTemplateContext }) => {
+  const locationCellTemplate = (ctx: IgrCellTemplateContext) => {
     return (
-      <a className='link-style' href='#' onClick={(event) => showLocationOverlay(event, props.dataContext.cell)}>{props.dataContext.implicit}</a>
+      <a className='link-style' href='#' onClick={(event) => showLocationOverlay(event, ctx.cell)}>{ctx.implicit}</a>
     );
   }
 
