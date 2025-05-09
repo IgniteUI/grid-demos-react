@@ -23,7 +23,7 @@ import { erpDataService } from "../../services/ErpDataService";
 import { BadgeVariant } from "../../models/BadgeVariant";
 import { OrderStatus } from "../../models/OrderStatus";
 import { DataPoint } from "../../models/DataPoint";
-import { FullAddressFilteringOperand } from "../../CustomFilteringOperand";
+import { FullAddressFilteringOperand } from "../../services/custom-operations/CustomFilteringOperand";
 import BILL_PAID from "../../assets/icons/bill_paid.svg";
 import CHECK from "../../assets/icons/check.svg";
 import DELIVERY from "../../assets/icons/delivery.svg";
@@ -130,7 +130,7 @@ const ErpHGrid = () => {
     const rating: number = ctx.cell.value;
     return (
       <>
-        <IgrRating value={rating}></IgrRating>
+        <IgrRating value={rating} readOnly={true} max={5}></IgrRating>
       </>
     );
   };
@@ -459,7 +459,7 @@ const ErpHGrid = () => {
               field="orderInformation"
               header="Address"
               dataType="string"
-              sortable={true}
+              sortable={false}
               resizable={true}
               visibleWhenCollapsed={false}
               formatter={formatAddress}
@@ -471,7 +471,7 @@ const ErpHGrid = () => {
               field="orderInformation"
               header="Address"
               dataType="string"
-              sortable={true}
+              sortable={false}
               resizable={true}
               visibleWhenCollapsed={true}
               formatter={formatFullAddress}
