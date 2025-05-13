@@ -42,7 +42,7 @@ const useOverlayControl = (ref: React.RefObject<HTMLElement | null>, onClose: ()
       window.removeEventListener("mousedown", handleClickOutside);
       window.removeEventListener("wheel", handleClickOutside);
     };
-  }, [onClose]);
+  }, [ref, onClose]);
 }
 
 export default function FleetManagement() {
