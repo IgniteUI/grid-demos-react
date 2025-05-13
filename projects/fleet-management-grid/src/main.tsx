@@ -1,23 +1,10 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client'
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import App from './app/app';
-import { routes } from "./app/app-routes";
-
-const basename = import.meta.env.VITE_BASENAME || '/';
-const router = createBrowserRouter([
-  {
-    element: <App />,
-    children: [...routes]
-  }
-],
-  {
-    basename: basename
-  });
+import FleetManagement from './app/components/fleet-management-grid/fleet-management-grid';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <FleetManagement />
   </StrictMode>
 
 )
