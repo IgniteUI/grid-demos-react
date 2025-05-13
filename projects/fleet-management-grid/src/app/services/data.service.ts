@@ -1,4 +1,4 @@
-import { CostRecord } from "../models/cost.model.ts";
+import { CostRecord, FuelCostsPerMonth } from "../models/cost.model.ts";
 import { Driver } from "../models/driver.model.ts";
 import { MaintenanceHistory } from "../models/maintenance-history.model.ts";
 import { TripHistory } from "../models/trip-history.model.ts";
@@ -26,7 +26,7 @@ class DataService {
   private costRecords: CostRecord[] = [];
   private utilizationRecords: UtilizationRecord[] = [];
 
-  private fuelCostsCache: { [key: string]: any[] } = {};
+  private fuelCostsCache: { [key: string]: FuelCostsPerMonth[] } = {};
 
   async getVehiclesData() {
     const response = await fetch(VEHICLE_DATA_URL);
@@ -57,8 +57,8 @@ class DataService {
     const response = await fetch(UTILIZATION_DATA_URL);
     const data = await response.json();
 
-    data.forEach((vehicle: any) => {
-      vehicle.utilization.__dataIntents = {
+    data.forEach((vehicle: UtilizationRecord) => {
+      (vehicle.utilization as any).__dataIntents = {
         "'2023'": ['SeriesTitle/2023'],
         "'2024'": ['SeriesTitle/2024']
       };
@@ -93,17 +93,17 @@ class DataService {
     return this.maintenanceRecords.find((d: MaintenanceHistory) => d.vehicleId === vehicleId)?.maintenance;
   }
 
-  findCostsPerTypeData(vehicleId: string, period: any) {
+  findCostsPerTypeData(vehicleId: string, period: string) {
     const item = this.costRecords.find((d: CostRecord) => d.vehicleId === vehicleId);
     return item?.costPerType?.[period] || [];
   }
 
-  findCostsPerMeterData(vehicleId: string, period: any) {
+  findCostsPerMeterData(vehicleId: string, period: string) {
     const item = this.costRecords.find((d: CostRecord) => d.vehicleId === vehicleId);
     return item?.costsPerMeterPerQuarter?.[period] || [];
   }
 
-  getFuelCostsData(vehicleId: string, period: any) {
+  getFuelCostsData(vehicleId: string, period: string) {
     const cacheKey = vehicleId + period;
     if (this.fuelCostsCache[cacheKey]) {
       return this.fuelCostsCache[cacheKey];
@@ -112,7 +112,7 @@ class DataService {
     const item = this.costRecords.find((d: CostRecord) => d.vehicleId === vehicleId);
     const fuelCosts = item?.fuelCostsPerMonth || [];
 
-    let result: any[] = [];
+    let result: FuelCostsPerMonth[] = [];
     switch (period) {
       case 'ytd':
       case '12months':

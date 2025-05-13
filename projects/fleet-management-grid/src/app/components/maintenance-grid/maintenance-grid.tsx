@@ -1,14 +1,12 @@
 import { IgrCellTemplateContext, IgrColumn, IgrGrid } from "igniteui-react-grids";
 import { dataService } from "../../services/data.service";
 import { registerIconFromText } from "igniteui-react";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { check, gitIssue } from "@igniteui/material-icons-extended";
 import { html, unsafeCSS } from "lit";
 import styles from "./maintenance-grid.scss?inline";
 
-export default function MaintenanceGrid(vehicleId: any) {
-
-    const gridRef = useRef<IgrGrid>(null);
+export default function MaintenanceGrid({ vehicleId }: { vehicleId: string }) {
 
     useEffect(() => {
         registerIconFromText(check.name, check.value, "imx-icons");
@@ -94,7 +92,6 @@ export default function MaintenanceGrid(vehicleId: any) {
         column.header = "Type";
         column.width = "12%";
         column.bodyTemplate = typeCellTemplate;
-        //gridRef.current?.markForCheck();
     }
 
     const setRemarksColumn = (column: IgrColumn) => {
@@ -104,7 +101,7 @@ export default function MaintenanceGrid(vehicleId: any) {
 
     return (
         <>
-            <IgrGrid ref={gridRef} autoGenerate={true} onColumnInit={handleColumnInit} data={dataService.findMaintenanceDataById(vehicleId.vehicleId)} className="child-grid" height="100%" width="100%"></IgrGrid>
+            <IgrGrid autoGenerate={true} onColumnInit={handleColumnInit} data={dataService.findMaintenanceDataById(vehicleId)} className="child-grid" height="100%" width="100%"></IgrGrid>
         </>
     )
 }

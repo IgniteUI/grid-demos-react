@@ -1,4 +1,4 @@
-import { IgrSelect, IgrSelectHeader, IgrSelectItem } from "igniteui-react";
+import { IgrSelect, IgrSelectHeader, IgrSelectItem, IgrSelectItemComponentEventArgs } from "igniteui-react";
 import { useState, useEffect } from "react";
 import { Period } from "../../models/enums";
 import { dataService } from "../../services/data.service";
@@ -6,15 +6,15 @@ import { IgrCategoryChart } from "igniteui-react-charts";
 
 export default function CostPerMeterChartComponent({ vehicleId }: { vehicleId: string }) {
   const [chartData, setChartData] = useState<{ quarter: string; costPerMeter: number; }[]>([]);
-  const [selectValue, setSelectValue] = useState(Period.YTD);
+  const [selectValue, setSelectValue] = useState<string>(Period.YTD);
 
   useEffect(() => {
     const data = dataService.findCostsPerMeterData(vehicleId, selectValue);
     setChartData(data);
   }, [selectValue, vehicleId])
 
-  const onPeriodChange = (event: any) => {
-    setSelectValue(event.target.value)
+  const onPeriodChange = (event: IgrSelectItemComponentEventArgs) => {
+    setSelectValue(event.detail.value);
   }
 
   return (
@@ -22,7 +22,7 @@ export default function CostPerMeterChartComponent({ vehicleId }: { vehicleId: s
       <div className="chart-header">
         <span className="chart-title">Cost per Meter, per Quarter</span>
         <IgrSelect className="chart-select" value={selectValue}
-          onChange={(event: any) => onPeriodChange(event)}>
+          onChange={(event: IgrSelectItemComponentEventArgs) => onPeriodChange(event)}>
           <IgrSelectHeader>Period</IgrSelectHeader>
           <IgrSelectItem value="ytd">YTD</IgrSelectItem>
           <IgrSelectItem value="'2023'">2023</IgrSelectItem>

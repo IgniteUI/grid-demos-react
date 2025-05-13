@@ -1,4 +1,4 @@
-import { IgrCellTemplateContext, IgrColumn, IgrGrid, IgrGridMasterDetailContext, IgrGridToolbar, IgrGridToolbarActions, IgrGridToolbarAdvancedFiltering, IgrGridToolbarExporter, IgrGridToolbarHiding, IgrGridToolbarPinning, IgrGridToolbarTitle } from 'igniteui-react-grids';
+import { IgrCellTemplateContext, IgrCellType, IgrColumn, IgrGrid, IgrGridMasterDetailContext, IgrGridToolbar, IgrGridToolbarActions, IgrGridToolbarAdvancedFiltering, IgrGridToolbarExporter, IgrGridToolbarHiding, IgrGridToolbarPinning, IgrGridToolbarTitle } from 'igniteui-react-grids';
 import 'igniteui-react-grids/grids/combined.js';
 import './fleet-management-grid.scss';
 import { IgrAvatar, IgrBadge, IgrButton, IgrCard, IgrCardActions, IgrCardContent, IgrCardHeader, IgrCarousel, IgrCarouselSlide, IgrDivider, IgrIcon, IgrTab, IgrTabs, registerIconFromText, StyleVariant } from 'igniteui-react';
@@ -13,7 +13,7 @@ import { IgrCategoryChartModule, IgrLegendModule } from 'igniteui-react-charts';
 import TripHistoryGrid from '../trip-history-grid/trip-history-grid';
 import MaintenanceGrid from '../maintenance-grid/maintenance-grid';
 import { flip, offset, shift, useFloating } from '@floating-ui/react-dom';
-import { OverlayVehicle, Vehicle } from '../../models/vehicle.model';
+import { MarkerPoint, OverlayVehicle, Vehicle } from '../../models/vehicle.model';
 import { IgrGeographicMap, IgrGeographicMapModule, IgrGeographicSymbolSeries } from 'igniteui-react-maps';
 import { DataTemplateMeasureInfo, DataTemplateRenderInfo, IgDataTemplate } from 'igniteui-react-core';
 import CostPerTypeChartComponent from '../cost-per-type-chart/cost-per-type-chart';
@@ -26,7 +26,7 @@ IgrLegendModule.register();
 IgrCategoryChartModule.register();
 IgrGeographicMapModule.register();
 
-const useOverlayControl = (ref: React.MutableRefObject<HTMLElement | null>, onClose: () => void) => {
+const useOverlayControl = (ref: React.RefObject<HTMLElement | null>, onClose: () => void) => {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const path = event.composedPath?.() || (event as any).path || [];
@@ -42,7 +42,7 @@ const useOverlayControl = (ref: React.MutableRefObject<HTMLElement | null>, onCl
       window.removeEventListener("mousedown", handleClickOutside);
       window.removeEventListener("wheel", handleClickOutside);
     };
-  }, [ref, onClose]);
+  }, [onClose]);
 }
 
 export default function FleetManagement() {
@@ -93,9 +93,9 @@ export default function FleetManagement() {
 
     dataService.getVehiclesData().then(() => {
       setVehiclesData(dataService.vehicleList);
+      dataService.loadOptionalData();
     });
-
-    dataService.loadOptionalData();
+    
   }, []);
 
   useEffect(() => {
@@ -113,7 +113,7 @@ export default function FleetManagement() {
     };
 
     mapRef.current.zoomToGeographic(centerPoint);
-  }, [mapRef, vehicleDetails.markerLocations]);
+  }, [vehicleDetails.markerLocations]);
 
   useEffect(() => {
     if (isLocationOverlayActive) {
@@ -142,7 +142,7 @@ export default function FleetManagement() {
   /** Templates */
 
   const masterDetailTemplate = (ctx: IgrGridMasterDetailContext) => {
-    const vehicleId = ctx.implicit.vehicleId;
+    const vehicleId: string = ctx.implicit.vehicleId;
     const images: string[] = getPathToCarImage(vehicleId);
 
     return (
@@ -243,10 +243,10 @@ export default function FleetManagement() {
 
   /** Overlay Logic */
 
-  const showLocationOverlay = (event: React.MouseEvent<HTMLElement>, cell: any) => {
+  const showLocationOverlay = (event: React.MouseEvent<HTMLElement>, cell: IgrCellType) => {
     event.preventDefault();
 
-    const vehicleId = cell.row?.cells?.find((c: any) => c.column.field === 'vehicleId')?.value;
+    const vehicleId = cell.row?.cells?.find((c: IgrCellType) => c.column.field === 'vehicleId')?.value;
 
     if (!vehicleId) {
       console.error('Vehicle ID not found in data');
@@ -341,7 +341,7 @@ export default function FleetManagement() {
     return path.split('.').reduce((o, key) => (o && o[key] !== undefined) ? o[key] : 'N/A', obj);
   }
 
-  const addSeriesWith = (locations: any[], brush: string) => {
+  const addSeriesWith = (locations: MarkerPoint[], brush: string) => {
     const symbolSeries = new IgrGeographicSymbolSeries({ name: "symbolSeries" });
     symbolSeries.dataSource = locations;
     symbolSeries.latitudeMemberPath = "latitude";

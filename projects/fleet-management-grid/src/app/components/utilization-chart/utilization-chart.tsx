@@ -11,7 +11,7 @@ export default function UtilizationChartComponent({ vehicleId }: { vehicleId: st
     if (chartRef.current && legendRef.current) {
       chartRef.current.legend = legendRef.current;
     }
-  }, [chartRef, legendRef]);
+  }, []);
 
   return (
     <div className="content-wrapper ig-typography">

@@ -1,4 +1,4 @@
-import { IgrCellTemplateContext, IgrColumn, IgrGrid } from "igniteui-react-grids";
+import { IgrCellTemplateContext, IgrCellType, IgrColumn, IgrGrid } from "igniteui-react-grids";
 import "./trip-history-grid.scss"
 import { dataService } from "../../services/data.service";
 import { html, unsafeCSS } from "lit";
@@ -39,7 +39,7 @@ export default function TripHistoryGrid({ vehicleId, onDriverClick }: TripHistor
 	const handleDriverClick = (event: MouseEvent, ctx: IgrCellTemplateContext) => {
 		event.preventDefault();
 
-		const driverName = ctx.cell.row?.cells?.find((c: any) => c.column.field === 'driverName')?.value;
+		const driverName = ctx.cell.row?.cells?.find((c: IgrCellType) => c.column.field === 'driverName')?.value;
 
 		if (!driverName) {
 			console.error('Driver not found in data');
@@ -56,7 +56,7 @@ export default function TripHistoryGrid({ vehicleId, onDriverClick }: TripHistor
 		onDriverClick?.(driverDetails, event);
 	};
 
-	const getPathToDriverPhoto = (cell: any) => {
+	const getPathToDriverPhoto = (cell: IgrCellType) => {
 		return `people/${dataService.getDriverPhoto(cell.row.data.driverName)}.jpg`
 	}
 
