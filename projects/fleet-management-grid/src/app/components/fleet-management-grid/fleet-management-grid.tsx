@@ -21,6 +21,7 @@ import CostPerMeterChartComponent from '../cost-per-meter-chart/cost-per-meter-c
 import FuelCostChartComponent from '../fuel-cost-chart/fuel-cost-chart';
 import UtilizationChartComponent from '../utilization-chart/utilization-chart';
 import { Driver } from '../../models/driver.model';
+import { CLEAR } from '../../assets/icons/icons';
 
 IgrLegendModule.register();
 IgrCategoryChartModule.register();
@@ -51,6 +52,7 @@ export default function FleetManagement() {
   const [isVisible, setIsVisible] = useState(false);
   const [isLocationOverlayActive, setIsLocationOverlayActive] = useState(false);
   const [isDriverOverlayActive, setIsDriverOverlayActive] = useState(false);
+  const [isSorted, setIsSorted] = useState(false);
 
   const [vehicleDetails, setVehicleDetails] = useState<OverlayVehicle>({
     vehiclePhoto: '',
@@ -90,12 +92,13 @@ export default function FleetManagement() {
     registerIconFromText(check.name, check.value, "imx-icons");
     registerIconFromText(wrench.name, wrench.value, "imx-icons");
     registerIconFromText(delivery.name, delivery.value, "imx-icons");
+    registerIconFromText("clear", CLEAR, "material");
 
     dataService.getVehiclesData().then(() => {
       setVehiclesData(dataService.vehicleList);
       dataService.loadOptionalData();
     });
-    
+
   }, []);
 
   useEffect(() => {
@@ -370,6 +373,19 @@ export default function FleetManagement() {
     }
   }
 
+  const clearSorting = () => {
+    if (gridRef.current) {
+      gridRef.current.sortingExpressions = [];
+    }
+    setIsSorted(false);
+  }
+
+  const handleSortingChanged = () => {
+    if (gridRef.current) {
+      setIsSorted(gridRef.current.sortingExpressions.length > 0);
+    }
+  }
+
   return (
     <>
       <div className="row-layout fleet-management-container">
@@ -379,9 +395,16 @@ export default function FleetManagement() {
           detailTemplate={masterDetailTemplate}
           className="ig-typography ig-scrollbar main-grid"
           allowAdvancedFiltering={true}
-          ref={gridRef}>
+          ref={gridRef}
+          onSortingExpressionsChange={handleSortingChanged}>
           <IgrGridToolbar>
             <IgrGridToolbarActions>
+              {isSorted && (
+                <IgrButton variant="flat" onClick={clearSorting}>
+                  <IgrIcon name="clear" collection="material" />
+                  Clear Sort
+                </IgrButton>
+              )}
               <IgrGridToolbarPinning></IgrGridToolbarPinning>
               <IgrGridToolbarHiding></IgrGridToolbarHiding>
               <IgrGridToolbarExporter></IgrGridToolbarExporter>
