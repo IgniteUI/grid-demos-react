@@ -256,7 +256,7 @@ export default function FleetManagement() {
       return;
     }
 
-    const vehicle = vehiclesData.find(v => v.vehicleId === vehicleId)
+    const vehicle = dataService.vehicleList.find(v => v.vehicleId === vehicleId)
 
     if (!vehicle) {
       console.error(`No vehicle found for ID: ${vehicleId}`);
