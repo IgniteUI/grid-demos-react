@@ -1,4 +1,4 @@
-import { IgrCellTemplateContext, IgrCellType, IgrColumn, IgrGrid, IgrGridMasterDetailContext, IgrGridToolbar, IgrGridToolbarActions, IgrGridToolbarAdvancedFiltering, IgrGridToolbarExporter, IgrGridToolbarHiding, IgrGridToolbarPinning, IgrGridToolbarTitle } from 'igniteui-react-grids';
+import { IgrCellTemplateContext, IgrCellType, IgrColumn, IgrGrid, IgrGridMasterDetailContext, IgrGridToolbar, IgrGridToolbarActions, IgrGridToolbarAdvancedFiltering, IgrGridToolbarHiding, IgrGridToolbarPinning, IgrGridToolbarTitle } from 'igniteui-react-grids';
 import 'igniteui-react-grids/grids/combined.js';
 import './fleet-management-grid.scss';
 import { IgrAvatar, IgrBadge, IgrButton, IgrCard, IgrCardActions, IgrCardContent, IgrCardHeader, IgrCarousel, IgrCarouselSlide, IgrDivider, IgrIcon, IgrTab, IgrTabs, registerIconFromText, StyleVariant } from 'igniteui-react';
@@ -407,7 +407,6 @@ export default function FleetManagement() {
               )}
               <IgrGridToolbarPinning></IgrGridToolbarPinning>
               <IgrGridToolbarHiding></IgrGridToolbarHiding>
-              <IgrGridToolbarExporter></IgrGridToolbarExporter>
               <IgrGridToolbarAdvancedFiltering></IgrGridToolbarAdvancedFiltering>
             </IgrGridToolbarActions>
             <IgrGridToolbarTitle>
