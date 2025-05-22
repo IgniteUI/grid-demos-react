@@ -207,9 +207,8 @@ const ErpHGrid = () => {
 
   const countryTemplate = (ctx: IgrCellTemplateContext) => {
     const cellValue: string = ctx.cell.value;
-    const flagPath: string = `${
-      import.meta.env.BASE_URL
-    }country-flags/${cellValue}.svg`;
+    const flagPath: string = `${import.meta.env.BASE_URL
+      }country-flags/${cellValue}.svg`;
 
     return (
       <div className="country-cell">
@@ -355,12 +354,6 @@ const ErpHGrid = () => {
           rowSelection={selectionMode}
           sortingExpressions={childGridSortingExpression}
         >
-          <IgrGridToolbar>
-            <IgrGridToolbarTitle>
-              Sales data for the last month
-            </IgrGridToolbarTitle>
-          </IgrGridToolbar>
-
           <IgrColumn
             field="orderId"
             header="Order ID"
