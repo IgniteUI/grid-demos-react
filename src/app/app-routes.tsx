@@ -1,15 +1,26 @@
-import { redirect } from 'react-router-dom';
-import ERPInventory from './erpinventory/erpinventory';
-import OrgChartHRPortal from './org-chart-hr-portal/org-chart-hr-portal';
-import FinancialPortfolio from './financial-portfolio/financial-portfolio';
-import SalesDashboard from './sales-dashboard/sales-dashboard';
-import FleetManagement from './fleet-management/fleet-management';
+import { redirect, RouteObject } from 'react-router-dom';
+import ERPHGridView from './views/erp-hgrid/erp-hgrid-view';
+import HRPortalView from './views/hr-portal/hr-portal-view';
+import FinanceView from './views/finance/finance-view';
+import SalesView from './views/sales/sales-view';
+import FleetManagementView from './views/fleet-management/fleet-management-view';
+import HomeView from './views/home/home-view';
 
-export const routes = [
-  { index: true, loader: () => redirect('erpinventory') },
-  { path: 'erpinventory', element: <ERPInventory />, text: 'ERPInventory' },
-  { path: 'org-chart-hr-portal', element: <OrgChartHRPortal />, text: 'Org ChartHR Portal' },
-  { path: 'financial-portfolio', element: <FinancialPortfolio />, text: 'Financial Portfolio' },
-  { path: 'sales-dashboard', element: <SalesDashboard />, text: 'Sales Dashboard' },
-  { path: 'fleet-management', element: <FleetManagement />, text: 'Fleet Management' }
+export const routes: RouteObject[] = [
+  { index: true, loader: () => redirect('home') },
+  { path: 'home', element: <HomeView />,
+    children: [
+      { index: true, loader: () => redirect('inventory') },
+      { path: 'inventory', element: <ERPHGridView /> },
+      { path: 'hr-portal', element: <HRPortalView /> },
+      { path: 'finance', element: <FinanceView />},
+      { path: 'sales', element: <SalesView /> },
+      { path: 'fleet', element: <FleetManagementView /> },
+    ]
+  },
+  { path: 'inventory', element: <ERPHGridView /> },
+  { path: 'hr-portal', element: <HRPortalView /> },
+  { path: 'finance', element: <FinanceView />},
+  { path: 'sales', element: <SalesView /> },
+  { path: 'fleet', element: <FleetManagementView /> },
 ];
