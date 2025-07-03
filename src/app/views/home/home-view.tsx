@@ -1,15 +1,18 @@
 import { useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { IgrChip, IgrIcon, IgrIconButton, IgrRipple, registerIcon } from 'igniteui-react';
+import { IgrButton, IgrIcon, registerIcon } from 'igniteui-react';
 import 'igniteui-react-grids/grids/themes/light/material.css';
 import './home-view.scss';
 
 import FILE_DOWNLOAD from '../../data/icons/file_download.svg';
+import VIEW_MORE from '../../data/icons/view_more.svg';
+import FULL_SCREEN from '../../data/icons/full_screen.svg';
 
 export interface TabInfo {
   title: string;
-  theme: string;
   content: string;
+  theme: string;
+  themeMode: string;
   moreLink: string;
   downloadLink: string;
 }
@@ -19,40 +22,72 @@ interface TabItemProps {
   tabInfo?: TabInfo,
 }
 
+interface TabItemInfoProps {
+  tabName: string;
+  tabInfo: Map<string, TabInfo>;
+  onDownloadClick: (event: React.MouseEvent<HTMLButtonElement>, tabName: string) => void;
+  onViewMoreClick: (event: React.MouseEvent<HTMLButtonElement>, tabName: string) => void;
+  onFullscreenClick: () => void;
+}
+
 export function TabItem({isActive, tabInfo}: TabItemProps) {
-
-  function onLinkClick(event: any) {
-    window.open(tabInfo?.moreLink, "_blank")?.focus();
-    event.preventDefault();
-    event.stopPropagation();
-  }
-
-  function onDownloadClick(event: any) {
-    const downloadLink = tabInfo?.downloadLink;
-    window.open(downloadLink, "_blank")?.focus();
-    event.preventDefault();
-    event.stopPropagation();
-  }
 
   return (
     <div className="tab-item-container">
       <div className={"tab-item" + (isActive ? " tab-item--selected": "") }>
         <div className={"tab-header" + (!isActive ? " tab-header--disabled" : "" )}>
-          {tabInfo?.title}
-          <IgrChip disabled={!isActive}><span key='chipText'>{tabInfo?.theme}</span></IgrChip>
+          {tabInfo?.title.toUpperCase()}
         </div>
-        <div className={"tab-content" + (!isActive ? " tab-content--disabled" : "")}>
-          <span>{tabInfo?.content}</span>
-        </div>
-        <div className="tab-actions">
-          <span className={"learn-text" + (!isActive ? " link--disabled" : "" )} onClick={onLinkClick}>Learn more</span>
-          <div className="tooltip">
-            <IgrIconButton className={"button" + (isActive ? "--enabled" : "--disabled")} onClick={onDownloadClick}>
-                <IgrRipple key='downloadRipple'></IgrRipple>
-                <IgrIcon key='downloadIcon' name="file_download" collection="custom"></IgrIcon>
-            </IgrIconButton>
-            <span className="tooltip--text">Download sample.</span>
-          </div>
+      </div>
+    </div>
+  );
+};
+
+export function TabItemInfo({
+  tabName,
+  tabInfo,
+  onDownloadClick,
+  onViewMoreClick,
+  onFullscreenClick,
+}: TabItemInfoProps) {
+  const info = tabInfo.get(tabName);
+
+  return (
+    <div className="current-tab-info">
+      <div className="sample-info">
+        <div className="tab-header">{info?.title}</div>
+        <div className="tab-description">{info?.content}</div>
+      </div>
+
+      <div className="sample-actions">
+        <div className="theme-info">Theme: {info?.theme}</div>
+        <div className="theme-info">Mode: {info?.themeMode}</div>
+
+        <div>
+          <IgrButton
+            variant="outlined"
+            className="custom-button"
+            style={{ marginRight: '8px' }}
+            onClick={(e) => onDownloadClick(e, tabName)}
+          >
+            <IgrIcon key='downloadIcon' name="file_download" collection="custom"></IgrIcon>
+            Download
+          </IgrButton>
+
+          <IgrButton
+            variant="outlined"
+            className="custom-button"
+            style={{ marginRight: '8px' }}
+            onClick={(e) => onViewMoreClick(e, tabName)}
+          >
+            <IgrIcon key='viewMoreIcon' name="view_more" collection="custom"></IgrIcon>
+            View More
+          </IgrButton>
+
+          <IgrButton variant="outlined" className="custom-button" onClick={onFullscreenClick}>
+            <IgrIcon key='fullscreenIcon' name="full_screen" collection="custom"></IgrIcon>
+            Fullscreen
+          </IgrButton>
         </div>
       </div>
     </div>
@@ -65,7 +100,8 @@ export default function HomeView() {
       "inventory",
       {
         title: "ERP/ Inventory",
-        theme: "Material Light",
+        theme: "Material",
+        themeMode: 'Light',
         content: "Tracking and managing quantity, location and details of products in stock.",
         moreLink: "https://www.infragistics.com/products/ignite-ui-angular/angular/components/hierarchicalgrid/hierarchical-grid",
         downloadLink: "https://www.infragistics.com/resources/sample-applications/erp-inventory-sample-app-react",
@@ -75,7 +111,8 @@ export default function HomeView() {
       "hr-portal",
       {
         title: "Org Chart/HR Portal",
-        theme: "Fluent Light",
+        theme: "Fluent",
+        themeMode: 'Light',
         content: "Displaying company's hierarchical structure and showing employees data.",
         moreLink: "https://www.infragistics.com/products/ignite-ui-angular/angular/components/treegrid/tree-grid",
         downloadLink: "https://www.infragistics.com/resources/sample-applications/org-charthr-portal-sample-app-react",
@@ -85,7 +122,8 @@ export default function HomeView() {
       "finance",
       {
         title: "Financial Portfolio",
-        theme: "Bootstrap Light",
+        theme: "Bootstrap",
+        themeMode: 'Light',
         content: "Asset tracking, profit and loss analysis, featuring interactive dynamic charts.",
         moreLink: "https://www.infragistics.com/products/ignite-ui-angular/angular/components/grid/grid",
         downloadLink: "https://www.infragistics.com/resources/sample-applications/financial-portfolio-sample-app-react",
@@ -95,7 +133,8 @@ export default function HomeView() {
       "sales",
       {
         title: "Sales Dashboard",
-        theme: "Indigo Light",
+        theme: "Indigo",
+        themeMode: 'Light',
         content: "For trend analysis, KPIs and viewing sales summaries by region, product, etc.",
         moreLink: "https://www.infragistics.com/products/ignite-ui-angular/angular/components/pivotGrid/pivot-grid",
         downloadLink: "https://www.infragistics.com/resources/sample-applications/sales-grid-sample-app-react",
@@ -105,7 +144,8 @@ export default function HomeView() {
       "fleet",
       {
         title: "Fleet Management",
-        theme: "Material Dark",
+        theme: "Material",
+        themeMode: 'Dark',
         content: "A master-detail grid for managing vehicle acquisition, operations, and maintenance.",
         moreLink: "https://www.infragistics.com/products/ignite-ui-angular/angular/components/grid/master-detail",
         downloadLink: "https://www.infragistics.com/resources/sample-applications/fleet-management-sample-app-react",
@@ -117,11 +157,42 @@ export default function HomeView() {
 
   useEffect(() => {
     registerIcon("file_download", FILE_DOWNLOAD, "custom");
+    registerIcon("view_more", VIEW_MORE, "custom");
+    registerIcon("full_screen", FULL_SCREEN, "custom");
   }, []);
 
   useEffect(() => {
     setGridView(location.pathname.replace("/home/", ""));
   }, [location]);
+
+
+  const onDownloadClick = (event: React.MouseEvent<HTMLButtonElement>, tabName: string) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const downloadLink = tabInfo.get(tabName)?.downloadLink;
+    if (downloadLink) {
+      window.open(downloadLink, '_blank')?.focus();
+    }
+  };
+
+  const onViewMoreClick = (event: React.MouseEvent<HTMLButtonElement>, tabName: string) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const moreLink = tabInfo.get(tabName)?.moreLink;
+    if (moreLink) {
+      window.open(moreLink, '_blank')?.focus();
+    }
+  };
+
+  const onFullscreenClick = () => {
+    const origin = window.location.origin;
+    const pathname = window.location.pathname;
+    const trimmedPath = pathname.replace('/home', '');
+    const url = origin + trimmedPath;
+    window.open(url, '_blank');
+  };
 
   return (
     <div className="demo-container">
@@ -134,6 +205,14 @@ export default function HomeView() {
           </NavLink>
         )}
       </div>
+
+      <TabItemInfo
+        tabName={gridView}
+        tabInfo={tabInfo}
+        onDownloadClick={onDownloadClick}
+        onViewMoreClick={onViewMoreClick}
+        onFullscreenClick={onFullscreenClick}></TabItemInfo>
+
       <div className="router-container">
         <iframe src={import.meta.env.BASE_URL+ gridView} height='100%' width='100%' style={{ border: 0 }}/>
       </div>
