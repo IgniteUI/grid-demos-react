@@ -210,6 +210,9 @@
     font-size: 14px;
 
     .theme-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
       font-weight: 600;
       letter-spacing: 0.15px;
       height: 40px;
