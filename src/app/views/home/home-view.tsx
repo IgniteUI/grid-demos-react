@@ -27,7 +27,7 @@ interface TabItemInfoProps {
   tabInfo: Map<string, TabInfo>;
   onDownloadClick: (event: MouseEvent, tabName: string) => void;
   onViewMoreClick: (event: MouseEvent, tabName: string) => void;
-  onFullscreenClick: () => void;
+  onFullscreenClick: (event: MouseEvent) => void;
 }
 
 export function TabItem({isActive, tabInfo}: TabItemProps) {
@@ -68,7 +68,7 @@ export function TabItemInfo({
             variant="outlined"
             className="custom-button"
             style={{ marginRight: '8px' }}
-            onClick={(e) => onDownloadClick(e, tabName)}
+            onClick={(e) => onDownloadClick(e.nativeEvent as MouseEvent, tabName)}
           >
             <IgrIcon key='downloadIcon' name="file_download" collection="custom"></IgrIcon>
             Download
@@ -78,13 +78,13 @@ export function TabItemInfo({
             variant="outlined"
             className="custom-button"
             style={{ marginRight: '8px' }}
-            onClick={(e) => onViewMoreClick(e, tabName)}
+            onClick={(e) => onViewMoreClick(e.nativeEvent as MouseEvent, tabName)}
           >
             <IgrIcon key='viewMoreIcon' name="view_more" collection="custom"></IgrIcon>
             View More
           </IgrButton>
 
-          <IgrButton variant="outlined" className="custom-button" onClick={onFullscreenClick}>
+          <IgrButton variant="outlined" className="custom-button" onClick={(e) => onFullscreenClick(e.nativeEvent as MouseEvent)}>
             <IgrIcon key='fullscreenIcon' name="full_screen" collection="custom"></IgrIcon>
             Fullscreen
           </IgrButton>
@@ -186,7 +186,10 @@ export default function HomeView() {
     }
   };
 
-  const onFullscreenClick = () => {
+  const onFullscreenClick = (event: MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+
     const origin = window.location.origin;
     const pathname = window.location.pathname;
     const trimmedPath = pathname.replace('/home', '');
