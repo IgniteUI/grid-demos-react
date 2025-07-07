@@ -25,8 +25,8 @@ interface TabItemProps {
 interface TabItemInfoProps {
   tabName: string;
   tabInfo: Map<string, TabInfo>;
-  onDownloadClick: (event: React.MouseEvent<HTMLButtonElement>, tabName: string) => void;
-  onViewMoreClick: (event: React.MouseEvent<HTMLButtonElement>, tabName: string) => void;
+  onDownloadClick: (event: MouseEvent, tabName: string) => void;
+  onViewMoreClick: (event: MouseEvent, tabName: string) => void;
   onFullscreenClick: () => void;
 }
 
@@ -166,7 +166,7 @@ export default function HomeView() {
   }, [location]);
 
 
-  const onDownloadClick = (event: React.MouseEvent<HTMLButtonElement>, tabName: string) => {
+  const onDownloadClick = (event: MouseEvent, tabName: string) => {
     event.preventDefault();
     event.stopPropagation();
 
@@ -176,7 +176,7 @@ export default function HomeView() {
     }
   };
 
-  const onViewMoreClick = (event: React.MouseEvent<HTMLButtonElement>, tabName: string) => {
+  const onViewMoreClick = (event: MouseEvent, tabName: string) => {
     event.preventDefault();
     event.stopPropagation();
 
