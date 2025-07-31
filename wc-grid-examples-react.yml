@@ -107,30 +107,32 @@ stages:
           customCommand: 'install --legacy-peer-deps'
           customEndpoint: 'public proget'
 
-      - task: Npm@1
-        displayName: 'Install Ignite UI CLI globally'
-        inputs:
-          verbose: ${{ parameters.isVerbose }}
-          command: custom
-          workingDir: '$(Build.SourcesDirectory)'
-          customCommand: 'install -g igniteui-cli'
+    # TODO: igniteui-cli to be used after project corrections
+    #       to be able to use licensed packages
+    #   - task: Npm@1
+    #     displayName: 'Install Ignite UI CLI globally'
+    #     inputs:
+    #       verbose: ${{ parameters.isVerbose }}
+    #       command: custom
+    #       workingDir: '$(Build.SourcesDirectory)'
+    #       customCommand: 'install -g igniteui-cli'
 
-      - task: Bash@3
-        displayName: 'Run Ignite UI Upgrade in Root and All Project Subdirectories'
-        inputs:
-          targetType: 'inline'
-          script: |
-            echo "Running Ignite UI package upgrade at root level..."
-            npx ig upgrade-packages --skip-install
+    #   - task: Bash@3
+    #     displayName: 'Run Ignite UI Upgrade in Root and All Project Subdirectories'
+    #     inputs:
+    #       targetType: 'inline'
+    #       script: |
+    #         echo "Running Ignite UI package upgrade at root level..."
+    #         npx ig upgrade-packages --skip-install
 
-            echo "Running Ignite UI package upgrade in all project subdirectories..."
-            for dir in $(Build.SourcesDirectory)/projects/*/; do
-              if [ -d "$dir" ]; then
-                echo "Processing: $dir"
-                (cd "$dir" && npx ig upgrade-packages --skip-install)
-              fi
-            done
-
+    #         echo "Running Ignite UI package upgrade in all project subdirectories..."
+    #         for dir in $(Build.SourcesDirectory)/projects/*/; do
+    #           if [ -d "$dir" ]; then
+    #             echo "Processing: $dir"
+    #             (cd "$dir" && npx ig upgrade-packages --skip-install)
+    #           fi
+    #         done
+    
       - task: PowerShell@2
         displayName: 'Replace references to IG trial packages with licensed ones'
         inputs:
