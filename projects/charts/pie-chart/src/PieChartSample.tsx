@@ -6,11 +6,10 @@ import {
   IIgrPieChartBaseProps,
 } from "igniteui-react-charts";
 import "./PieChartSample.scss";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 function PieChartSample() {
   const [legend, setLegend] = useState<IgrItemLegend | null>(null);
-  const chart2Ref = useRef<IgrPieChart | null>(null);
 
   const energyGlobalDemand = [
     { value: 37, category: "Cooling", summary: "Cooling 37%" },
@@ -67,7 +66,6 @@ function PieChartSample() {
           <IgrPieChart
             height="80%"
             width="80%"
-            ref={chart2Ref}
             dataSource={secondChartData}
             labelMemberPath="Summary"
             legendLabelMemberPath="Company"
