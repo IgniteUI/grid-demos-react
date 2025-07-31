@@ -117,14 +117,24 @@ export function TabItemInfo({
 }
 
 export default function HomeView() {
-  const tabs = [
+  const tabsGrids = [
     { key: "inventory" },
     { key: "hr-portal" },
     { key: "finance" },
     { key: "sales" },
     { key: "fleet" },
   ];
-  const tabInfo = new Map<string, TabInfo>([
+
+  const tabsCharts = [
+    { key: "column-chart" },
+    { key: "bar-chart" },
+    { key: "line-chart" },
+    { key: "pie-chart" },
+    { key: "step-chart" },
+    { key: "polar-chart" },
+  ];
+
+  const tabInfoGrids = new Map<string, TabInfo>([
     [
       "inventory",
       {
@@ -196,10 +206,96 @@ export default function HomeView() {
       },
     ],
   ]);
+
+  const tabInfoCharts = new Map<string, TabInfo>([
+    [
+      "charts/column-chart",
+      {
+        title: "Column Chart",
+        theme: "Material",
+        themeMode: "Light",
+        content:
+          "Render a collection of data points connected by a straight line to emphasize the amount of change over a period of time",
+        moreLink:
+          "https://www.infragistics.com/products/ignite-ui-angular/angular/components/charts/types/column-chart",
+        downloadLink: "",
+      },
+    ],
+    [
+      "charts/bar-chart",
+      {
+        title: "Bar Chart",
+        theme: "Fluent",
+        themeMode: "Light",
+        content:
+          "Quickly compare frequency, count, total, or average of data in different categories",
+        moreLink:
+          "https://www.infragistics.com/products/ignite-ui-angular/angular/components/charts/types/bar-chart",
+        downloadLink: "",
+      },
+    ],
+    [
+      "charts/line-chart",
+      {
+        title: "Line Chart",
+        theme: "Bootstrap",
+        themeMode: "Light",
+        content:
+          "Show trends and perform comparative analysis of one or more quantities over a period of time",
+        moreLink:
+          "https://www.infragistics.com/products/ignite-ui-angular/angular/components/charts/types/line-chart",
+        downloadLink: "",
+      },
+    ],
+    [
+      "charts/pie-chart",
+      {
+        title: "Pie Chart",
+        theme: "Indigo",
+        themeMode: "Light",
+        content:
+          "Part-to-whole chart that shows how categories (parts) of a data set add up to a total (whole) value.",
+        moreLink:
+          "https://www.infragistics.com/products/ignite-ui-angular/angular/components/charts/types/pie-chart",
+        downloadLink: "",
+      },
+    ],
+    [
+      "charts/step-chart",
+      {
+        title: "Step Chart",
+        theme: "Material",
+        themeMode: "Light",
+        content:
+          "Emphasizes the amount of change over a period of time or compares multiple items at once.",
+        moreLink:
+          "https://www.infragistics.com/products/ignite-ui-angular/angular/components/charts/types/step-chart",
+        downloadLink: "",
+      },
+    ],
+    [
+      "charts/polar-chart",
+      {
+        title: "Polar Chart",
+        theme: "Fluent",
+        themeMode: "Light",
+        content:
+          "Emphasizes the amount of change over a period of time or compares multiple items at once.",
+        moreLink:
+          "https://www.infragistics.com/products/ignite-ui-angular/angular/components/charts/types/polar-chart",
+        downloadLink: "",
+      },
+    ],
+  ]);
+
   const location = useLocation();
-  const [gridView, setGridView] = useState("inventory");
+  const [activeView, setActiveView] = useState("inventory");
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+  const [isChartsSection, setIsChartsSection] = useState<boolean>(false);
+  const [tabInfo, setTabInfo] = useState(tabInfoGrids);
+  const [activeTabs, setActiveTabs] = useState(tabsGrids);
   const fullscreenRef = useRef<HTMLDivElement>(null);
+  const iframeSrc = import.meta.env.BASE_URL + activeView;
 
   useEffect(() => {
     registerIcon("file_download", FILE_DOWNLOAD, "custom");
@@ -209,7 +305,7 @@ export default function HomeView() {
   }, []);
 
   useEffect(() => {
-    setGridView(location.pathname.replace("/home/", ""));
+    setActiveView(location.pathname.replace("/home/", ""));
   }, [location]);
 
   useEffect(() => {
@@ -239,6 +335,23 @@ export default function HomeView() {
       window.removeEventListener("resize", onResize);
     };
   }, []);
+
+  // Update tabs based on route
+  useEffect(() => {
+    const path = location.pathname.replace("/home/", "");
+
+    if (path.startsWith("charts")) {
+      setTabInfo(tabInfoCharts);
+      setActiveTabs(tabsCharts);
+      setIsChartsSection(true);
+    } else {
+      setTabInfo(tabInfoGrids);
+      setActiveTabs(tabsGrids);
+      setIsChartsSection(false);
+    }
+
+    setActiveView(path);
+  }, [location]);
 
   const onDownloadClick = (event: MouseEvent, tabName: string) => {
     event.preventDefault();
@@ -278,18 +391,29 @@ export default function HomeView() {
     <div className="demo-container" ref={fullscreenRef}>
       {!isFullscreen && (
         <div className="tab-container">
-          {tabs.map(({ key }) => (
-            <NavLink key={key} to={`/home/${key}`}>
-              {({ isActive }) => (
-                <TabItem isActive={isActive} tabInfo={tabInfo.get(key)} />
-              )}
-            </NavLink>
-          ))}
+          {isChartsSection
+            ? activeTabs.map(({ key }) => (
+                <NavLink key={key} to={`/home/charts/${key}`}>
+                  {({ isActive }) => (
+                    <TabItem
+                      isActive={isActive}
+                      tabInfo={tabInfo?.get(`charts/${key}`)}
+                    />
+                  )}
+                </NavLink>
+              ))
+            : activeTabs.map(({ key }) => (
+                <NavLink key={key} to={`/home/${key}`}>
+                  {({ isActive }) => (
+                    <TabItem isActive={isActive} tabInfo={tabInfo?.get(key)} />
+                  )}
+                </NavLink>
+              ))}
         </div>
       )}
 
       <TabItemInfo
-        tabName={gridView}
+        tabName={activeView}
         tabInfo={tabInfo}
         isFullscreen={isFullscreen}
         onDownloadClick={onDownloadClick}
@@ -299,7 +423,7 @@ export default function HomeView() {
 
       <div className="router-container">
         <iframe
-          src={import.meta.env.BASE_URL + gridView}
+          src={iframeSrc}
           height="100%"
           width="100%"
           style={{ border: 0 }}
