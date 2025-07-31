@@ -34,8 +34,6 @@ function ColumnChartSample() {
         highlightingBehavior="NearestItemsAndSeries"
         isHorizontalZoomEnabled={false}
         isVerticalZoomEnabled={false}
-        brushes={["#C5E0FF"]}
-        outlines={["#C5E0FF"]}
       />
     </div>
   );

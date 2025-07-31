@@ -48,9 +48,6 @@ function LineChartSample() {
           yAxisTitleRightMargin={5}
           yAxisLabelLeftMargin={0}
           computedPlotAreaMarginMode="Series"
-          brushes={["#C5E0FF", "#FFB5C2", "#B2E5B2"]}
-          markerBrushes={["#C5E0FF", "#FFB5C2", "#B2E5B2"]}
-          markerOutlines={["#C5E0FF", "#FFB5C2", "#B2E5B2"]}
         />
       </div>
     </div>

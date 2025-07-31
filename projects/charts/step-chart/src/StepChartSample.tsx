@@ -60,11 +60,6 @@ function StepChartSample() {
           crosshairsSnapToData={true}
           legend={legend}
           yAxisTitle="TWh"
-          yAxisLabelTextColor="black"
-          brushes={["#C5E0FF", "#FFB5C2", "#B2E5B2"]}
-          outlines={["#C5E0FF", "#FFB5C2", "#B2E5B2"]}
-          markerBrushes={["#C5E0FF", "#FFB5C2", "#B2E5B2"]}
-          markerOutlines={["#C5E0FF", "#FFB5C2", "#B2E5B2"]}
         />
       </div>
     </div>

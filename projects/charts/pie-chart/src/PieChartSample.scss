@@ -13,9 +13,11 @@
 
 .charts-container,
 .chart-wrapper,
-.chart1 {
+.pie-chart {
   height: 100%;
   width: 100%;
+  --brushes: #C5E0FF, #FFB5C2, #FFD8A8, #B2E5B2, #D6CCFF;
+  --outlines: #C5E0FF, #FFB5C2, #FFD8A8, #B2E5B2, #D6CCFF;
 }
 
 .legend,
@@ -37,6 +39,4 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
-  width: 100%;
 }

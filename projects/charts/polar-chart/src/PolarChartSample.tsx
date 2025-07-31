@@ -42,10 +42,6 @@ function PolarChartSample() {
           legend={legend}
           isHorizontalZoomEnabled={false}
           isVerticalZoomEnabled={false}
-          brushes={["#1976d2", "#d81b60"]}
-          outlines={["#1976d2", "#d81b60"]}
-          markerOutlines={["#1976d2", "#d81b60"]}
-          markerBrushes={["white"]}
         >
           <IgrNumericAngleAxis
             name="angleAxis"

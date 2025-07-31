@@ -6,7 +6,7 @@ import {
   IIgrPieChartBaseProps,
 } from "igniteui-react-charts";
 import "./PieChartSample.scss";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 function PieChartSample() {
   const [legend, setLegend] = useState<IgrItemLegend | null>(null);
@@ -35,12 +35,6 @@ function PieChartSample() {
     e.isExploded = !e.isExploded;
   };
 
-  useEffect(() => {
-    if (chart2Ref.current && chart2Ref.current.explodedSlices) {
-      chart2Ref.current.explodedSlices.add(3);
-    }
-  }, []);
-
   return (
     <div className="charts-container">
       {/* First Pie Chart */}
@@ -52,7 +46,7 @@ function PieChartSample() {
         <div className="legend">
           <IgrItemLegend orientation="Horizontal" ref={setLegend} />
         </div>
-        <div className="chart1">
+        <div className="pie-chart">
           <IgrPieChart
             height="100%"
             dataSource={energyGlobalDemand}
@@ -62,8 +56,6 @@ function PieChartSample() {
             valueMemberPath="value"
             radiusFactor={0.7}
             legend={legend}
-            brushes={["#C5E0FF", "#FFB5C2", "#FFD8A8", "#B2E5B2", "#D6CCFF"]}
-            outlines={["#C5E0FF", "#FFB5C2", "#FFD8A8", "#B2E5B2", "#D6CCFF"]}
           />
         </div>
       </div>
@@ -71,7 +63,7 @@ function PieChartSample() {
       {/* Second Pie Chart */}
       <div className="chart-wrapper">
         <div className="pie-chart-variant">PIE CHART EXPLOSION</div>
-        <div className="chart2">
+        <div className="pie-chart chart2">
           <IgrPieChart
             height="80%"
             width="80%"
@@ -83,8 +75,7 @@ function PieChartSample() {
             labelsPosition="OutsideEnd"
             labelExtent={30}
             sliceClick={pieSliceClickEvent}
-            brushes={["#C5E0FF", "#FFB5C2", "#FFD8A8", "#B2E5B2", "#D6CCFF"]}
-            outlines={["#C5E0FF", "#FFB5C2", "#FFD8A8", "#B2E5B2", "#D6CCFF"]}
+            explodedSlices={'3'}
           />
         </div>
       </div>
