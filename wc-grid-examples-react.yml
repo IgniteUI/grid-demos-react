@@ -131,17 +131,6 @@ stages:
               fi
             done
 
-      - task: Bash@3
-        displayName: 'Debug: Show content changes with git diff'
-        condition: succeededOrFailed()
-        inputs:
-          targetType: 'inline'
-          script: |
-            echo "Showing file changes using git diff..."
-            git status
-            git diff --name-only
-            git diff
-
       - task: Npm@1
         displayName: 'npm install --legacy-peer-deps'
         inputs:
