@@ -140,12 +140,12 @@ stages:
           customCommand: 'install --legacy-peer-deps'
 
       - task: Npm@1
-        displayName: 'npm run build'
+        displayName: 'npm run build:ci'
         inputs:
           verbose: ${{ parameters.isVerbose }}
           command: custom
           workingDir: '$(Build.SourcesDirectory)'
-          customCommand: 'run build'
+          customCommand: 'run build:ci'
 
       - task: PublishPipelineArtifact@1
         displayName: 'Publish app'
