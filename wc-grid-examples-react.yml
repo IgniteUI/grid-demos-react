@@ -193,6 +193,22 @@ stages:
 
       #       ConvertTo-Json -InputObject $packageJson | Set-Content -Path .\package.json
 
+      - task: Bash@3
+        displayName: 'Run Ignite UI Upgrade in Root and All Project Subdirectories'
+        inputs:
+          targetType: 'inline'
+          script: |
+            echo "Running Ignite UI package upgrade at root level..."
+            npx ig upgrade-packages --skip-install
+
+            echo "Running Ignite UI package upgrade in all project subdirectories..."
+            for dir in $(Build.SourcesDirectory)/projects/*/; do
+              if [ -d "$dir" ]; then
+                echo "Processing: $dir"
+                (cd "$dir" && npx ig upgrade-packages --skip-install)
+              fi
+            done
+
       - task: Npm@1
         displayName: 'npm install --legacy-peer-deps'
         inputs:
