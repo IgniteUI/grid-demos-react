@@ -80,8 +80,6 @@ function BarChartSample() {
             showDefaultTooltip={true}
             isTransitionInEnabled={true}
             isHighlightingEnabled={true}
-            brush="#C5E0FF"
-            outline="#8AB9F1"
           />
 
           <IgrBarSeries
@@ -94,8 +92,6 @@ function BarChartSample() {
             showDefaultTooltip={true}
             isTransitionInEnabled={true}
             isHighlightingEnabled={true}
-            brush="#FFB5C2"
-            outline="#FF6F91"
           />
 
           <IgrDataToolTipLayer name="Tooltips" />
