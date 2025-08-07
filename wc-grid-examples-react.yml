@@ -131,19 +131,13 @@ stages:
               fi
             done
 
-      - task: Bash@3
-        displayName: 'Show git diff after ig upgrade-packages'
+      - task: Npm@1
+        displayName: 'npm install --legacy-peer-deps'
         inputs:
-          targetType: 'inline'
-          script: |
-            git diff
-            - task: Npm@1
-              displayName: 'npm install --legacy-peer-deps'
-              inputs:
-                verbose: ${{ parameters.isVerbose }}
-                command: custom
-                workingDir: '$(Build.SourcesDirectory)'
-                customCommand: 'install --legacy-peer-deps'
+          verbose: ${{ parameters.isVerbose }}
+          command: custom
+          workingDir: '$(Build.SourcesDirectory)'
+          customCommand: 'install --legacy-peer-deps'
 
       - task: Npm@1
         displayName: 'npm run build'
