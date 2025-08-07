@@ -1,0 +1,50 @@
+{
+  "name": "erp-hierarchical-grid",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "vite",
+    "build": "tsc && node --max-old-space-size=4096 node_modules/vite/bin/vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@floating-ui/react": "^0.27.7",
+    "element-internals-polyfill": "^3.0.0",
+    "functions-have-names": "^1.2.3",
+    "igniteui-react": "19.0.3",
+    "igniteui-react-charts": "19.0.0",
+    "igniteui-react-core": "19.0.0",
+    "igniteui-react-grids": "19.0.3",
+    "react": "^19.0.0",
+    "react-app-polyfill": "^3.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^6.16.0",
+    "resize-observer-polyfill": "^1.5.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.21.0",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@typescript-eslint/eslint-plugin": "^8.29.0",
+    "@typescript-eslint/parser": "^8.29.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.23.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "globals": "^15.15.0",
+    "jsdom": "^22.1.0",
+    "sass": "^1.86.3",
+    "typescript": "~5.7.2",
+    "typescript-eslint": "^8.24.1",
+    "vite": "^6.2.5"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}
