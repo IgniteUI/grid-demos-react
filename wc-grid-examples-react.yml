@@ -115,35 +115,19 @@ stages:
           workingDir: '$(Build.SourcesDirectory)'
           customCommand: 'install -g igniteui-cli'
 
-      # - task: Bash@3
-      #   displayName: 'Run Ignite UI Upgrade in Root and All Project Subdirectories'
-      #   inputs:
-      #     targetType: 'inline'
-      #     script: |
-      #       echo "Running Ignite UI package upgrade at root level..."
-      #       ig upgrade-packages --skip-install
-
-      #       echo "Running Ignite UI package upgrade in all project subdirectories..."
-      #       for dir in $(Build.SourcesDirectory)/projects/*/; do
-      #         if [ -d "$dir" ]; then
-      #           echo "Processing: $dir"
-      #           (cd "$dir" && ig upgrade-packages --skip-install)
-      #         fi
-      #       done
-
       - task: Bash@3
         displayName: 'Run Ignite UI Upgrade in Root and All Project Subdirectories'
         inputs:
           targetType: 'inline'
           script: |
             echo "Running Ignite UI package upgrade at root level..."
-            ig upgrade-packages
+            ig upgrade-packages --skip-install
 
             echo "Running Ignite UI package upgrade in all project subdirectories..."
             for dir in $(Build.SourcesDirectory)/projects/*/; do
-              if [ -f "$dir/ignite-ui-cli.json" ]; then
+              if [ -d "$dir" ]; then
                 echo "Processing: $dir"
-                (cd "$dir" && ig upgrade-packages)
+                (cd "$dir" && ig upgrade-packages --skip-install)
               fi
             done
 
@@ -154,6 +138,14 @@ stages:
           command: custom
           workingDir: '$(Build.SourcesDirectory)'
           customCommand: 'install --legacy-peer-deps'
+
+      - task: Bash@3
+        displayName: 'Show failing file content for debug'
+        inputs:
+          targetType: 'inline'
+          script: |
+            echo "------ ErpHGrid.tsx HEAD ------"
+            head -n 20 $(Build.SourcesDirectory)/projects/erp-hierarchical-grid/src/components/ErpHGrid/ErpHGrid.tsx
 
       - task: Bash@3
         displayName: 'Verify installed Ignite UI package versions'
