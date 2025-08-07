@@ -139,6 +139,19 @@ stages:
           workingDir: '$(Build.SourcesDirectory)'
           customCommand: 'install --legacy-peer-deps'
 
+      - task: Bash@3
+        displayName: 'Verify installed Ignite UI package versions'
+        inputs:
+          targetType: 'inline'
+          script: |
+            echo "Checking installed package versions with npm list..."
+            npm list igniteui-react-grids @infragistics/igniteui-react-grids
+
+            echo ""
+            echo "Inspecting package-lock.json for igniteui-react-grids and @infragistics entries..."
+            grep 'igniteui-react-grids' package-lock.json || echo "No entries found for igniteui-react-grids"
+            grep '@infragistics' package-lock.json || echo "No entries found for @infragistics"
+
       - task: Npm@1
         displayName: 'npm run build'
         inputs:
