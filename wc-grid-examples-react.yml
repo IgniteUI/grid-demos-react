@@ -115,19 +115,35 @@ stages:
           workingDir: '$(Build.SourcesDirectory)'
           customCommand: 'install -g igniteui-cli'
 
+      # - task: Bash@3
+      #   displayName: 'Run Ignite UI Upgrade in Root and All Project Subdirectories'
+      #   inputs:
+      #     targetType: 'inline'
+      #     script: |
+      #       echo "Running Ignite UI package upgrade at root level..."
+      #       ig upgrade-packages --skip-install
+
+      #       echo "Running Ignite UI package upgrade in all project subdirectories..."
+      #       for dir in $(Build.SourcesDirectory)/projects/*/; do
+      #         if [ -d "$dir" ]; then
+      #           echo "Processing: $dir"
+      #           (cd "$dir" && ig upgrade-packages --skip-install)
+      #         fi
+      #       done
+
       - task: Bash@3
         displayName: 'Run Ignite UI Upgrade in Root and All Project Subdirectories'
         inputs:
           targetType: 'inline'
           script: |
             echo "Running Ignite UI package upgrade at root level..."
-            ig upgrade-packages --skip-install
+            ig upgrade-packages
 
             echo "Running Ignite UI package upgrade in all project subdirectories..."
             for dir in $(Build.SourcesDirectory)/projects/*/; do
-              if [ -d "$dir" ]; then
+              if [ -f "$dir/ignite-ui-cli.json" ]; then
                 echo "Processing: $dir"
-                (cd "$dir" && ig upgrade-packages --skip-install)
+                (cd "$dir" && ig upgrade-packages)
               fi
             done
 
