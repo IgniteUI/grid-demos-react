@@ -70,7 +70,6 @@ function PolarChartSample() {
             angleMemberPath="direction"
             radiusMemberPath="windSpeed"
             showDefaultTooltip={true}
-            areaFillOpacity={0.3}
             thickness={1}
             markerType="Circle"
           />
@@ -84,7 +83,6 @@ function PolarChartSample() {
             angleMemberPath="direction"
             radiusMemberPath="boatSpeed"
             showDefaultTooltip={true}
-            areaFillOpacity={0.3}
             thickness={1}
             markerType="Circle"
           />
