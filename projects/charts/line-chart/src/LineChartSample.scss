@@ -3,6 +3,13 @@
   width: 100%;
   height: 100%;
   padding: 35px 16px 105px 16px;
+
+  .legend,
+  .legend-title {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+  }
 }
 
 .chart-wrapper {

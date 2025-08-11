@@ -28,9 +28,9 @@ function PolarChartSample() {
 
   return (
     <div className="polar-chart-container">
-      <div className="legend">Wind Speed vs Boat Speed</div>
+      <div className="legend-title">Wind Speed vs Boat Speed</div>
 
-      <div>
+      <div className="legend">
         <IgrLegend ref={setLegend} orientation="Horizontal" />
       </div>
 
