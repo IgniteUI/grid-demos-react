@@ -33,7 +33,7 @@ stages:
         inputs:
           versionSource: 'spec'
           versionSpec: '18.x'
-        
+
       - task: Bash@3
         displayName: 'Create download artifact per sample (Shell)'
         inputs:
