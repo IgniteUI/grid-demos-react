@@ -1,4 +1,4 @@
-import lightFluent from "igniteui-react-grids/grids/themes/light/fluent.css?inline";
+import lightFluent from "igniteui-react-grids/grids/themes/light/material.css?inline";
 import sampleStyles from "../../../../../projects/charts/bar-chart/src/BarChartSample.scss?inline";
 import BarChartSample from "../../../../../projects/charts/bar-chart/src/BarChartSample";
 

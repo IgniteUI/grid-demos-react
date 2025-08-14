@@ -1,9 +1,17 @@
-import { IgrCategoryChart, IgrCategoryChartModule } from "igniteui-react-charts";
+import {
+  IgrCategoryChart,
+  IgrCategoryChartModule,
+  IgrLegend,
+} from "igniteui-react-charts";
 import "./ColumnChartSample.scss";
+import { useState } from "react";
 
 IgrCategoryChartModule.register();
 
 function ColumnChartSample() {
+
+  const [legend, setLegend] = useState<IgrLegend | null>(null);
+
   const chartData = [
     { month: "January", temperature: 3 },
     { month: "February", temperature: 4 },
@@ -21,10 +29,17 @@ function ColumnChartSample() {
 
   return (
     <div className="container">
+      <div className="legend-title">Highest Grossing Movie Franchises</div>
+
+      <div className="legend">
+        <IgrLegend orientation="Horizontal" ref={setLegend} />
+      </div>
+
       <IgrCategoryChart
         width="100%"
         height="100%"
         dataSource={chartData}
+        legend={legend}
         chartType="Column"
         yAxisTitle="Temperature in °C"
         yAxisTitleLeftMargin={10}

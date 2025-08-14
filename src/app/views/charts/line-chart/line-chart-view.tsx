@@ -1,4 +1,4 @@
-import lightBootstrap from "igniteui-react-grids/grids/themes/light/bootstrap.css?inline";
+import lightBootstrap from "igniteui-react-grids/grids/themes/light/material.css?inline";
 import sampleStyles from "../../../../../projects/charts/line-chart/src/LineChartSample.scss?inline";
 import LineChartSample from "../../../../../projects/charts/line-chart/src/LineChartSample";
 

@@ -10,6 +10,7 @@ import { useState } from "react";
 
 function PieChartSample() {
   const [legend, setLegend] = useState<IgrItemLegend | null>(null);
+  const [legend2, setLegend2] = useState<IgrItemLegend | null>(null);
 
   const energyGlobalDemand = [
     { value: 37, category: "Cooling", summary: "Cooling 37%" },
@@ -62,6 +63,12 @@ function PieChartSample() {
       {/* Second Pie Chart */}
       <div className="chart-wrapper">
         <div className="pie-chart-variant">PIE CHART EXPLOSION</div>
+        <div className="legend-title">
+          Global Electricity Demand by Energy Use
+        </div>
+        <div className="legend">
+          <IgrItemLegend orientation="Horizontal" ref={setLegend2} />
+        </div>
         <div className="pie-chart chart2">
           <IgrPieChart
             height="80%"
@@ -74,6 +81,7 @@ function PieChartSample() {
             labelExtent={30}
             sliceClick={pieSliceClickEvent}
             explodedSlices={'3'}
+            legend={legend2}
           />
         </div>
       </div>
