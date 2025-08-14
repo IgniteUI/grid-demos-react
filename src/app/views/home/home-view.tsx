@@ -136,7 +136,7 @@ export default function HomeView() {
 
   const tabInfoGrids = new Map<string, TabInfo>([
     [
-      "inventory",
+      "grids/inventory",
       {
         title: "ERP/ Inventory",
         theme: "Material",
@@ -144,13 +144,13 @@ export default function HomeView() {
         content:
           "Tracking and managing quantity, location and details of products in stock.",
         moreLink:
-          "https://www.infragistics.com/products/ignite-ui-angular/angular/components/hierarchicalgrid/hierarchical-grid",
+          "https://www.infragistics.com/products/ignite-ui-react/react/components/grids/hierarchical-grid/overview",
         downloadLink:
           "https://www.infragistics.com/resources/sample-applications/erp-inventory-sample-app-react",
       },
     ],
     [
-      "hr-portal",
+      "grids/hr-portal",
       {
         title: "Org Chart/HR Portal",
         theme: "Fluent",
@@ -158,13 +158,13 @@ export default function HomeView() {
         content:
           "Displaying company's hierarchical structure and showing employees data.",
         moreLink:
-          "https://www.infragistics.com/products/ignite-ui-angular/angular/components/treegrid/tree-grid",
+          "https://www.infragistics.com/products/ignite-ui-react/react/components/grids/tree-grid/overview",
         downloadLink:
           "https://www.infragistics.com/resources/sample-applications/org-charthr-portal-sample-app-react",
       },
     ],
     [
-      "finance",
+      "grids/finance",
       {
         title: "Financial Portfolio",
         theme: "Bootstrap",
@@ -172,13 +172,13 @@ export default function HomeView() {
         content:
           "Asset tracking, profit and loss analysis, featuring interactive dynamic charts.",
         moreLink:
-          "https://www.infragistics.com/products/ignite-ui-angular/angular/components/grid/grid",
+          "https://www.infragistics.com/products/ignite-ui-react/react/components/grids/data-grid",
         downloadLink:
           "https://www.infragistics.com/resources/sample-applications/financial-portfolio-sample-app-react",
       },
     ],
     [
-      "sales",
+      "grids/sales",
       {
         title: "Sales Dashboard",
         theme: "Indigo",
@@ -186,13 +186,13 @@ export default function HomeView() {
         content:
           "For trend analysis, KPIs and viewing sales summaries by region, product, etc.",
         moreLink:
-          "https://www.infragistics.com/products/ignite-ui-angular/angular/components/pivotGrid/pivot-grid",
+          "https://www.infragistics.com/products/ignite-ui-react/react/components/grids/pivot-grid/overview",
         downloadLink:
           "https://www.infragistics.com/resources/sample-applications/sales-grid-sample-app-react",
       },
     ],
     [
-      "fleet",
+      "grids/fleet",
       {
         title: "Fleet Management",
         theme: "Material",
@@ -200,7 +200,7 @@ export default function HomeView() {
         content:
           "A master-detail grid for managing vehicle acquisition, operations, and maintenance.",
         moreLink:
-          "https://www.infragistics.com/products/ignite-ui-angular/angular/components/grid/master-detail",
+          "https://www.infragistics.com/products/ignite-ui-react/react/components/grids/grid/master-detail",
         downloadLink:
           "https://www.infragistics.com/resources/sample-applications/fleet-management-sample-app-react",
       },
@@ -217,7 +217,7 @@ export default function HomeView() {
         content:
           "Render a collection of data points connected by a straight line to emphasize the amount of change over a period of time",
         moreLink:
-          "https://www.infragistics.com/products/ignite-ui-angular/angular/components/charts/types/column-chart",
+          "https://www.infragistics.com/products/ignite-ui-react/react/components/charts/types/column-chart",
         downloadLink: "",
       },
     ],
@@ -230,7 +230,7 @@ export default function HomeView() {
         content:
           "Quickly compare frequency, count, total, or average of data in different categories",
         moreLink:
-          "https://www.infragistics.com/products/ignite-ui-angular/angular/components/charts/types/bar-chart",
+          "https://www.infragistics.com/products/ignite-ui-react/react/components/charts/types/bar-chart",
         downloadLink: "",
       },
     ],
@@ -243,7 +243,7 @@ export default function HomeView() {
         content:
           "Show trends and perform comparative analysis of one or more quantities over a period of time",
         moreLink:
-          "https://www.infragistics.com/products/ignite-ui-angular/angular/components/charts/types/line-chart",
+          "https://www.infragistics.com/products/ignite-ui-react/react/components/charts/types/line-chart",
         downloadLink: "",
       },
     ],
@@ -256,7 +256,7 @@ export default function HomeView() {
         content:
           "Part-to-whole chart that shows how categories (parts) of a data set add up to a total (whole) value.",
         moreLink:
-          "https://www.infragistics.com/products/ignite-ui-angular/angular/components/charts/types/pie-chart",
+          "https://www.infragistics.com/products/ignite-ui-react/react/components/charts/types/pie-chart",
         downloadLink: "",
       },
     ],
@@ -269,7 +269,7 @@ export default function HomeView() {
         content:
           "Emphasizes the amount of change over a period of time or compares multiple items at once.",
         moreLink:
-          "https://www.infragistics.com/products/ignite-ui-angular/angular/components/charts/types/step-chart",
+          "https://www.infragistics.com/products/ignite-ui-react/react/components/charts/types/step-chart",
         downloadLink: "",
       },
     ],
@@ -282,7 +282,7 @@ export default function HomeView() {
         content:
           "Emphasizes the amount of change over a period of time or compares multiple items at once.",
         moreLink:
-          "https://www.infragistics.com/products/ignite-ui-angular/angular/components/charts/types/polar-chart",
+          "https://www.infragistics.com/products/ignite-ui-react/react/components/charts/types/polar-chart",
         downloadLink: "",
       },
     ],
@@ -403,9 +403,9 @@ export default function HomeView() {
                 </NavLink>
               ))
             : activeTabs.map(({ key }) => (
-                <NavLink key={key} to={`/home/${key}`}>
+                <NavLink key={key} to={`/home/grids/${key}`}>
                   {({ isActive }) => (
-                    <TabItem isActive={isActive} tabInfo={tabInfo?.get(key)} />
+                    <TabItem isActive={isActive} tabInfo={tabInfo?.get(`grids/${key}`)} />
                   )}
                 </NavLink>
               ))}
