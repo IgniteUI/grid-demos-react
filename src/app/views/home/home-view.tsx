@@ -116,177 +116,178 @@ export function TabItemInfo({
   );
 }
 
+const tabsGrids = [
+  { key: "inventory" },
+  { key: "hr-portal" },
+  { key: "finance" },
+  { key: "sales" },
+  { key: "fleet" },
+];
+
+const tabsCharts = [
+  { key: "column-chart" },
+  { key: "bar-chart" },
+  { key: "line-chart" },
+  { key: "pie-chart" },
+  { key: "step-chart" },
+  { key: "polar-chart" },
+];
+
+const tabInfoGrids = new Map<string, TabInfo>([
+  [
+    "grids/inventory",
+    {
+      title: "ERP/ Inventory",
+      theme: "Material",
+      themeMode: "Light",
+      content:
+        "Tracking and managing quantity, location and details of products in stock.",
+      moreLink:
+        "https://www.infragistics.com/products/ignite-ui-react/react/components/grids/hierarchical-grid/overview",
+      downloadLink:
+        "https://www.infragistics.com/resources/sample-applications/erp-inventory-sample-app-react",
+    },
+  ],
+  [
+    "grids/hr-portal",
+    {
+      title: "Org Chart/HR Portal",
+      theme: "Fluent",
+      themeMode: "Light",
+      content:
+        "Displaying company's hierarchical structure and showing employees data.",
+      moreLink:
+        "https://www.infragistics.com/products/ignite-ui-react/react/components/grids/tree-grid/overview",
+      downloadLink:
+        "https://www.infragistics.com/resources/sample-applications/org-charthr-portal-sample-app-react",
+    },
+  ],
+  [
+    "grids/finance",
+    {
+      title: "Financial Portfolio",
+      theme: "Bootstrap",
+      themeMode: "Light",
+      content:
+        "Asset tracking, profit and loss analysis, featuring interactive dynamic charts.",
+      moreLink:
+        "https://www.infragistics.com/products/ignite-ui-react/react/components/grids/data-grid",
+      downloadLink:
+        "https://www.infragistics.com/resources/sample-applications/financial-portfolio-sample-app-react",
+    },
+  ],
+  [
+    "grids/sales",
+    {
+      title: "Sales Dashboard",
+      theme: "Indigo",
+      themeMode: "Light",
+      content:
+        "For trend analysis, KPIs and viewing sales summaries by region, product, etc.",
+      moreLink:
+        "https://www.infragistics.com/products/ignite-ui-react/react/components/grids/pivot-grid/overview",
+      downloadLink:
+        "https://www.infragistics.com/resources/sample-applications/sales-grid-sample-app-react",
+    },
+  ],
+  [
+    "grids/fleet",
+    {
+      title: "Fleet Management",
+      theme: "Material",
+      themeMode: "Dark",
+      content:
+        "A master-detail grid for managing vehicle acquisition, operations, and maintenance.",
+      moreLink:
+        "https://www.infragistics.com/products/ignite-ui-react/react/components/grids/grid/master-detail",
+      downloadLink:
+        "https://www.infragistics.com/resources/sample-applications/fleet-management-sample-app-react",
+    },
+  ],
+]);
+
+const tabInfoCharts = new Map<string, TabInfo>([
+  [
+    "charts/column-chart",
+    {
+      title: "Column Chart",
+      theme: "Material",
+      themeMode: "Light",
+      content:
+        "Render a collection of data points connected by a straight line to emphasize the amount of change over a period of time",
+      moreLink:
+        "https://www.infragistics.com/products/ignite-ui-react/react/components/charts/types/column-chart",
+      downloadLink: "",
+    },
+  ],
+  [
+    "charts/bar-chart",
+    {
+      title: "Bar Chart",
+      theme: "Material",
+      themeMode: "Light",
+      content:
+        "Quickly compare frequency, count, total, or average of data in different categories",
+      moreLink:
+        "https://www.infragistics.com/products/ignite-ui-react/react/components/charts/types/bar-chart",
+      downloadLink: "",
+    },
+  ],
+  [
+    "charts/line-chart",
+    {
+      title: "Line Chart",
+      theme: "Material",
+      themeMode: "Light",
+      content:
+        "Show trends and perform comparative analysis of one or more quantities over a period of time",
+      moreLink:
+        "https://www.infragistics.com/products/ignite-ui-react/react/components/charts/types/line-chart",
+      downloadLink: "",
+    },
+  ],
+  [
+    "charts/pie-chart",
+    {
+      title: "Pie Chart",
+      theme: "Material",
+      themeMode: "Light",
+      content:
+        "Part-to-whole chart that shows how categories (parts) of a data set add up to a total (whole) value.",
+      moreLink:
+        "https://www.infragistics.com/products/ignite-ui-react/react/components/charts/types/pie-chart",
+      downloadLink: "",
+    },
+  ],
+  [
+    "charts/step-chart",
+    {
+      title: "Step Chart",
+      theme: "Material",
+      themeMode: "Light",
+      content:
+        "Emphasizes the amount of change over a period of time or compares multiple items at once.",
+      moreLink:
+        "https://www.infragistics.com/products/ignite-ui-react/react/components/charts/types/step-chart",
+      downloadLink: "",
+    },
+  ],
+  [
+    "charts/polar-chart",
+    {
+      title: "Polar Chart",
+      theme: "Material",
+      themeMode: "Light",
+      content:
+        "Emphasizes the amount of change over a period of time or compares multiple items at once.",
+      moreLink:
+        "https://www.infragistics.com/products/ignite-ui-react/react/components/charts/types/polar-chart",
+      downloadLink: "",
+    },
+  ],
+]);
+
 export default function HomeView() {
-  const tabsGrids = [
-    { key: "inventory" },
-    { key: "hr-portal" },
-    { key: "finance" },
-    { key: "sales" },
-    { key: "fleet" },
-  ];
-
-  const tabsCharts = [
-    { key: "column-chart" },
-    { key: "bar-chart" },
-    { key: "line-chart" },
-    { key: "pie-chart" },
-    { key: "step-chart" },
-    { key: "polar-chart" },
-  ];
-
-  const tabInfoGrids = new Map<string, TabInfo>([
-    [
-      "grids/inventory",
-      {
-        title: "ERP/ Inventory",
-        theme: "Material",
-        themeMode: "Light",
-        content:
-          "Tracking and managing quantity, location and details of products in stock.",
-        moreLink:
-          "https://www.infragistics.com/products/ignite-ui-react/react/components/grids/hierarchical-grid/overview",
-        downloadLink:
-          "https://www.infragistics.com/resources/sample-applications/erp-inventory-sample-app-react",
-      },
-    ],
-    [
-      "grids/hr-portal",
-      {
-        title: "Org Chart/HR Portal",
-        theme: "Fluent",
-        themeMode: "Light",
-        content:
-          "Displaying company's hierarchical structure and showing employees data.",
-        moreLink:
-          "https://www.infragistics.com/products/ignite-ui-react/react/components/grids/tree-grid/overview",
-        downloadLink:
-          "https://www.infragistics.com/resources/sample-applications/org-charthr-portal-sample-app-react",
-      },
-    ],
-    [
-      "grids/finance",
-      {
-        title: "Financial Portfolio",
-        theme: "Bootstrap",
-        themeMode: "Light",
-        content:
-          "Asset tracking, profit and loss analysis, featuring interactive dynamic charts.",
-        moreLink:
-          "https://www.infragistics.com/products/ignite-ui-react/react/components/grids/data-grid",
-        downloadLink:
-          "https://www.infragistics.com/resources/sample-applications/financial-portfolio-sample-app-react",
-      },
-    ],
-    [
-      "grids/sales",
-      {
-        title: "Sales Dashboard",
-        theme: "Indigo",
-        themeMode: "Light",
-        content:
-          "For trend analysis, KPIs and viewing sales summaries by region, product, etc.",
-        moreLink:
-          "https://www.infragistics.com/products/ignite-ui-react/react/components/grids/pivot-grid/overview",
-        downloadLink:
-          "https://www.infragistics.com/resources/sample-applications/sales-grid-sample-app-react",
-      },
-    ],
-    [
-      "grids/fleet",
-      {
-        title: "Fleet Management",
-        theme: "Material",
-        themeMode: "Dark",
-        content:
-          "A master-detail grid for managing vehicle acquisition, operations, and maintenance.",
-        moreLink:
-          "https://www.infragistics.com/products/ignite-ui-react/react/components/grids/grid/master-detail",
-        downloadLink:
-          "https://www.infragistics.com/resources/sample-applications/fleet-management-sample-app-react",
-      },
-    ],
-  ]);
-
-  const tabInfoCharts = new Map<string, TabInfo>([
-    [
-      "charts/column-chart",
-      {
-        title: "Column Chart",
-        theme: "Material",
-        themeMode: "Light",
-        content:
-          "Render a collection of data points connected by a straight line to emphasize the amount of change over a period of time",
-        moreLink:
-          "https://www.infragistics.com/products/ignite-ui-react/react/components/charts/types/column-chart",
-        downloadLink: "",
-      },
-    ],
-    [
-      "charts/bar-chart",
-      {
-        title: "Bar Chart",
-        theme: "Material",
-        themeMode: "Light",
-        content:
-          "Quickly compare frequency, count, total, or average of data in different categories",
-        moreLink:
-          "https://www.infragistics.com/products/ignite-ui-react/react/components/charts/types/bar-chart",
-        downloadLink: "",
-      },
-    ],
-    [
-      "charts/line-chart",
-      {
-        title: "Line Chart",
-        theme: "Material",
-        themeMode: "Light",
-        content:
-          "Show trends and perform comparative analysis of one or more quantities over a period of time",
-        moreLink:
-          "https://www.infragistics.com/products/ignite-ui-react/react/components/charts/types/line-chart",
-        downloadLink: "",
-      },
-    ],
-    [
-      "charts/pie-chart",
-      {
-        title: "Pie Chart",
-        theme: "Material",
-        themeMode: "Light",
-        content:
-          "Part-to-whole chart that shows how categories (parts) of a data set add up to a total (whole) value.",
-        moreLink:
-          "https://www.infragistics.com/products/ignite-ui-react/react/components/charts/types/pie-chart",
-        downloadLink: "",
-      },
-    ],
-    [
-      "charts/step-chart",
-      {
-        title: "Step Chart",
-        theme: "Material",
-        themeMode: "Light",
-        content:
-          "Emphasizes the amount of change over a period of time or compares multiple items at once.",
-        moreLink:
-          "https://www.infragistics.com/products/ignite-ui-react/react/components/charts/types/step-chart",
-        downloadLink: "",
-      },
-    ],
-    [
-      "charts/polar-chart",
-      {
-        title: "Polar Chart",
-        theme: "Material",
-        themeMode: "Light",
-        content:
-          "Emphasizes the amount of change over a period of time or compares multiple items at once.",
-        moreLink:
-          "https://www.infragistics.com/products/ignite-ui-react/react/components/charts/types/polar-chart",
-        downloadLink: "",
-      },
-    ],
-  ]);
 
   const location = useLocation();
   const [activeView, setActiveView] = useState("inventory");
