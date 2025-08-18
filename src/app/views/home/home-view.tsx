@@ -143,7 +143,7 @@ const tabInfoGrids = new Map<string, TabInfo>([
       content:
         "Tracking and managing quantity, location and details of products in stock.",
       moreLink:
-        "https://www.infragistics.com/products/ignite-ui-angular/angular/components/hierarchicalgrid/hierarchical-grid",
+        "https://www.infragistics.com/products/ignite-ui-react/react/components/grids/hierarchical-grid/overview",
       downloadLink:
         "https://www.infragistics.com/resources/sample-applications/erp-inventory-sample-app-react",
     },
@@ -157,7 +157,7 @@ const tabInfoGrids = new Map<string, TabInfo>([
       content:
         "Displaying company's hierarchical structure and showing employees data.",
       moreLink:
-        "https://www.infragistics.com/products/ignite-ui-angular/angular/components/treegrid/tree-grid",
+        "https://www.infragistics.com/products/ignite-ui-react/react/components/grids/tree-grid/overview",
       downloadLink:
         "https://www.infragistics.com/resources/sample-applications/org-charthr-portal-sample-app-react",
     },
@@ -171,7 +171,7 @@ const tabInfoGrids = new Map<string, TabInfo>([
       content:
         "Asset tracking, profit and loss analysis, featuring interactive dynamic charts.",
       moreLink:
-        "https://www.infragistics.com/products/ignite-ui-angular/angular/components/grid/grid",
+        "https://www.infragistics.com/products/ignite-ui-react/react/components/grids/data-grid",
       downloadLink:
         "https://www.infragistics.com/resources/sample-applications/financial-portfolio-sample-app-react",
     },
@@ -185,7 +185,7 @@ const tabInfoGrids = new Map<string, TabInfo>([
       content:
         "For trend analysis, KPIs and viewing sales summaries by region, product, etc.",
       moreLink:
-        "https://www.infragistics.com/products/ignite-ui-angular/angular/components/pivotGrid/pivot-grid",
+        "https://www.infragistics.com/products/ignite-ui-react/react/components/grids/pivot-grid/overview",
       downloadLink:
         "https://www.infragistics.com/resources/sample-applications/sales-grid-sample-app-react",
     },
@@ -199,7 +199,7 @@ const tabInfoGrids = new Map<string, TabInfo>([
       content:
         "A master-detail grid for managing vehicle acquisition, operations, and maintenance.",
       moreLink:
-        "https://www.infragistics.com/products/ignite-ui-angular/angular/components/grid/master-detail",
+        "https://www.infragistics.com/products/ignite-ui-react/react/components/grids/grid/master-detail",
       downloadLink:
         "https://www.infragistics.com/resources/sample-applications/fleet-management-sample-app-react",
     },
@@ -216,7 +216,7 @@ const tabInfoCharts = new Map<string, TabInfo>([
       content:
         "Render a collection of data points connected by a straight line to emphasize the amount of change over a period of time",
       moreLink:
-        "https://www.infragistics.com/products/ignite-ui-angular/angular/components/charts/types/column-chart",
+        "https://www.infragistics.com/products/ignite-ui-react/react/components/charts/types/column-chart",
       downloadLink: "",
     },
   ],
@@ -229,7 +229,7 @@ const tabInfoCharts = new Map<string, TabInfo>([
       content:
         "Quickly compare frequency, count, total, or average of data in different categories",
       moreLink:
-        "https://www.infragistics.com/products/ignite-ui-angular/angular/components/charts/types/bar-chart",
+        "https://www.infragistics.com/products/ignite-ui-react/react/components/charts/types/bar-chart",
       downloadLink: "",
     },
   ],
@@ -242,7 +242,7 @@ const tabInfoCharts = new Map<string, TabInfo>([
       content:
         "Show trends and perform comparative analysis of one or more quantities over a period of time",
       moreLink:
-        "https://www.infragistics.com/products/ignite-ui-angular/angular/components/charts/types/line-chart",
+        "https://www.infragistics.com/products/ignite-ui-react/react/components/charts/types/line-chart",
       downloadLink: "",
     },
   ],
@@ -255,7 +255,7 @@ const tabInfoCharts = new Map<string, TabInfo>([
       content:
         "Part-to-whole chart that shows how categories (parts) of a data set add up to a total (whole) value.",
       moreLink:
-        "https://www.infragistics.com/products/ignite-ui-angular/angular/components/charts/types/pie-chart",
+        "https://www.infragistics.com/products/ignite-ui-react/react/components/charts/types/pie-chart",
       downloadLink: "",
     },
   ],
@@ -268,7 +268,7 @@ const tabInfoCharts = new Map<string, TabInfo>([
       content:
         "Emphasizes the amount of change over a period of time or compares multiple items at once.",
       moreLink:
-        "https://www.infragistics.com/products/ignite-ui-angular/angular/components/charts/types/step-chart",
+        "https://www.infragistics.com/products/ignite-ui-react/react/components/charts/types/step-chart",
       downloadLink: "",
     },
   ],
@@ -281,7 +281,7 @@ const tabInfoCharts = new Map<string, TabInfo>([
       content:
         "Emphasizes the amount of change over a period of time or compares multiple items at once.",
       moreLink:
-        "https://www.infragistics.com/products/ignite-ui-angular/angular/components/charts/types/polar-chart",
+        "https://www.infragistics.com/products/ignite-ui-react/react/components/charts/types/polar-chart",
       downloadLink: "",
     },
   ],
