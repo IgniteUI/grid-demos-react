@@ -290,13 +290,13 @@ const tabInfoCharts = new Map<string, TabInfo>([
 export default function HomeView() {
 
   const location = useLocation();
-  const [activeView, setActiveView] = useState("inventory");
+  const [activeView, setActiveView] = useState("grids/inventory");
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [isChartsSection, setIsChartsSection] = useState<boolean>(false);
   const [tabInfo, setTabInfo] = useState(tabInfoGrids);
   const [activeTabs, setActiveTabs] = useState(tabsGrids);
   const fullscreenRef = useRef<HTMLDivElement>(null);
-  const iframeSrc = import.meta.env.BASE_URL + activeView;
+  const [iframeSrc, setIframeErc] = useState(import.meta.env.BASE_URL + activeView);
 
   useEffect(() => {
     registerIcon("file_download", FILE_DOWNLOAD, "custom");
@@ -307,7 +307,8 @@ export default function HomeView() {
 
   useEffect(() => {
     setActiveView(location.pathname.replace("/home/", ""));
-  }, [location]);
+    setIframeErc(import.meta.env.BASE_URL + activeView);
+  }, [location, iframeSrc, activeView]);
 
   useEffect(() => {
     if (typeof window === "undefined" || typeof document === "undefined")
@@ -352,7 +353,8 @@ export default function HomeView() {
     }
 
     setActiveView(path);
-  }, [location]);
+    setIframeErc(import.meta.env.BASE_URL + activeView);
+  }, [location, iframeSrc, activeView]);
 
   const onDownloadClick = (event: MouseEvent, tabName: string) => {
     event.preventDefault();

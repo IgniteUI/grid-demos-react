@@ -30,13 +30,13 @@ export default defineConfig({
         },
         {
           src: './projects/grids/fleet-management-grid/public/**',
-          dest: '',
-        }
-      ]
-    })
+          dest: 'grids',
+        },
+      ],
+    }),
   ],
   resolve: {
-    mainFields: ['module']
+    mainFields: ['module'],
   },
   server: {
     open: true,
