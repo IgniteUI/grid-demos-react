@@ -29,7 +29,7 @@ function ColumnChartSample() {
 
   return (
     <div className="container">
-      <div className="legend-title">Highest Grossing Movie Franchises</div>
+      <div className="legend-title">Average Max Temperature</div>
 
       <div className="legend">
         <IgrLegend orientation="Horizontal" ref={setLegend} />
