@@ -1,7 +1,7 @@
-import SalesGrid from '../../../../projects/sales-grid/src/app/sales-grid/sales-grid';
+import SalesGrid from '../../../../../projects/grids/sales-grid/src/app/sales-grid/sales-grid';
 
 import lightIndigo from 'igniteui-react-grids/grids/themes/light/indigo.css?inline';
-import sampleStyles from '../../../../projects/sales-grid/src/app/sales-grid/sales-grid.scss?inline';
+import sampleStyles from '../../../../../projects/grids/sales-grid/src/app/sales-grid/sales-grid.scss?inline';
 
 
 export default function SalesView() {
