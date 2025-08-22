@@ -159,13 +159,28 @@ stages:
             set -eo pipefail
             echo "Replacing IG trial package imports with licensed ones..."
 
-            # Process each file with logging but faster than while-read
+            # Process each .ts/.tsx file recursively, skip node_modules
             find "$(Build.SourcesDirectory)" -type f \( -name "*.ts" -o -name "*.tsx" \) \
               ! -path "*/node_modules/*" -print0 |
-            xargs -0 -I {} bash -c '
-              echo "Processing {}"
-              sed -i "s/\(from\|import\)[[:space:]]\+[\"'\'']\(igniteui-react-[^\"'\'']\+\|dockmanager.*\)[\"'\'']/\1 \"@infragistics\/\2\"/g" "{}"
-            '
+            while IFS= read -r -d '' file; do
+              echo "Processing $file"
+
+              # Use a temporary file to avoid in-place issues
+              tmpfile=$(mktemp)
+              if sed "s/\(from\|import\)[[:space:]]\+\(['\"]\)\(igniteui-react-[^'\"]\+\|dockmanager.*\)\2/\1 \"@infragistics\/\3\"/g" "$file" > "$tmpfile"; then
+                # Only overwrite if content changed
+                if ! cmp -s "$file" "$tmpfile"; then
+                  mv "$tmpfile" "$file"
+                  echo "Replacements applied in $file"
+                else
+                  rm "$tmpfile"
+                fi
+              else
+                echo "ERROR processing $file"
+                rm "$tmpfile"
+                exit 1
+              fi
+            done
 
             echo "All references updated."
 
