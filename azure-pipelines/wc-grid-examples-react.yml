@@ -162,11 +162,10 @@ stages:
             # Process each file with logging but faster than while-read
             find "$(Build.SourcesDirectory)" -type f \( -name "*.ts" -o -name "*.tsx" \) \
               ! -path "*/node_modules/*" -print0 |
-            xargs -0 -n 1 bash -c '
-              file="$1"
-              echo "Processing $file"
-              sed -i "s/\(from\|import\)[[:space:]]\+[\"'\'']\(igniteui-react-[^\"'\'']\+\|dockmanager.*\)[\"'\'']/\1 \"@infragistics\/\2\"/g" "$file"
-            ' _
+            xargs -0 -I {} bash -c '
+              echo "Processing {}"
+              sed -i "s/\(from\|import\)[[:space:]]\+[\"'\'']\(igniteui-react-[^\"'\'']\+\|dockmanager.*\)[\"'\'']/\1 \"@infragistics\/\2\"/g" "{}"
+            '
 
             echo "All references updated."
 
