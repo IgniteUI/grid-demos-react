@@ -89,28 +89,12 @@ stages:
           publishLocation: 'pipeline'
 
       - task: Npm@1
-        displayName: 'Register licensed npm registry in .npmrc'
-        inputs:
-          verbose: ${{ parameters.isVerbose }}
-          command: 'custom'
-          workingDir: '$(Build.SourcesDirectory)'
-          customCommand: 'config -L project set @infragistics:registry=https://packages.infragistics.com/npm/js-licensed/'
-          customEndpoint: 'public proget'
-
-      - task: npmAuthenticate@0
-        displayName: '[IG Production ProGet] npm authenticate'
-        inputs:
-          workingFile: '$(Build.SourcesDirectory)/.npmrc'
-          customEndpoint: 'public proget'
-
-      - task: Npm@1
-        displayName: 'npm install --legacy-peer-deps'
+        displayName: 'npm install with trial packages - to get a sensible dependency tree'
         inputs:
           verbose: ${{ parameters.isVerbose }}
           command: custom
           workingDir: '$(Build.SourcesDirectory)'
           customCommand: 'install --legacy-peer-deps'
-          customEndpoint: 'public proget'
 
     # TODO: igniteui-cli to be used after project corrections
     
@@ -144,12 +128,28 @@ stages:
             ConvertTo-Json -InputObject $packageJson | Set-Content -Path .\package.json
 
       - task: Npm@1
-        displayName: 'npm install --legacy-peer-deps'
+        displayName: 'Register licensed npm registry in .npmrc'
+        inputs:
+          verbose: ${{ parameters.isVerbose }}
+          command: 'custom'
+          workingDir: '$(Build.SourcesDirectory)'
+          customCommand: 'config -L project set @infragistics:registry=https://packages.infragistics.com/npm/js-licensed/'
+          customEndpoint: 'public proget'
+
+      - task: npmAuthenticate@0
+        displayName: '[IG Production ProGet] npm authenticate'
+        inputs:
+          workingFile: '$(Build.SourcesDirectory)/.npmrc'
+          customEndpoint: 'public proget'
+
+      - task: Npm@1
+        displayName: 'npm install with licensed packages'
         inputs:
           verbose: ${{ parameters.isVerbose }}
           command: custom
           workingDir: '$(Build.SourcesDirectory)'
           customCommand: 'install --legacy-peer-deps'
+          customEndpoint: 'public proget'
 
       - task: Bash@3
         displayName: 'Replace references to IG trial packages with licensed ones in TSX/TS files'
