@@ -170,15 +170,6 @@ stages:
             echo "All references updated."
 
       - task: Npm@1
-        displayName: 'npm install --legacy-peer-deps'
-        inputs:
-          verbose: ${{ parameters.isVerbose }}
-          command: custom
-          workingDir: '$(Build.SourcesDirectory)'
-          customCommand: 'install --legacy-peer-deps'
-          customEndpoint: 'public proget'
-
-      - task: Npm@1
         displayName: 'npm run build'
         inputs:
           verbose: ${{ parameters.isVerbose }}
