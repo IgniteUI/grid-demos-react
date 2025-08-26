@@ -103,6 +103,15 @@ stages:
           workingFile: '$(Build.SourcesDirectory)/.npmrc'
           customEndpoint: 'public proget'
 
+      - task: Npm@1
+        displayName: 'npm install --legacy-peer-deps'
+        inputs:
+          verbose: ${{ parameters.isVerbose }}
+          command: custom
+          workingDir: '$(Build.SourcesDirectory)'
+          customCommand: 'install --legacy-peer-deps'
+          customEndpoint: 'public proget'
+
     # TODO: igniteui-cli to be used after project corrections
     
       - task: PowerShell@2
