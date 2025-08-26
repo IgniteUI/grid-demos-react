@@ -134,13 +134,13 @@ stages:
 
             ConvertTo-Json -InputObject $packageJson | Set-Content -Path .\package.json
 
-      # - task: Npm@1
-      #   displayName: 'npm install --legacy-peer-deps'
-      #   inputs:
-      #     verbose: ${{ parameters.isVerbose }}
-      #     command: custom
-      #     workingDir: '$(Build.SourcesDirectory)'
-      #     customCommand: 'install --legacy-peer-deps'
+      - task: Npm@1
+        displayName: 'npm install --legacy-peer-deps'
+        inputs:
+          verbose: ${{ parameters.isVerbose }}
+          command: custom
+          workingDir: '$(Build.SourcesDirectory)'
+          customCommand: 'install --legacy-peer-deps'
 
       - task: Bash@3
         displayName: 'Replace references to IG trial packages with licensed ones in TSX/TS files'
