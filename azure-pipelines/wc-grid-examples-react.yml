@@ -159,12 +159,11 @@ stages:
             set -eo pipefail
             echo "Replacing IG trial package imports with licensed ones..."
 
-            find "$(Build.SourcesDirectory)" -type f \( -name "*.ts" -o -name "*.tsx" \) \
-              ! -path "*/node_modules/*" -print0 |
+            find "$(Build.SourcesDirectory)" -type f \( -name "*.ts" -o -name "*.tsx" \) ! -path "*/node_modules/*" -print0 |
             xargs -0 -n 1 bash -c '
               file="$1"
               echo "Processing $file"
-              sed -i "s/\(from\|import\)[[:space:]]\+['\"\(]\(igniteui-react-[^'\"\) ]\+\|dockmanager.*\)['\"\)]/\1 \"@infragistics\/\2\"/g" "$file"
+              sed -i "s/\(from\|import\)[[:space:]]\+[\"'\'']\(igniteui-react-[^\"'\'']\+\|dockmanager.*\)[\"'\'']/\1 \"@infragistics\/\2\"/g" "$file"
             ' _
             
             echo "All references updated."
