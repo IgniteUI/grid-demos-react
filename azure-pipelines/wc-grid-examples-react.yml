@@ -163,7 +163,7 @@ stages:
             xargs -0 -n 1 bash -c '
               file="$1"
               echo "Processing $file"
-              sed -i "s/\(from\|import\)[[:space:]]\+[\"'\'']\(igniteui-react-?[^\"'\'']\+\|dockmanager.*\)[\"'\'']/\1 \"@infragistics\/\2\"/g" "$file"
+              sed -n "s/\(from\|import\)[[:space:]]\+[\"'']\(igniteui-react[^\"'']*\|dockmanager.*\)[\"'']/\1 \"@infragistics\/\2\"/gp" "$file"
             ' _
             
             echo "All references updated."
