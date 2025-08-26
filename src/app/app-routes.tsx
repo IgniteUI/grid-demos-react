@@ -1,9 +1,9 @@
 import { redirect, RouteObject } from "react-router-dom";
-import ERPHGridView from "./views/erp-hgrid/erp-hgrid-view";
-import HRPortalView from "./views/hr-portal/hr-portal-view";
-import FinanceView from "./views/finance/finance-view";
-import SalesView from "./views/sales/sales-view";
-import FleetManagementView from "./views/fleet-management/fleet-management-view";
+import ERPHGridView from "./views/grids/erp-hgrid/erp-hgrid-view";
+import HRPortalView from "./views/grids/hr-portal/hr-portal-view";
+import FinanceView from "./views/grids/finance/finance-view";
+import SalesView from "./views/grids/sales/sales-view";
+import FleetManagementView from "./views/grids/fleet-management/fleet-management-view";
 import HomeView from "./views/home/home-view";
 import ColumnChartView from "./views/charts/column-chart/column-chart-view";
 import BarChartView from "./views/charts/bar-chart/bar-chart-view";
@@ -18,12 +18,17 @@ export const routes: RouteObject[] = [
     path: "home",
     element: <HomeView />,
     children: [
-      { index: true, loader: () => redirect("inventory") },
-      { path: "inventory", element: <ERPHGridView /> },
-      { path: "hr-portal", element: <HRPortalView /> },
-      { path: "finance", element: <FinanceView /> },
-      { path: "sales", element: <SalesView /> },
-      { path: "fleet", element: <FleetManagementView /> },
+      { index: true, loader: () => redirect("grids/inventory") },
+      {
+        path: "grids",
+        children: [
+          { path: "inventory", element: <ERPHGridView /> },
+          { path: "hr-portal", element: <HRPortalView /> },
+          { path: "finance", element: <FinanceView /> },
+          { path: "sales", element: <SalesView /> },
+          { path: "fleet", element: <FleetManagementView /> },
+        ],
+      },
       {
         path: "charts",
         children: [
@@ -37,11 +42,16 @@ export const routes: RouteObject[] = [
       },
     ],
   },
-  { path: "inventory", element: <ERPHGridView /> },
-  { path: "hr-portal", element: <HRPortalView /> },
-  { path: "finance", element: <FinanceView /> },
-  { path: "sales", element: <SalesView /> },
-  { path: "fleet", element: <FleetManagementView /> },
+  {
+    path: "grids",
+    children: [
+      { path: "inventory", element: <ERPHGridView /> },
+      { path: "hr-portal", element: <HRPortalView /> },
+      { path: "finance", element: <FinanceView /> },
+      { path: "sales", element: <SalesView /> },
+      { path: "fleet", element: <FleetManagementView /> },
+    ],
+  },
   {
     path: "charts",
     children: [

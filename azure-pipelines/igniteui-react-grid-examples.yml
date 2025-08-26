@@ -73,8 +73,8 @@ stages:
               fi
             }
 
-            # Pass 1: All first-level directories in projects/
-            create_zips "$(Build.SourcesDirectory)/projects"
+            # Pass 1: All first-level directories in projects/grids/
+            create_zips "$(Build.SourcesDirectory)/projects/grids"
 
             # Pass 2: All first-level directories in projects/charts/
             create_zips "$(Build.SourcesDirectory)/projects/charts"
@@ -89,54 +89,14 @@ stages:
           publishLocation: 'pipeline'
 
       - task: Npm@1
-        displayName: 'Register licensed npm registry in .npmrc'
-        inputs:
-          verbose: ${{ parameters.isVerbose }}
-          command: 'custom'
-          workingDir: '$(Build.SourcesDirectory)'
-          customCommand: 'config -L project set @infragistics:registry=https://packages.infragistics.com/npm/js-licensed/'
-          customEndpoint: 'public proget'
-
-      - task: npmAuthenticate@0
-        displayName: '[IG Production ProGet] npm authenticate'
-        inputs:
-          workingFile: '$(Build.SourcesDirectory)/.npmrc'
-          customEndpoint: 'public proget'
-
-      - task: Npm@1
-        displayName: 'npm install --legacy-peer-deps'
+        displayName: 'npm install with trial packages - to get a sensible dependency tree'
         inputs:
           verbose: ${{ parameters.isVerbose }}
           command: custom
           workingDir: '$(Build.SourcesDirectory)'
           customCommand: 'install --legacy-peer-deps'
-          customEndpoint: 'public proget'
 
     # TODO: igniteui-cli to be used after project corrections
-    #       to be able to use licensed packages
-    #   - task: Npm@1
-    #     displayName: 'Install Ignite UI CLI globally'
-    #     inputs:
-    #       verbose: ${{ parameters.isVerbose }}
-    #       command: custom
-    #       workingDir: '$(Build.SourcesDirectory)'
-    #       customCommand: 'install -g igniteui-cli'
-
-    #   - task: Bash@3
-    #     displayName: 'Run Ignite UI Upgrade in Root and All Project Subdirectories'
-    #     inputs:
-    #       targetType: 'inline'
-    #       script: |
-    #         echo "Running Ignite UI package upgrade at root level..."
-    #         npx ig upgrade-packages --skip-install
-
-    #         echo "Running Ignite UI package upgrade in all project subdirectories..."
-    #         for dir in $(Build.SourcesDirectory)/projects/*/; do
-    #           if [ -d "$dir" ]; then
-    #             echo "Processing: $dir"
-    #             (cd "$dir" && npx ig upgrade-packages --skip-install)
-    #           fi
-    #         done
     
       - task: PowerShell@2
         displayName: 'Replace references to IG trial packages with licensed ones'
@@ -168,24 +128,47 @@ stages:
             ConvertTo-Json -InputObject $packageJson | Set-Content -Path .\package.json
 
       - task: Npm@1
-        displayName: 'npm install --legacy-peer-deps'
+        displayName: 'Register licensed npm registry in .npmrc'
+        inputs:
+          verbose: ${{ parameters.isVerbose }}
+          command: 'custom'
+          workingDir: '$(Build.SourcesDirectory)'
+          customCommand: 'config -L project set @infragistics:registry=https://packages.infragistics.com/npm/js-licensed/'
+          customEndpoint: 'public proget'
+
+      - task: npmAuthenticate@0
+        displayName: '[IG Production ProGet] npm authenticate'
+        inputs:
+          workingFile: '$(Build.SourcesDirectory)/.npmrc'
+          customEndpoint: 'public proget'
+
+      - task: Npm@1
+        displayName: 'npm install with licensed packages'
         inputs:
           verbose: ${{ parameters.isVerbose }}
           command: custom
           workingDir: '$(Build.SourcesDirectory)'
           customCommand: 'install --legacy-peer-deps'
+          customEndpoint: 'public proget'
 
-      - task: PowerShell@2
-        displayName: 'Replace references to IG trial packages with licensed ones in TSX files'
+      - task: Bash@3
+        displayName: 'Replace references to IG trial packages with licensed ones in TSX/TS files'
         inputs:
-          failOnStderr: true
-          showWarnings: true
-          workingDirectory: '$(Build.SourcesDirectory)'
           targetType: 'inline'
           script: |
-            Get-ChildItem -Include "*.tsx","*.ts" -Recurse | `
-            ForEach {  (Get-Content $_.PSPath | ForEach { ($_ -replace '([from|import])\s?[''"](igniteui-[react|dockmanager].*)[''"]', '$1 "@infragistics/$2"') }) | `
-            Set-Content $_.PSPath }
+            set -eo pipefail
+            echo "Replacing IG trial package imports with licensed ones..."
+
+            find . -type f \( -name "*.ts" -o -name "*.tsx" \) ! -path "*/node_modules/*" -print0 |
+            xargs -0 -n 1 bash -c '
+              file="$1"
+              echo "Processing $file"
+
+              # Replace imports from igniteui-react* or dockmanager
+              sed -i "s/\(from\|import\)[[:space:]]\+\([\"'\''\]\)\(igniteui-react[^\"'\''[:space:]]*\|dockmanager[^\"'\''[:space:]]*\)\2/\1 \"@infragistics\/\3\"/g" "$file"
+            ' _
+            
+            echo "All references updated."
 
       - task: Npm@1
         displayName: 'npm run build'
