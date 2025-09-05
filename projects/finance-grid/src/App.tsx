@@ -158,6 +158,7 @@ function FinanceGrid() {
         rowSelection="multiple"
         data={financeData}
         ref={gridRef}
+        isLoading={!financeData.length}
         className="grid-sizing"
       >
         <IgrGridToolbar>

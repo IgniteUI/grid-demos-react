@@ -391,6 +391,7 @@ export default function FleetManagement() {
       <div className="row-layout fleet-management-container">
         <IgrGrid
           data={vehiclesData}
+          isLoading={!vehiclesData.length}
           primaryKey="vehicleId"
           detailTemplate={masterDetailTemplate}
           className="ig-typography ig-scrollbar main-grid"
