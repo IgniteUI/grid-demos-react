@@ -217,7 +217,7 @@ const tabInfoCharts = new Map<string, TabInfo>([
         "Render a collection of data points connected by a straight line to emphasize the amount of change over a period of time",
       moreLink:
         "https://www.infragistics.com/products/ignite-ui-react/react/components/charts/types/column-chart",
-      downloadLink: "",
+      downloadLink: "https://www.infragistics.com/resources/sample-applications/column-chart-sample-app-react",
     },
   ],
   [
@@ -230,7 +230,7 @@ const tabInfoCharts = new Map<string, TabInfo>([
         "Quickly compare frequency, count, total, or average of data in different categories",
       moreLink:
         "https://www.infragistics.com/products/ignite-ui-react/react/components/charts/types/bar-chart",
-      downloadLink: "",
+      downloadLink: "https://www.infragistics.com/resources/sample-applications/bar-chart-sample-app-react",
     },
   ],
   [
@@ -243,7 +243,7 @@ const tabInfoCharts = new Map<string, TabInfo>([
         "Show trends and perform comparative analysis of one or more quantities over a period of time",
       moreLink:
         "https://www.infragistics.com/products/ignite-ui-react/react/components/charts/types/line-chart",
-      downloadLink: "",
+      downloadLink: "https://www.infragistics.com/resources/sample-applications/line-chart-sample-app-react",
     },
   ],
   [
@@ -256,7 +256,7 @@ const tabInfoCharts = new Map<string, TabInfo>([
         "Part-to-whole chart that shows how categories (parts) of a data set add up to a total (whole) value.",
       moreLink:
         "https://www.infragistics.com/products/ignite-ui-react/react/components/charts/types/pie-chart",
-      downloadLink: "",
+      downloadLink: "https://www.infragistics.com/resources/sample-applications/pie-chart-sample-app-react",
     },
   ],
   [
@@ -269,7 +269,7 @@ const tabInfoCharts = new Map<string, TabInfo>([
         "Emphasizes the amount of change over a period of time or compares multiple items at once.",
       moreLink:
         "https://www.infragistics.com/products/ignite-ui-react/react/components/charts/types/step-chart",
-      downloadLink: "",
+      downloadLink: "https://www.infragistics.com/resources/sample-applications/step-chart-sample-app-react",
     },
   ],
   [
@@ -282,7 +282,7 @@ const tabInfoCharts = new Map<string, TabInfo>([
         "Emphasizes the amount of change over a period of time or compares multiple items at once.",
       moreLink:
         "https://www.infragistics.com/products/ignite-ui-react/react/components/charts/types/polar-chart",
-      downloadLink: "",
+      downloadLink: "https://www.infragistics.com/resources/sample-applications/polar-chart-sample-app-react",
     },
   ],
 ]);
