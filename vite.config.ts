@@ -13,8 +13,8 @@ export default defineConfig({
     viteStaticCopy({
       targets: [
         {
-          src: './projects/grids/sales-grid/public/*',
-          dest: 'public',
+          src: './projects/sales-grid/public/**',
+          dest: '',
         },
         {
           src: './projects/grids/erp-hierarchical-grid/public/*',
