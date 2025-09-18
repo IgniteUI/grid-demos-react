@@ -89,7 +89,7 @@ stages:
           publishLocation: 'pipeline'
 
       - task: Npm@1
-        displayName: 'npm install with trial packages - to get a sensible dependency tree'
+        displayName: 'npm install with trial packages'
         inputs:
           verbose: ${{ parameters.isVerbose }}
           command: custom
@@ -97,7 +97,7 @@ stages:
           customCommand: 'install --legacy-peer-deps'
 
     # TODO: igniteui-cli to be used after project corrections
-    
+
       - task: PowerShell@2
         displayName: 'Replace references to IG trial packages with licensed ones'
         inputs:
