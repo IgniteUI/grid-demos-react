@@ -64,7 +64,7 @@ stages:
                   
                   echo "Processing directory: $dirName"
                   # Define the name for the zip file
-                  zipName="$(Build.ArtifactStagingDirectory)/IgniteUI_Grid_Demos_React_${dirName}_Source.zip"
+                  zipName="$(Build.ArtifactStagingDirectory)/IgniteUI_React_ApplicationSample_${dirName}_Source.zip"
                   echo "Creating ZIP: $zipName"
 
                   # Compress the directory into a ZIP file
