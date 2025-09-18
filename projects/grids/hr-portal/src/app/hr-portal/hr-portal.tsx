@@ -22,7 +22,7 @@ import {
   registerIcon,
 } from "igniteui-react";
 import "igniteui-react-grids/grids/combined";
-import { dataService } from "./../services/data.service";
+import { dataService } from "../services/data.service";
 import { icons } from "../data/icons/Icons";
 import { Employee } from "../data/Models/Employee";
 
@@ -46,9 +46,11 @@ export default function HRPortal() {
 
   const avatarTemplate = ({ cell }: IgrCellTemplateContext) => {
     const data = cell.row.data;
+    const avatarUrl = `${import.meta.env.BASE_URL}${data.Picture}`;
+
     return (
       <div className="employeeDiv">
-        <IgrAvatar shape="rounded" src={data.Picture} className="small" />
+        <IgrAvatar shape="rounded" src={avatarUrl} className="small" />
         <span>{data.Name}</span>
       </div>
     );

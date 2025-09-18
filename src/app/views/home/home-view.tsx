@@ -135,7 +135,7 @@ const tabsCharts = [
 
 const tabInfoGrids = new Map<string, TabInfo>([
   [
-    "inventory",
+    "grids/inventory",
     {
       title: "ERP/ Inventory",
       theme: "Material",
@@ -149,7 +149,7 @@ const tabInfoGrids = new Map<string, TabInfo>([
     },
   ],
   [
-    "hr-portal",
+    "grids/hr-portal",
     {
       title: "Org Chart/HR Portal",
       theme: "Fluent",
@@ -163,7 +163,7 @@ const tabInfoGrids = new Map<string, TabInfo>([
     },
   ],
   [
-    "finance",
+    "grids/finance",
     {
       title: "Financial Portfolio",
       theme: "Bootstrap",
@@ -177,7 +177,7 @@ const tabInfoGrids = new Map<string, TabInfo>([
     },
   ],
   [
-    "sales",
+    "grids/sales",
     {
       title: "Sales Dashboard",
       theme: "Indigo",
@@ -191,7 +191,7 @@ const tabInfoGrids = new Map<string, TabInfo>([
     },
   ],
   [
-    "fleet",
+    "grids/fleet",
     {
       title: "Fleet Management",
       theme: "Material",
@@ -290,13 +290,13 @@ const tabInfoCharts = new Map<string, TabInfo>([
 export default function HomeView() {
 
   const location = useLocation();
-  const [activeView, setActiveView] = useState("inventory");
+  const [activeView, setActiveView] = useState("grids/inventory");
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [isChartsSection, setIsChartsSection] = useState<boolean>(false);
   const [tabInfo, setTabInfo] = useState(tabInfoGrids);
   const [activeTabs, setActiveTabs] = useState(tabsGrids);
   const fullscreenRef = useRef<HTMLDivElement>(null);
-  const iframeSrc = import.meta.env.BASE_URL + activeView;
+  const [iframeSrc, setIframeErc] = useState(import.meta.env.BASE_URL + activeView);
 
   useEffect(() => {
     registerIcon("file_download", FILE_DOWNLOAD, "custom");
@@ -307,7 +307,8 @@ export default function HomeView() {
 
   useEffect(() => {
     setActiveView(location.pathname.replace("/home/", ""));
-  }, [location]);
+    setIframeErc(import.meta.env.BASE_URL + activeView);
+  }, [location, iframeSrc, activeView]);
 
   useEffect(() => {
     if (typeof window === "undefined" || typeof document === "undefined")
@@ -352,7 +353,8 @@ export default function HomeView() {
     }
 
     setActiveView(path);
-  }, [location]);
+    setIframeErc(import.meta.env.BASE_URL + activeView);
+  }, [location, iframeSrc, activeView]);
 
   const onDownloadClick = (event: MouseEvent, tabName: string) => {
     event.preventDefault();
@@ -404,9 +406,9 @@ export default function HomeView() {
                 </NavLink>
               ))
             : activeTabs.map(({ key }) => (
-                <NavLink key={key} to={`/home/${key}`}>
+                <NavLink key={key} to={`/home/grids/${key}`}>
                   {({ isActive }) => (
-                    <TabItem isActive={isActive} tabInfo={tabInfo?.get(key)} />
+                    <TabItem isActive={isActive} tabInfo={tabInfo?.get(`grids/${key}`)} />
                   )}
                 </NavLink>
               ))}

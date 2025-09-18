@@ -13,30 +13,30 @@ export default defineConfig({
     viteStaticCopy({
       targets: [
         {
-          src: './projects/sales-grid/public/**',
+          src: './projects/grids/sales-grid/public/**',
+          dest: 'grids',
+        },
+        {
+          src: './projects/grids/erp-hierarchical-grid/public/*',
           dest: '',
         },
         {
-          src: './projects/erp-hierarchical-grid/public/*',
+          src: './projects/grids/finance-grid/public/**',
           dest: '',
         },
         {
-          src: './projects/finance-grid/public/**',
+          src: './projects/grids/hr-portal/public/**',
           dest: '',
         },
         {
-          src: './projects/hr-portal/public/**',
-          dest: '',
+          src: './projects/grids/fleet-management-grid/public/**',
+          dest: 'grids',
         },
-        {
-          src: './projects/fleet-management-grid/public/**',
-          dest: '',
-        }
-      ]
-    })
+      ],
+    }),
   ],
   resolve: {
-    mainFields: ['module']
+    mainFields: ['module'],
   },
   server: {
     open: true,
