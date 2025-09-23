@@ -98,34 +98,62 @@ stages:
 
     # TODO: igniteui-cli to be used after project corrections
 
-      - task: PowerShell@2
-        displayName: 'Replace references to IG trial packages with licensed ones'
+      # - task: PowerShell@2
+      #   displayName: 'Replace references to IG trial packages with licensed ones'
+      #   inputs:
+      #     failOnStderr: true
+      #     showWarnings: true
+      #     workingDirectory: '$(Build.SourcesDirectory)'
+      #     targetType: 'inline'
+      #     script: |
+      #       $packageJson = Get-Content -Raw .\package.json | ConvertFrom-Json
+      #       $properties = $packageJson.dependencies.PSObject.Properties `
+      #           | where-object { $_.Name.StartsWith("igniteui-react") -or $_.Name.StartsWith("igniteui-dockmanager") }
+
+      #       foreach( $property in $properties )
+      #       {
+      #           $oldName = $property.Name;
+      #           $newName = "@infragistics/" + $oldName
+
+      #           # remember the current value of the old property
+      #           $value = $property.Value;
+
+      #           # remove reference to the trial package reference
+      #           $packageJson.dependencies.psobject.Properties.Remove($oldName);
+
+      #           # add reference to the licensed package reference
+      #           $packageJson.dependencies | Add-Member -NotePropertyName $newName -NotePropertyValue $value;
+      #       }
+
+      #       ConvertTo-Json -InputObject $packageJson | Set-Content -Path .\package.json
+
+      - task: Npm@1
+        displayName: 'Install Ignite UI CLI globally'
         inputs:
-          failOnStderr: true
-          showWarnings: true
-          workingDirectory: '$(Build.SourcesDirectory)'
+          verbose: ${{ parameters.isVerbose }}
+          command: custom
+          workingDir: '$(Build.SourcesDirectory)'
+          customCommand: 'install -g igniteui-cli'
+
+      - task: Bash@3
+        displayName: 'Run Ignite UI Upgrade in Root and All Project Subdirectories'
+        inputs:
           targetType: 'inline'
           script: |
-            $packageJson = Get-Content -Raw .\package.json | ConvertFrom-Json
-            $properties = $packageJson.dependencies.PSObject.Properties `
-                | where-object { $_.Name.StartsWith("igniteui-react") -or $_.Name.StartsWith("igniteui-dockmanager") }
+            echo "Running Ignite UI package upgrade at root level..."
+            npx ig upgrade-packages --skip-install
 
-            foreach( $property in $properties )
-            {
-                $oldName = $property.Name;
-                $newName = "@infragistics/" + $oldName
-
-                # remember the current value of the old property
-                $value = $property.Value;
-
-                # remove reference to the trial package reference
-                $packageJson.dependencies.psobject.Properties.Remove($oldName);
-
-                # add reference to the licensed package reference
-                $packageJson.dependencies | Add-Member -NotePropertyName $newName -NotePropertyValue $value;
-            }
-
-            ConvertTo-Json -InputObject $packageJson | Set-Content -Path .\package.json
+            echo "Running Ignite UI package upgrade in all project subdirectories..."
+            for dir in $(Build.SourcesDirectory)/projects/*/; do
+              if [ -d "$dir" ]; then
+                if [ -f "$dir/.igniteui-cli.json" ]; then
+                  echo "Identify IgniteUI CLI-compatible project: $dir"
+                  (cd "$dir" && npx ig upgrade-packages --skip-install)
+                else
+                  echo "WARNING: Skipping $dir (not an Ignite UI CLI project)"
+                fi
+              fi
+            done
 
       - task: Npm@1
         displayName: 'Register licensed npm registry in .npmrc'
@@ -151,24 +179,24 @@ stages:
           customCommand: 'install --legacy-peer-deps'
           customEndpoint: 'public proget'
 
-      - task: Bash@3
-        displayName: 'Replace references to IG trial packages with licensed ones in TSX/TS files'
-        inputs:
-          targetType: 'inline'
-          script: |
-            set -eo pipefail
-            echo "Replacing IG trial package imports with licensed ones..."
+      # - task: Bash@3
+      #   displayName: 'Replace references to IG trial packages with licensed ones in TSX/TS files'
+      #   inputs:
+      #     targetType: 'inline'
+      #     script: |
+      #       set -eo pipefail
+      #       echo "Replacing IG trial package imports with licensed ones..."
 
-            find . -type f \( -name "*.ts" -o -name "*.tsx" \) ! -path "*/node_modules/*" -print0 |
-            xargs -0 -n 1 bash -c '
-              file="$1"
-              echo "Processing $file"
+      #       find . -type f \( -name "*.ts" -o -name "*.tsx" \) ! -path "*/node_modules/*" -print0 |
+      #       xargs -0 -n 1 bash -c '
+      #         file="$1"
+      #         echo "Processing $file"
 
-              # Replace imports from igniteui-react* or dockmanager
-              sed -i "s/\(from\|import\)[[:space:]]\+\([\"'\''\]\)\(igniteui-react[^\"'\''[:space:]]*\|dockmanager[^\"'\''[:space:]]*\)\2/\1 \"@infragistics\/\3\"/g" "$file"
-            ' _
+      #         # Replace imports from igniteui-react* or dockmanager
+      #         sed -i "s/\(from\|import\)[[:space:]]\+\([\"'\''\]\)\(igniteui-react[^\"'\''[:space:]]*\|dockmanager[^\"'\''[:space:]]*\)\2/\1 \"@infragistics\/\3\"/g" "$file"
+      #       ' _
             
-            echo "All references updated."
+      #       echo "All references updated."
 
       - task: Npm@1
         displayName: 'npm run build'
