@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { IgrButton, IgrIcon, registerIcon } from "igniteui-react";
 import "igniteui-react-grids/grids/themes/light/material.css";
@@ -18,21 +18,7 @@ export interface TabInfo {
   downloadLink: string;
 }
 
-interface TabItemProps {
-  isActive?: boolean;
-  tabInfo?: TabInfo;
-}
-
-interface TabItemInfoProps {
-  tabName: string;
-  tabInfo: Map<string, TabInfo>;
-  isFullscreen: boolean;
-  onDownloadClick: (event: MouseEvent, tabName: string) => void;
-  onViewMoreClick: (event: MouseEvent, tabName: string) => void;
-  onToggleFullscreen: (event: MouseEvent) => void;
-}
-
-export function TabItem({ isActive, tabInfo }: TabItemProps) {
+export function TabItem({ isActive, tabInfo }: { isActive?: boolean; tabInfo?: TabInfo }) {
   return (
     <div className="tab-item-container">
       <div className={"tab-item" + (isActive ? " tab-item--selected" : "")}>
@@ -53,7 +39,14 @@ export function TabItemInfo({
   onDownloadClick,
   onViewMoreClick,
   onToggleFullscreen,
-}: TabItemInfoProps) {
+}: {
+  tabName: string;
+  tabInfo: Map<string, TabInfo>;
+  isFullscreen: boolean;
+  onDownloadClick: (event: MouseEvent, tabName: string) => void;
+  onViewMoreClick: (event: MouseEvent, tabName: string) => void;
+  onToggleFullscreen: (event: MouseEvent) => void;
+}) {
   const info = tabInfo.get(tabName);
 
   return (
@@ -117,6 +110,63 @@ export function TabItemInfo({
 }
 
 export default function HomeView() {
+  const fullscreenRef = useRef<HTMLDivElement>(null);
+  const location = useLocation();
+  const [gridView, setGridView] = useState("inventory");
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const requestFullscreen = (el: HTMLElement) =>
+    el.requestFullscreen?.() || (el as any).webkitRequestFullscreen?.();
+
+  const exitFullscreen = () =>
+    document.exitFullscreen?.() ||
+    (document as any).webkitExitFullscreen?.();
+
+  const checkFullscreen = () =>
+    !!(
+      document.fullscreenElement ||
+      (document as any).webkitFullscreenElement ||
+      (window.innerHeight === screen.height &&
+        window.innerWidth === screen.width)
+    );
+
+  const onToggleFullscreen = useCallback(async () => {
+    const el = fullscreenRef.current;
+    if (!el) return;
+
+    try {
+      if (!isFullscreen) {
+        await requestFullscreen(el);
+      } else {
+        await exitFullscreen();
+      }
+
+      setIsFullscreen(checkFullscreen());
+    } catch (err) {
+      console.error("Fullscreen toggle failed", err);
+    }
+  }, [isFullscreen]);
+
+  useEffect(() => {
+    const onFullscreenChange = () => {
+      setIsFullscreen(checkFullscreen());
+    };
+
+    const onResize = () => {
+      setIsFullscreen(checkFullscreen());
+    };
+
+    document.addEventListener("fullscreenchange", onFullscreenChange);
+    document.addEventListener("webkitfullscreenchange", onFullscreenChange); // Safari / Mac
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      document.removeEventListener("fullscreenchange", onFullscreenChange);
+      document.removeEventListener("webkitfullscreenchange", onFullscreenChange);
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
+
   const tabs = [
     { key: "inventory" },
     { key: "hr-portal" },
@@ -196,11 +246,6 @@ export default function HomeView() {
       },
     ],
   ]);
-  const location = useLocation();
-  const [gridView, setGridView] = useState("inventory");
-  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
-  const fullscreenRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     registerIcon("file_download", FILE_DOWNLOAD, "custom");
     registerIcon("view_more", VIEW_MORE, "custom");
@@ -212,40 +257,9 @@ export default function HomeView() {
     setGridView(location.pathname.replace("/home/", ""));
   }, [location]);
 
-  useEffect(() => {
-    if (typeof window === "undefined" || typeof document === "undefined")
-      return;
-
-    const onFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
-
-    const onResize = () => {
-      const isF11 =
-        window.innerWidth === screen.width &&
-        window.innerHeight === screen.height;
-
-      setIsFullscreen((prev) => {
-        if (prev !== isF11) return isF11;
-        return prev;
-      });
-    };
-
-    document.addEventListener("fullscreenchange", onFullscreenChange);
-    window.addEventListener("resize", onResize);
-
-    return () => {
-      document.removeEventListener("fullscreenchange", onFullscreenChange);
-      window.removeEventListener("resize", onResize);
-    };
-  }, []);
-
   const onDownloadClick = (event: MouseEvent, tabName: string) => {
     event.preventDefault();
     event.stopPropagation();
-
-    if (typeof window === "undefined") return;
-
     const downloadLink = tabInfo.get(tabName)?.downloadLink;
     if (downloadLink) {
       window.open(downloadLink, "_blank")?.focus();
@@ -255,22 +269,9 @@ export default function HomeView() {
   const onViewMoreClick = (event: MouseEvent, tabName: string) => {
     event.preventDefault();
     event.stopPropagation();
-
-    if (typeof window === "undefined") return;
-
     const moreLink = tabInfo.get(tabName)?.moreLink;
     if (moreLink) {
       window.open(moreLink, "_blank")?.focus();
-    }
-  };
-
-  const onToggleFullscreen = async () => {
-    if (typeof document === "undefined") return;
-
-    if (!document.fullscreenElement) {
-      await fullscreenRef.current?.requestFullscreen?.();
-    } else {
-      await document.exitFullscreen?.();
     }
   };
 
