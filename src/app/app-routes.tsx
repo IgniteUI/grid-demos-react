@@ -27,6 +27,7 @@ export const routes: RouteObject[] = [
       {
         path: "charts",
         children: [
+          { index: true, loader: () => redirect("column-chart") },
           { path: "column-chart", element: <ColumnChartView /> },
           { path: "bar-chart", element: <BarChartView /> },
           { path: "line-chart", element: <LineChartView /> },
