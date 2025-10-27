@@ -20,6 +20,7 @@ import ARROW_UP_SVG from "../data/icons/arrow_drop_up.svg";
 import VISIBILITY_SVG from "../data/icons/visibility.svg";
 import FILE_DOWNLOAD_SVG from "../data/icons/file_download.svg";
 import FLAGS from "../data/flags.json";
+import { html } from 'lit';
 
 enum PivotViews {
   BrandsSeparate = 'brandsOr',
@@ -365,13 +366,21 @@ export default function SalesGrid() {
   function onColumnInit(event: CustomEvent<IgrColumn>) {
     const col = event.detail;
     const countryKeys = Object.keys(flagsData);
+
+    // TO DO: Change this with React templates instead of lit html
     if (countryKeys.includes(col.field)) {
-      // TO DO
-      // col.headerTemplate = (_: IgcColumnTemplateContext) => html`
-      //     <div class="countryHeader">
-      //         <img class="countryImage" src="${(<any>this.flagsData)[col.field]}" /><span>${col.field}</span>
-      //     </div>
-      // `;
+      col.headerTemplate = () => {
+        return (
+          html`<div class="countryHeader">
+            <img
+              class="countryImage"
+              .src=${flagsData[col.field as keyof typeof flagsData]}
+              .alt=${col.field}
+            />
+            <span>${col.field}</span>
+          </div>`
+        );
+      };
     }
   }
 
