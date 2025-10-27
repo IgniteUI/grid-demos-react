@@ -110,6 +110,7 @@ export default function HRPortal() {
       autoGenerate={false}
       ref={gridRef}
       data={data}
+      isLoading={!data.length}
       primaryKey="ID"
       childDataKey="Employees"
       rowSelection="multipleCascade"

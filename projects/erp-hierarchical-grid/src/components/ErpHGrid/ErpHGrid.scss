@@ -9,6 +9,7 @@
 .wrapper {
   --ig-size: var(--ig-size-medium);
   height: 100%;
+  min-width: 1100px;
 
   igc-badge[variant="primary"]::part(base) {
     background-color: var(--ig-primary-50);

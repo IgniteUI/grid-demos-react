@@ -257,6 +257,7 @@ const ErpHGrid = () => {
         primaryKey="sku"
         moving={true}
         rowSelection={selectionMode}
+        isLoading={!gridData.length}
         width="100%"
         height="100%"
       >
