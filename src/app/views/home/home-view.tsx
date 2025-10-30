@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { IgrButton, IgrIcon, registerIcon } from "igniteui-react";
 import "igniteui-react-grids/grids/themes/light/material.css";
@@ -18,21 +18,7 @@ export interface TabInfo {
   downloadLink: string;
 }
 
-interface TabItemProps {
-  isActive?: boolean;
-  tabInfo?: TabInfo;
-}
-
-interface TabItemInfoProps {
-  tabName: string;
-  tabInfo: Map<string, TabInfo>;
-  isFullscreen: boolean;
-  onDownloadClick: (event: MouseEvent, tabName: string) => void;
-  onViewMoreClick: (event: MouseEvent, tabName: string) => void;
-  onToggleFullscreen: (event: MouseEvent) => void;
-}
-
-export function TabItem({ isActive, tabInfo }: TabItemProps) {
+export function TabItem({ isActive, tabInfo }: { isActive?: boolean; tabInfo?: TabInfo }) {
   return (
     <div className="tab-item-container">
       <div className={"tab-item" + (isActive ? " tab-item--selected" : "")}>
@@ -53,7 +39,14 @@ export function TabItemInfo({
   onDownloadClick,
   onViewMoreClick,
   onToggleFullscreen,
-}: TabItemInfoProps) {
+}: {
+  tabName: string;
+  tabInfo: Map<string, TabInfo>;
+  isFullscreen: boolean;
+  onDownloadClick: (event: MouseEvent, tabName: string) => void;
+  onViewMoreClick: (event: MouseEvent, tabName: string) => void;
+  onToggleFullscreen: (event: MouseEvent) => void;
+}) {
   const info = tabInfo.get(tabName);
 
   return (
@@ -298,6 +291,21 @@ export default function HomeView() {
   const fullscreenRef = useRef<HTMLDivElement>(null);
   const iframeSrc = import.meta.env.BASE_URL + activeView;
 
+  const requestFullscreen = (el: HTMLElement) =>
+    el.requestFullscreen?.() || (el as any).webkitRequestFullscreen?.();
+
+  const exitFullscreen = () =>
+    document.exitFullscreen?.() ||
+    (document as any).webkitExitFullscreen?.();
+
+  const checkFullscreen = () =>
+    !!(
+      document.fullscreenElement ||
+      (document as any).webkitFullscreenElement ||
+      (window.innerHeight === screen.height &&
+        window.innerWidth === screen.width)
+  );
+
   useEffect(() => {
     registerIcon("file_download", FILE_DOWNLOAD, "custom");
     registerIcon("view_more", VIEW_MORE, "custom");
@@ -310,37 +318,30 @@ export default function HomeView() {
   }, [location]);
 
   useEffect(() => {
-    if (typeof window === "undefined" || typeof document === "undefined")
-      return;
+    if (typeof window === "undefined" || typeof document === "undefined") return;
+
+    const checkFullscreen = () =>
+      !!(
+        document.fullscreenElement ||
+        (document as any).webkitFullscreenElement ||
+        (window.innerHeight === screen.height &&
+          window.innerWidth === screen.width)
+      );
 
     const onFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
+      setIsFullscreen(checkFullscreen());
     };
 
     const onResize = () => {
-      const isF11 =
-        window.innerWidth === screen.width &&
-        window.innerHeight === screen.height;
-
-      setIsFullscreen((prev) => {
-        if (prev !== isF11) return isF11;
-        return prev;
-      });
+      setIsFullscreen(checkFullscreen());
     };
 
     document.addEventListener("fullscreenchange", onFullscreenChange);
+    document.addEventListener("webkitfullscreenchange", onFullscreenChange); // Safari / Mac
     window.addEventListener("resize", onResize);
 
-    return () => {
-      document.removeEventListener("fullscreenchange", onFullscreenChange);
-      window.removeEventListener("resize", onResize);
-    };
-  }, []);
-
-  // Update tabs based on route
-  useEffect(() => {
+    // Update tabs based on current route
     const path = location.pathname.replace("/home/", "");
-
     if (path.startsWith("charts")) {
       setTabInfo(tabInfoCharts);
       setActiveTabs(tabsCharts);
@@ -350,9 +351,15 @@ export default function HomeView() {
       setActiveTabs(tabsGrids);
       setIsChartsSection(false);
     }
-
     setActiveView(path);
+
+    return () => {
+      document.removeEventListener("fullscreenchange", onFullscreenChange);
+      document.removeEventListener("webkitfullscreenchange", onFullscreenChange);
+      window.removeEventListener("resize", onResize);
+    };
   }, [location]);
+
 
   const onDownloadClick = (event: MouseEvent, tabName: string) => {
     event.preventDefault();
@@ -378,15 +385,22 @@ export default function HomeView() {
     }
   };
 
-  const onToggleFullscreen = async () => {
-    if (typeof document === "undefined") return;
+  const onToggleFullscreen = useCallback(async () => {
+    const el = fullscreenRef.current;
+    if (!el) return;
 
-    if (!document.fullscreenElement) {
-      await fullscreenRef.current?.requestFullscreen?.();
-    } else {
-      await document.exitFullscreen?.();
+    try {
+      if (!isFullscreen) {
+        await requestFullscreen(el);
+      } else {
+        await exitFullscreen();
+      }
+
+      setIsFullscreen(checkFullscreen());
+    } catch (err) {
+      console.error("Fullscreen toggle failed", err);
     }
-  };
+  }, [isFullscreen]);
 
   return (
     <div className="demo-container" ref={fullscreenRef}>
